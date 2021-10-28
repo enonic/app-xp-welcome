@@ -8,8 +8,20 @@
     <title>Enonic XP Welcome page</title>
 </head>
 <body>
-    <h1>Enonic XP Dashboard</h1>
-    Version: {{xpVersion}}
+    <h1>Enonic XP</h1> v{{xpVersion}}
+    Http engine serving on <a href="{{xpUrl}}" target="_blank">{{xpUrl}}</a>
+
+    <h1>System</h1>
+
+    <div>
+        <h3>Management API</h3>
+        <a href="{{managementApiUrl}}" target="_blank">{{managementApiUrl}}</a>
+    </div>
+
+    <div>
+        <h3>Statistics API</h3>
+        <a href="{{statisticsApiUrl}}" target="_blank">{{statisticsApiUrl}}</a>
+    </div>
 
     <h2>Web Apps</h2>
     <div>
