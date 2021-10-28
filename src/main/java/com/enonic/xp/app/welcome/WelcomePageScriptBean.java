@@ -22,6 +22,16 @@ public class WelcomePageScriptBean
 
     private Supplier<ResourceService> resourceServiceSupplier;
 
+    private Supplier<JettyConfigService> jettyConfigServiceSupplier;
+
+    @Override
+    public void initialize( final BeanContext beanContext )
+    {
+        this.applicationServiceSupplier = beanContext.getService( ApplicationService.class );
+        this.resourceServiceSupplier = beanContext.getService( ResourceService.class );
+        this.jettyConfigServiceSupplier = beanContext.getService( JettyConfigService.class );
+    }
+
     public Object getWebApps()
     {
         List<WebApplication> applications = new ArrayList<>();
@@ -42,10 +52,29 @@ public class WelcomePageScriptBean
         return new WebApplicationsMapper( applications );
     }
 
-    @Override
-    public void initialize( final BeanContext beanContext )
+    public String getXpUrl()
     {
-        this.applicationServiceSupplier = beanContext.getService( ApplicationService.class );
-        this.resourceServiceSupplier = beanContext.getService( ResourceService.class );
+        return createUrl( jettyConfigServiceSupplier.get().getHttpXpPort() );
+    }
+
+    public String getManagementApiUrl()
+    {
+        return createUrl( jettyConfigServiceSupplier.get().getHttpManagementPort() );
+    }
+
+    public String getStatisticsApiUrl()
+    {
+        return createUrl( jettyConfigServiceSupplier.get().getHttpMonitorPort() );
+    }
+
+    private String createUrl( final int port )
+    {
+        return "http://" + getHost() + ":" + port;
+    }
+
+    private String getHost()
+    {
+        final String host = jettyConfigServiceSupplier.get().getHost();
+        return host == null || "".equals( host ) || "0.0.0.0".equals( host ) ? "localhost" : host;
     }
 }
