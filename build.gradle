@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.enonic.defaults' version '2.0.1'
+    id 'com.enonic.xp.app' version '3.0.0'
+}
+
+def xpVersion = version
+
+app {
+    name = 'com.enonic.xp.app.welcome'
+    group = 'com.enonic.xp'
+    displayName = 'XP Welcome App'
+    systemApp = true
+    systemVersion = "${xpVersion}"
+}
+
+repositories {
+    mavenCentral()
+    xp.enonicRepo( 'dev' )
+}
+
+configurations {
+    distro
+}
+
+ext {
+    unpackDir = "$buildDir/install"
+    distroDir = "$unpackDir/enonic-xp-generic-$xpVersion"
+    deployDir = "$distroDir/home/deploy"
+    xpHome = "$distroDir/home"
+    configDir = "$xpHome/config"
+    appName = "app-xp-welcome"
+    appFile = "$distroDir/system/40/${appName}-${xpVersion}.jar"
+    appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
+}
+
+dependencies {
+    implementation "com.enonic.xp:jaxrs-api:${xpVersion}"
+    implementation "com.enonic.xp:admin-api:${xpVersion}"
+
+    include "com.enonic.xp:lib-admin:${xpVersion}"
+    include "com.enonic.lib:lib-mustache:2.0.0"
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'java.awt.headless', 'true'
+    jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
+}
