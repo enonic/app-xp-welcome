@@ -14,6 +14,8 @@ public class WebApplication
 
     private final String deploymentUrl;
 
+    private final String iconAsBase64;
+
     private WebApplication( final Builder builder )
     {
         this.key = builder.application.getKey().toString();
@@ -21,6 +23,7 @@ public class WebApplication
         this.displayName = builder.application.getDisplayName();
         this.url = builder.application.getUrl();
         this.deploymentUrl = builder.developmentUrl;
+        this.iconAsBase64 = builder.iconAsBase64;
     }
 
     public String getKey()
@@ -43,6 +46,11 @@ public class WebApplication
         return url;
     }
 
+    public String getIconAsBase64()
+    {
+        return iconAsBase64;
+    }
+
     public String getDeploymentUrl()
     {
         return deploymentUrl;
@@ -59,6 +67,8 @@ public class WebApplication
 
         String developmentUrl;
 
+        String iconAsBase64;
+
         public Builder application( final Application application )
         {
             this.application = application;
@@ -68,6 +78,12 @@ public class WebApplication
         public Builder deploymentUrl( final String developmentUrl )
         {
             this.developmentUrl = developmentUrl;
+            return this;
+        }
+
+        public Builder iconAsBase64( final String iconAsBase64 )
+        {
+            this.iconAsBase64 = iconAsBase64;
             return this;
         }
 
