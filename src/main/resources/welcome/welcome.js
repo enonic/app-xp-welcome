@@ -21,7 +21,7 @@ exports.get = function () {
         managementApiUrl: bean.getManagementApiUrl(),
         statisticsApiUrl: bean.getStatisticsApiUrl(),
         xpUrl: bean.getXpUrl(),
-        sites: getSiteDetails().sites
+        sites: siteDetails.sites
     };
     return {
         contentType: 'text/html',
