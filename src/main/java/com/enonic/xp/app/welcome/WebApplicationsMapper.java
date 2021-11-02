@@ -26,6 +26,7 @@ public class WebApplicationsMapper
             gen.value( "version", application.getVersion() );
             gen.value( "url", application.getUrl() );
             gen.value( "deploymentUrl", application.getDeploymentUrl() );
+            gen.value( "icon", application.getIconAsBase64() );
             gen.end();
         } );
         gen.end();

@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
     <title>Enonic XP Welcome page</title>
+    <style>
+        .box {
+            border: 1px solid #53585F;
+            margin-bottom: 1px;
+        }
+    </style>
 </head>
 <body>
     <h1>Enonic XP</h1> v{{xpVersion}}
@@ -23,10 +29,46 @@
         <a href="{{statisticsApiUrl}}" target="_blank">{{statisticsApiUrl}}</a>
     </div>
 
+    <h1>Sites</h1>
+    <div>
+        {{#sites}}
+        <div class="box">
+            <div>Name: {{displayName}}</div>
+            <div>Project: {{projectName}}</div>
+            <div>Path: {{path}}</div>
+            <div>
+                Language:
+                {{#language}}
+                   ({{language}})
+                {{/language}}
+            </div>
+            <div>
+                {{#hasDraft}}
+                    <a href="{{xpUrl}}/site/{{repositoryName}}/draft/{{path}}" target="_blank">Drafts</a>
+                {{/hasDraft}}
+                {{^hasDraft}}
+                    No drafts
+                {{/hasDraft}}
+            </div>
+            <div>
+                {{#hasMaster}}
+                    <a href="{{xpUrl}}/site/{{repositoryName}}/master/{{path}}" target="_blank">Published</a>
+                {{/hasMaster}}
+                {{^hasMaster}}
+                    Not published
+                {{/hasMaster}}
+            </div>
+        </div>
+        {{/sites}}
+    </div>
+
     <h2>Web Apps</h2>
     <div>
         {{#applications}}
-        <div style="border: 1px solid #53585F;">
+        <div class="box">
+            {{#icon}}
+               <img width="64" height="64" src="{{icon}}" />
+            {{/icon}}
             {{displayName}} - {{applicationKey}}
             <a href="{{deploymentUrl}}" target="_blank">{{deploymentUrl}}</a>
         </div>
