@@ -40,6 +40,8 @@ dependencies {
     implementation "com.enonic.xp:admin-api:${xpVersion}"
 
     include "com.enonic.xp:lib-admin:${xpVersion}"
+    include "com.enonic.xp:lib-auth:${xpVersion}"
+    include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.0.0"
 }
 

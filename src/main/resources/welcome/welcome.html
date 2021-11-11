@@ -5,74 +5,144 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
-    <title>Enonic XP Welcome page</title>
-    <style>
-        .box {
-            border: 1px solid #53585F;
-            margin-bottom: 1px;
-        }
-    </style>
+
+    <title>Welcome - Enonic XP</title>
+
+    <!-- favicons -->
+
+    <link rel="apple-touch-icon" href="{{assetsUri}}/icons/favicons/apple-touch-icon-60x60.png" sizes="60x60">
+    <link rel="apple-touch-icon" href="{{assetsUri}}/icons/favicons/apple-touch-icon-76x76.png" sizes="76x76">
+    <link rel="apple-touch-icon" href="{{assetsUri}}/icons/favicons/apple-touch-icon-120x120.png" sizes="120x120">
+    <link rel="apple-touch-icon" href="{{assetsUri}}/icons/favicons/apple-touch-icon-152x152.png" sizes="152x152">
+    <link rel="apple-touch-icon" href="{{assetsUri}}/icons/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/android-128x128.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/android-196x196.png" sizes="196x196">
+
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/favicon-48x48.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/favicon-64x64.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{assetsUri}}/icons/favicons/favicon-128x128.png" sizes="32x32">
+
+    <link rel="manifest" href="{{assetsUri}}/icons/favicons/manifest.json">
+    <link rel="stylesheet" type="text/css" href="{{assetsUri}}/main.css">
 </head>
 <body>
-    <h1>Enonic XP</h1> v{{xpVersion}}
-    Http engine serving on <a href="{{xpUrl}}" target="_blank">{{xpUrl}}</a>
-
-    <h1>System</h1>
-
-    <div>
-        <h3>Management API</h3>
-        <a href="{{managementApiUrl}}" target="_blank">{{managementApiUrl}}</a>
-    </div>
-
-    <div>
-        <h3>Statistics API</h3>
-        <a href="{{statisticsApiUrl}}" target="_blank">{{statisticsApiUrl}}</a>
-    </div>
-
-    <h1>Sites</h1>
-    <div>
-        {{#sites}}
-        <div class="box">
-            <div>Name: {{displayName}}</div>
-            <div>Project: {{projectName}}</div>
-            <div>Path: {{path}}</div>
-            <div>
-                Language:
-                {{#language}}
-                   ({{language}})
-                {{/language}}
+    <header>
+        <div id="header-logo">
+            <img src="{{assetsUri}}/icons/icon-xp.svg">
+        </div>
+        <div id="header-title">
+            <div id="header-title-container">
+                <span id="header-title-xp" class="font-size-big">Enonic XP</span>
+                <span id="header-title-version" class="font-size-small text-color-gray">v{{xpVersion}}</span>
             </div>
-            <div>
-                {{#hasDraft}}
-                    <a href="{{xpUrl}}/site/{{repositoryName}}/draft/{{path}}" target="_blank">Drafts</a>
-                {{/hasDraft}}
-                {{^hasDraft}}
-                    No drafts
-                {{/hasDraft}}
+            <div id="header-title-tip" class="font-size-tiny text-color-gray">Http engine serving on <a href="{{xpUrl}}" target="_blank">{{xpUrl}}</a></div>
+        </div>
+        <div id="header-tip">
+            <span id="header-tip-bold">TIP!</span>
+            <span id="header-tip-text">Route traffic directly to HTTP engine by activating vhosts in confuration files</span>
+        </div>
+
+    </header>
+    <main>
+        <h1 class="font-size-medium text-color-gray">System</h1>
+        <div class="section-container system">
+
+            <div class="section inverted">
+                <div class="section-contents">
+                    <h3 class="font-size-small">Admin Console</h3>
+                    <a class="link" href="/admin" target="_blank">/admin</a>
+                    <p class="hint text-color-gray font-size-tiny">Back-office web interface</p>
+                </div>
+                <a id="xp-admin-button-wrapper" href="/admin" target="_blank">
+                    {{^isLoggedIn}}
+                    <button id="xp-admin-button" class="font-size-small bg-color-red">Log in</button>
+                    {{/isLoggedIn}}
+                    {{#isLoggedIn}}
+                    <button id="xp-admin-button" class="font-size-small bg-color-blue">Open</button>
+                    {{/isLoggedIn}}
+                </a>
             </div>
-            <div>
-                {{#hasMaster}}
-                    <a href="{{xpUrl}}/site/{{repositoryName}}/master/{{path}}" target="_blank">Published</a>
-                {{/hasMaster}}
-                {{^hasMaster}}
-                    Not published
-                {{/hasMaster}}
+
+            <div class="section">
+                <div class="section-contents">
+                    <h3 class="font-size-small">Management API</h3>
+                    <a class="link" href="{{managementApiUrl}}" target="_blank">{{managementApiUrl}}</a>
+                    <p class="hint text-color-gray font-size-tiny">Also accessible from Enonic CLI</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-contents">
+                    <h3 class="font-size-small">Statistics API</h3>
+                    <a class="link" href="{{statisticsApiUrl}}" target="_blank">{{statisticsApiUrl}}</a>
+                    <p class="hint text-color-gray font-size-tiny">Platform performance and health</p>
+                </div>
             </div>
         </div>
-        {{/sites}}
-    </div>
 
-    <h2>Web Apps</h2>
-    <div>
-        {{#applications}}
-        <div class="box">
-            {{#icon}}
-               <img width="64" height="64" src="{{icon}}" />
-            {{/icon}}
-            {{displayName}} - {{applicationKey}}
-            <a href="{{deploymentUrl}}" target="_blank">{{deploymentUrl}}</a>
+        {{#hasSites}}
+        <hr>
+        <h1 class="font-size-medium text-color-gray">Sites</h1>
+        <div class="section-container sites">
+            {{#sites}}
+            <div class="section">
+                <img class="section-icon" src="{{assetsUri}}/icons/icon-site.svg">
+                <div class="section-contents">
+                    <h3 class="font-size-small">{{displayName}}
+                    {{#language}}
+                        <span class="text-color-gray font-size-tiny">({{language}})</span>
+                    {{/language}}
+                    </h3>
+                    <span class="text-color-gray font-size-tiny">{{repositoryName}} | {{path}}</span>
+                    <div class="section-bottom text-color-gray font-size-tiny">
+                        <span class="site-draft">
+                        {{#hasDraft}}
+                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/draft/{{path}}" target="_blank">Drafts</a>
+                        {{/hasDraft}}
+                        {{^hasDraft}}
+                            No drafts
+                        {{/hasDraft}}
+                        </span>
+                        |
+                        <span class="site-master">
+                        {{#hasMaster}}
+                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/master/{{path}}" target="_blank">Published</a>
+                        {{/hasMaster}}
+                        {{^hasMaster}}
+                            Not published
+                        {{/hasMaster}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {{/sites}}
         </div>
-        {{/applications}}
-    </div>
+        {{/hasSites}}
+
+        {{#hasApplications}}
+        <hr>
+        <h1 class="font-size-medium text-color-gray">Web Apps</h1>
+        <div class="section-container apps">
+            {{#applications}}
+            <div class="section">
+                {{#icon}}
+                <img class="section-icon" src="{{icon}}">
+                {{/icon}}
+                {{^icon}}
+                <img class="section-icon" src="{{assetsUri}}/icons/icon-app.svg">
+                {{/icon}}
+                <div class="section-contents">
+                    <h3 class="font-size-small">{{displayName}}</h3>
+                    <a class="link" href="{{deploymentUrl}}" target="_blank">{{deploymentUrl}}</a>
+                </div>
+            </div>
+            {{/applications}}
+        </div>
+        {{/hasApplications}}
+    </main>
 </body>
 </html>
