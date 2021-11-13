@@ -1,19 +1,20 @@
-const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const path = require('path');
-
+const assetsDir = path.join(__dirname, "/build/resources/main/assets");
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets'),
     entry: {
-        main: './js/main.js'
+        main: './main.less'
     },
     output: {
-        path: path.join(__dirname, '/build/resources/main/assets/'),
-        filename: './js/_all.js'
+        path: assetsDir
+    },
+    resolve: {
+        extensions: [".less"],
     },
     module: {
         rules: [
@@ -22,7 +23,6 @@ module.exports = {
                 use: [
                     {loader: MiniCssExtractPlugin.loader, options: {publicPath: '../'}},
                     {loader: 'css-loader', options: {sourceMap: !isProd, importLoaders: 1, url: false}},
-                    {loader: 'postcss-loader', options: { sourceMap: !isProd} },
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
             }
@@ -30,23 +30,13 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            new TerserPlugin({
-                terserOptions: {
-                    compress: {
-                        drop_console: false
-                    },
-                    keep_classnames: true,
-                    keep_fnames: true
-                }
-            })
-        ]
+            new CssMinimizerPlugin(),
+        ],
     },
     plugins: [
-        new ErrorLoggerPlugin(),
         new MiniCssExtractPlugin({
-            filename: './styles/_all.css',
-            chunkFilename: './styles/_all.css'
-        })
+            filename: "[name].css"
+        }),
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map'

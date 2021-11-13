@@ -1,0 +1,8 @@
+task npmInstallForce( type: NpmTask ) {
+    description = 'Update all project node dependencies'
+    args = ['install', '--force']
+}
+
+task cleanNode( type: Delete ) {
+    delete 'node_modules'
+}

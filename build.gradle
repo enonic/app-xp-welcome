@@ -3,15 +3,19 @@ plugins {
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.0.1'
     id 'com.enonic.xp.app' version '3.0.0'
+    id "com.github.node-gradle.node" version "3.1.0"
 }
 
 def xpVersion = version
+
+apply from: "$rootDir/gradle/env.gradle"
+apply from: "$rootDir/gradle/node.gradle"
 
 app {
     name = 'com.enonic.xp.app.welcome'
     group = 'com.enonic.xp'
     displayName = 'XP Welcome App'
-    systemApp = true
+    //systemApp = true
     systemVersion = "${xpVersion}"
 }
 
@@ -45,8 +49,37 @@ dependencies {
     include "com.enonic.lib:lib-mustache:2.0.0"
 }
 
+node {
+    download = true
+    version = '15.8.0'
+}
+
+task webpack( type: NpmTask, dependsOn: [npmInstall] ) {
+    doLast {
+        println "Build mode: " + nodeEnvironment()
+    }
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
+    description = 'Build UI resources (ts, css, etc).'
+    args = [ 'run', 'build' ]
+    inputs.dir 'src/main'
+    inputs.file 'webpack.config.js'
+    outputs.dir "${buildDir}/resources/main"
+}
+
 test {
     useJUnitPlatform()
     systemProperty 'java.awt.headless', 'true'
     jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
+}
+
+jar {
+    exclude 'assets/**/*.less'
+    exclude 'assets/main.js'
+    if (isProd()) {
+        exclude 'assets/**/*.map'
+    }
+
+    outputs.dir "${buildDir}/resources/main"
+
+    dependsOn += webpack
 }
