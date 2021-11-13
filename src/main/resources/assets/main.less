@@ -1,0 +1,244 @@
+@font-face {
+    font-family: 'Open Sans';
+    src:
+        url("fonts/opensans-regular.woff2") format("woff2"),
+        url("fonts/opensans-regular.woff") format("woff");
+}
+
+@color-bg-red: #ef5e4d;
+@color-bg-blue: #2c76e9;
+@color-bg-header: #eee;
+@color-bg-header-tip: #f8d2b8;
+@color-text-gray: #696969;
+@color-text-header-tip: #5d5d40;
+
+.ellipsis() {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.text-color {
+    &-gray {
+        color: @color-text-gray;
+    }
+}
+
+.bg-color {
+    &-red {
+        background-color: @color-bg-red;
+    }
+
+    &-blue {
+        background-color: @color-bg-blue;
+    }
+}
+
+.font-size {
+    &-big {
+        font-size: 2rem;
+    }
+
+    &-medium {
+        font-size: 1.25rem;
+    }
+
+    &-small {
+        font-size: 1rem;
+    }
+
+    &-tiny {
+        font-size: 0.75rem;
+    }
+}
+
+#header {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100px;
+    background-color: @color-bg-header;
+    position: relative;
+    align-items: center;
+    padding: 10px 30px;
+
+    &-logo {
+        flex-basis: 65px;
+        box-sizing: border-box;
+        height: 100%;
+        width: 100%;
+        padding: 10px 0;
+
+        > img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+
+    &-title {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        &-version {
+            font-size: 1rem;
+        }
+
+        &-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+        }
+
+        &-xp {
+            margin-right: 10px;
+        }
+    }
+
+    &-tip {
+        display: none;
+        align-items: center;
+        background-color: @color-bg-header-tip;
+        border-radius: 10px;
+        border: 1px solid lightgray;
+
+        &-bold {
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        &-text {
+            color: @color-text-header-tip;
+            padding: 5px;
+        }
+    }
+}
+
+#xp-admin-button {
+    margin-top: 5px;
+    padding: 7px 30px;
+    color: white;
+    font-size: 1rem;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+
+    &-wrapper {
+        margin-left: 20px;
+    }
+}
+
+main {
+    padding: 0 30px;
+
+    > h1 {
+        margin: 20px 0;
+    }
+}
+
+.section-container {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 25px;
+    row-gap: 25px;
+    padding-bottom: 20px;
+
+    .section {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 15px;
+        box-shadow: 1px 1px 3px 0px rgb(0 0 0 / 20%);
+        border: 1px solid #eee;
+        min-width: 250px;
+        width: 100%;
+
+        &-top {
+            display: flex;
+        }
+
+        &-bottom {
+            margin-top: 10px;
+        }
+
+        &-icon {
+            margin: 5px 14px 0 0;
+            flex-basis: auto;
+            width: 32px;
+            height: 32px;
+        }
+
+        h3 {
+            margin: 0;
+        }
+
+        &-contents {
+            display: flex;
+            flex-direction: column;
+
+            .ellipsis();
+
+            > * {
+                .ellipsis();
+            }
+        }
+
+        .hint {
+            margin-bottom: 0;
+        }
+
+        .link {
+            font-size: 0.8rem;
+        }
+
+        &.inverted {
+            background: rgb(0,0,0);
+            background: linear-gradient(160deg, rgba(0,0,0,1) 0%, rgba(94,94,94,1) 100%);
+
+            h3,
+            .hint {
+                color: lightgray;
+            }
+
+            .hint {
+                margin-bottom: 0;
+            }
+
+            .link {
+                color: lightblue;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    #header-tip {
+        display: flex;
+        flex-basis: 35%;
+        max-width: 380px;
+    }
+
+    .font-size-tiny {
+        font-size: 0.8rem;
+    }
+
+    .section-container {
+        .section {
+            width: auto;
+        }
+        &:not(.system) .section {
+            max-width: 250px;
+        }
+    }
+}
