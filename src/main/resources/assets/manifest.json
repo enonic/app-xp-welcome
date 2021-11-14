@@ -1,0 +1,21 @@
+{
+  "name": "Enonic XP",
+  "short_name": "Enonic XP",
+  "description": "Welcome page of Enonic XP",
+  "start_url": "http://localhost:8080",
+  "display": "minimal-ui",
+  "icons": [
+    {
+      "src": "./icons/favicons/android-128x128.png",
+      "sizes": "128x128",
+      "type": "image\/png",
+      "density": "1.0"
+    },
+    {
+      "src": "./icons/favicons/android-196x196.png",
+      "sizes": "196x196",
+      "type": "image\/png",
+      "density": "1.5"
+    }
+  ]
+}

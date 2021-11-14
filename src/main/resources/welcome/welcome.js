@@ -12,13 +12,12 @@ function getWebApplications() {
 function getSiteDetails() {
     return __.toNativeObject(bean.getSites());
 }
-
 exports.get = function () {
-    let view = resolve('./welcome.html');
-    let webApplications = getWebApplications();
-    let siteDetails = getSiteDetails();
+    const view = resolve('./welcome.html');
+    const webApplications = getWebApplications();
+    const siteDetails = getSiteDetails();
 
-    let params = {
+    const params = {
         xpVersion: admin.getVersion(),
         applications: webApplications.applications,
         managementApiUrl: bean.getManagementApiUrl(),
