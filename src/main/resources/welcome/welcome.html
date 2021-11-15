@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
 
-    <title>Welcome - Enonic XP</title>
+    <title>{{phrases.page_title}}</title>
 
     <!-- favicons -->
 
@@ -39,54 +39,54 @@
                 <span id="header-title-xp" class="font-size-big">Enonic XP</span>
                 <span id="header-title-version" class="font-size-small text-color-gray">v{{xpVersion}}</span>
             </div>
-            <div id="header-title-tip" class="font-size-tiny text-color-gray">Http engine serving on <a href="{{xpUrl}}" target="_blank">{{xpUrl}}</a></div>
+            <div id="header-title-tip" class="font-size-tiny text-color-gray">{{phrases.header_httpEngine_hint}} <a href="{{xpUrl}}" target="_blank">{{xpUrl}}</a></div>
         </div>
         <div id="header-tip">
-            <span id="header-tip-bold">TIP!</span>
-            <span id="header-tip-text">Route traffic directly to HTTP engine by activating vhosts in confuration files</span>
+            <span id="header-tip-bold">{{phrases.header_tip}}</span>
+            <span id="header-tip-text">{{phrases.header_tip_text}}</span>
         </div>
 
     </header>
     <main>
-        <h1 class="font-size-medium text-color-gray">System</h1>
+        <h1 class="font-size-medium text-color-gray">{{phrases.system_title}}</h1>
         <div class="section-container system">
 
             <div class="section inverted">
                 <div class="section-contents">
-                    <h3 class="font-size-small">Admin Console</h3>
+                    <h3 class="font-size-small">{{phrases.system_admin_name}}</h3>
                     <a class="link" href="/admin" target="_blank">/admin</a>
-                    <p class="hint text-color-gray font-size-tiny">Back-office web interface</p>
+                    <p class="hint text-color-gray font-size-tiny">{{phrases.system_admin_description}}</p>
                 </div>
                 <a id="xp-admin-button-wrapper" href="/admin" target="_blank">
                     {{^isLoggedIn}}
-                    <button id="xp-admin-button" class="font-size-small bg-color-red">Log in</button>
+                    <button id="xp-admin-button" class="font-size-small bg-color-red">{{phrases.system_admin_login}}</button>
                     {{/isLoggedIn}}
                     {{#isLoggedIn}}
-                    <button id="xp-admin-button" class="font-size-small bg-color-blue">Open</button>
+                    <button id="xp-admin-button" class="font-size-small bg-color-blue">{{phrases.system_admin_open}}</button>
                     {{/isLoggedIn}}
                 </a>
             </div>
 
             <div class="section">
                 <div class="section-contents">
-                    <h3 class="font-size-small">Management API</h3>
+                    <h3 class="font-size-small">{{phrases.system_management_name}}</h3>
                     <a class="link" href="{{managementApiUrl}}" target="_blank">{{managementApiUrl}}</a>
-                    <p class="hint text-color-gray font-size-tiny">Also accessible from Enonic CLI</p>
+                    <p class="hint text-color-gray font-size-tiny">{{phrases.system_management_description}}</p>
                 </div>
             </div>
 
             <div class="section">
                 <div class="section-contents">
-                    <h3 class="font-size-small">Statistics API</h3>
+                    <h3 class="font-size-small">{{phrases.system_statistics_name}}</h3>
                     <a class="link" href="{{statisticsApiUrl}}" target="_blank">{{statisticsApiUrl}}</a>
-                    <p class="hint text-color-gray font-size-tiny">Platform performance and health</p>
+                    <p class="hint text-color-gray font-size-tiny">{{phrases.system_statistics_description}}</p>
                 </div>
             </div>
         </div>
 
         {{#hasSites}}
         <hr>
-        <h1 class="font-size-medium text-color-gray">Sites</h1>
+        <h1 class="font-size-medium text-color-gray">{{phrases.sites_title}}</h1>
         <div class="section-container sites">
             {{#sites}}
             <div class="section">
@@ -101,19 +101,19 @@
                     <div class="section-bottom text-color-gray font-size-tiny">
                         <span class="site-draft">
                         {{#hasDraft}}
-                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/draft/{{path}}" target="_blank">Drafts</a>
+                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/draft/{{path}}" target="_blank">{{phrases.sites_drafts}}</a>
                         {{/hasDraft}}
                         {{^hasDraft}}
-                            No drafts
+                            {{phrases.sites_no_drafts}}
                         {{/hasDraft}}
                         </span>
                         |
                         <span class="site-master">
                         {{#hasMaster}}
-                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/master/{{path}}" target="_blank">Published</a>
+                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/master/{{path}}" target="_blank">{{phrases.sites_published}}</a>
                         {{/hasMaster}}
                         {{^hasMaster}}
-                            Not published
+                            {{phrases.sites_not_published}}
                         {{/hasMaster}}
                         </span>
                     </div>
@@ -125,7 +125,7 @@
 
         {{#hasApplications}}
         <hr>
-        <h1 class="font-size-medium text-color-gray">Web Apps</h1>
+        <h1 class="font-size-medium text-color-gray">{{phrases.webapps_title}}</h1>
         <div class="section-container apps">
             {{#applications}}
             <div class="section">
