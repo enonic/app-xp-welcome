@@ -39,8 +39,10 @@ public class WelcomeWebHandler
     {
         PortalRequest portalRequest = new PortalRequest( webRequest );
         portalRequest.setContextPath( portalRequest.getBaseUri() );
+        final ApplicationKey applicationKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+        portalRequest.setApplicationKey( applicationKey );
 
-        ResourceKey scriptDir = ResourceKey.from( ApplicationKey.from( "com.enonic.xp.app.welcome" ), "welcome" );
+        ResourceKey scriptDir = ResourceKey.from( applicationKey, "welcome" );
         ControllerScript controllerScript = controllerScriptFactory.fromDir( scriptDir );
         return controllerScript.execute( portalRequest );
     }
