@@ -60,7 +60,7 @@ task webpack( type: NpmTask, dependsOn: [npmInstall] ) {
         println "Build mode: " + nodeEnvironment()
     }
     environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build UI resources (ts, css, etc).'
+    description = 'Build assets'
     args = [ 'run', 'build' ]
     inputs.dir 'src/main'
     inputs.file 'webpack.config.js'
