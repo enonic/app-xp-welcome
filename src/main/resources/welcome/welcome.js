@@ -18,12 +18,7 @@ exports.get = function () {
     const webApplications = getWebApplications();
     const siteDetails = getSiteDetails();
 
-    const locales = admin.getLocales();
-    log.info('Locales: ' + JSON.stringify(locales, null, 4));
-
-    const supportedLocales = i18nLib.getSupportedLocales(['i18n/phrases']);
-    log.info('Bundle locales: ' + JSON.stringify(supportedLocales, null, 4));
-    const phrases = i18nLib.getPhrases(locales, ['i18n/phrases']);
+    const phrases = i18nLib.getPhrases(admin.getLocales(), ['i18n/phrases']);
 
     const params = {
         xpVersion: admin.getVersion(),
@@ -38,10 +33,8 @@ exports.get = function () {
             path: '',
             application: app.name
         }),
-        isLoggedIn: !!auth.getUser()/*,
-        i18n: {
-            "page.title": phrases['page.title']
-        }*/
+        isLoggedIn: !!auth.getUser(),
+        phrases
     };
     return {
         contentType: 'text/html',
