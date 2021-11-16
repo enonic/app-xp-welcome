@@ -15,7 +15,7 @@ app {
     name = 'com.enonic.xp.app.welcome'
     group = 'com.enonic.xp'
     displayName = 'XP Welcome App'
-    //systemApp = true
+    systemApp = true
     systemVersion = "${xpVersion}"
 }
 
