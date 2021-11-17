@@ -79,21 +79,18 @@ public class WelcomePageScriptBean
         List<WebApplication> applications = new ArrayList<>();
         for ( Application application : applicationServiceSupplier.get().getInstalledApplications() )
         {
-            if ( !application.isSystem() )
+            ApplicationKey applicationKey = application.getKey();
+            Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
+            if ( resource.exists() )
             {
-                ApplicationKey applicationKey = application.getKey();
-                Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
-                if ( resource != null && resource.exists() )
-                {
-                    String deploymentUrl =
-                        ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
+                String deploymentUrl =
+                    ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
 
-                    applications.add( WebApplication.create().
-                        application( application ).
-                        deploymentUrl( deploymentUrl + "/" ).
-                        iconAsBase64( getApplicationIconAsBase64( applicationKey ) ).
-                        build() );
-                }
+                applications.add( WebApplication.create().
+                    application( application ).
+                    deploymentUrl( deploymentUrl + "/" ).
+                    iconAsBase64( getApplicationIconAsBase64( applicationKey ) ).
+                    build() );
             }
         }
         return new WebApplicationsMapper( applications );
@@ -163,7 +160,7 @@ public class WelcomePageScriptBean
             map( Project::getName ).
             map( ProjectName::getRepoId ).
             filter( repoId -> !repoId.equals( ContentConstants.CONTENT_REPO_ID ) ).
-            sorted( Comparator.comparing( RepositoryId::toString )).
+            sorted( Comparator.comparing( RepositoryId::toString ) ).
             collect( Collectors.toList() ) );
         return repositoryIds;
     }
@@ -181,10 +178,6 @@ public class WelcomePageScriptBean
     {
         try (InputStream in = getClass().getResourceAsStream( "application.svg" ))
         {
-            if ( in == null )
-            {
-                throw new IllegalArgumentException( "Image application.svg not found" );
-            }
             return in.readAllBytes();
         }
         catch ( IOException e )
