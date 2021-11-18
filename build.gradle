@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.0.1'
     id 'com.enonic.xp.app' version '3.0.0'
@@ -10,6 +11,7 @@ def xpVersion = version
 
 apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
+apply from: "$rootDir/gradle/versions.gradle"
 
 app {
     name = 'com.enonic.xp.app.welcome'
@@ -48,6 +50,11 @@ dependencies {
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.0.0"
+
+    testImplementation "com.enonic.xp:testing:${xpVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }
 
 node {
@@ -72,6 +79,15 @@ test {
     systemProperty 'java.awt.headless', 'true'
     jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 jar {
     exclude 'assets/**/*.less'
