@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.2'
-    id 'com.enonic.xp.app' version '3.2.0'
+    id 'com.enonic.xp.app' version '3.3.0'
     id "com.github.node-gradle.node" version "5.0.0"
 }
 
@@ -58,7 +58,7 @@ dependencies {
 
 node {
     download = true
-    version = '15.8.0'
+    version = '18.13.0'
 }
 
 task webpack( type: NpmTask, dependsOn: [npmInstall] ) {
@@ -81,12 +81,14 @@ test {
 
 jacocoTestReport {
     reports {
-        xml.enabled = true
-        html.enabled = true
+        xml.required = true
+        html.required = true
     }
 }
 
 check.dependsOn jacocoTestReport
+javadoc.dependsOn jar, webpack
+compileTestJava.dependsOn jar, webpack
 
 jar {
     exclude 'assets/**/*.less'
