@@ -1,0 +1,21 @@
+.theme-light {
+    /** BACKGROUND */
+    --color-ui-bg: hsl(0, 0%, 100%);
+    --color-ui-bg-header: hsl(0, 0%, 93%);
+    --color-ui-bg-button: hsl(215, 80%, 55%);
+
+    --color-ui-tip: hsl(25, 82%, 85%);
+
+    --color-ui-border: hsl(0, 10%, 80%);
+    --color-ui-shadow: hsl(0, 0%, 80%);
+
+    /** FONT */
+    --color-font-main: black;
+    --color-font-sub: hsl(0, 0%, 50%);
+    --color-font-disabled: hsl(0, 0%, 70%);
+
+    --color-font-tip: hsl(60, 20%, 30%);
+
+    /** BACKGROUND & FONT */
+    --color-accent: hsl(10, 85%, 55%);
+}
