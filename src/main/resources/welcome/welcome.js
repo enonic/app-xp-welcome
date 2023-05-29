@@ -31,13 +31,13 @@ exports.get = function () {
         sites: siteDetails.sites,
         assetsUri: portal.assetUrl({
             path: '',
-            application: app.name
+            application: app.name,
         }),
         isLoggedIn: !!auth.getUser(),
-        phrases
+        phrases,
     };
     return {
         contentType: 'text/html',
-        body: mustache.render(view, params)
+        body: mustache.render(view, params),
     };
 };

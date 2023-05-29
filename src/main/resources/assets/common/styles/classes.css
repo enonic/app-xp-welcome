@@ -1,0 +1,26 @@
+.noninteractive {
+    pointer-events: none;
+    user-select: none;
+}
+
+.ellipsis {
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+}
+
+.sub {
+    color: var(--color-font-sub);
+}
+
+.accent {
+    color: var(--color-accent);
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.underline {
+    text-decoration: underline;
+}

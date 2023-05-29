@@ -1,0 +1,6 @@
+node_modules/
+build/
+.eslintrc.js
+**/*.d.ts
+src/main/resources/welcome
+src/test

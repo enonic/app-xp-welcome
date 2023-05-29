@@ -1,0 +1,14 @@
+@import './common/styles/fonts.css';
+@import './common/styles/classes.css';
+@import './common/themes/light.css';
+
+/* TODO: Remove after refactoring */
+@import './common/styles/legacy.css';
+
+html,
+body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
