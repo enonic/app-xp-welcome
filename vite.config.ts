@@ -2,7 +2,6 @@ import react from '@vitejs/plugin-react';
 import autoprefixer from 'autoprefixer';
 import {resolve} from 'path';
 import {defineConfig} from 'vite';
-import EnvironmentPlugin from 'vite-plugin-environment';
 
 const isProd = process.env.NODE_ENV !== 'production';
 
@@ -10,7 +9,6 @@ export default defineConfig({
     base: '',
     plugins: [
         react(),
-        EnvironmentPlugin('all'),
     ],
     build: {
         rollupOptions: {
@@ -22,7 +20,7 @@ export default defineConfig({
                 // Prevent from adding hash to file names
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
-                // assetFileNames: '[name].[ext]',
+                // Group assets into the folder by file extension
                 assetFileNames: ({name = ''}) => {
                     if (name === 'index.css') {
                         return 'main.css';

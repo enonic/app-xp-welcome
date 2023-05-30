@@ -1,6 +1,7 @@
 .Header {
     max-width: 1024px;
     margin: 0 auto;
+    padding: 24px 0;
     font-size: 1rem;
 }
 
