@@ -1,5 +1,6 @@
 @import './common/styles/fonts.css';
 @import './common/styles/classes.css';
+@import './common/themes/all.css';
 @import './common/themes/light.css';
 
 html,
