@@ -19,8 +19,8 @@ const config = map<ConfigStore>({
     loaded: false,
 });
 
-export default config;
-
 fetchAppConfig().then(data => {
     config.set({...data, loaded: true});
 }).catch(console.error);
+
+export default config;
