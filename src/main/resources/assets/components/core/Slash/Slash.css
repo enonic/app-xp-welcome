@@ -1,0 +1,8 @@
+.Slash {
+    display: inline;
+}
+
+.Slash::before,
+.Slash::after {
+    content: '\00a0';
+}
