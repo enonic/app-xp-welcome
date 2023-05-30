@@ -1,3 +1,5 @@
+declare type FnVoid = () => void;
+
 declare interface WelcomeApplication {
     key: string;
     version: string;

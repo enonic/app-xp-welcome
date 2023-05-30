@@ -1,0 +1,8 @@
+.Navigator {
+    display: flex;
+}
+
+.Navigator-Segment {
+    font-size: 1em;
+    color: var(--color-font-main);
+}
