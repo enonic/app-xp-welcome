@@ -1,7 +1,10 @@
 .Header {
-    max-width: 1024px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: var(--size-ui-width);
+    height: 112px;
     margin: 0 auto;
-    padding: 24px 0;
     font-size: 1rem;
 }
 

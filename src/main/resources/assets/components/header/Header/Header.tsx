@@ -9,8 +9,8 @@ import './Header.css';
 export default function Header(): JSX.Element {
     const {xpVersion} = useStore(config, {keys: ['xpVersion']});
 
-    const title = useI18n('header_title');
-    const subtitle = useI18n('header_subtitle', xpVersion);
+    const title = useI18n('header.title');
+    const subtitle = useI18n('header.subtitle', xpVersion);
 
     return (
         <header className={'Header'}>

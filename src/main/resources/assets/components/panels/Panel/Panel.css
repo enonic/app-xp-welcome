@@ -1,0 +1,11 @@
+.Panel {
+    max-width: var(--size-ui-width);
+    margin: 0 auto;
+    font-size: 1rem;
+}
+
+.Panel-Description {
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0 0 24px;
+}
