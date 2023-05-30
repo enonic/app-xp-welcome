@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#eee">
 
-    <title>{{rawPhrases.page_title}}</title>
+    <title>{{phrases.page_title}}</title>
 
     <!-- favicons -->
 
@@ -32,127 +32,6 @@
 <body>
     <noscript>You need to enable JavaScript to run this application.</noscript>
     <div id="root"></div>
-    <script type="text/javascript">
-        function decodeObject(input) {
-            return JSON.parse(new DOMParser().parseFromString(input, 'text/html')?.documentElement.textContent);
-        }
-        const CONFIG = Object.freeze({
-            xpVersion: '{{xpVersion}}',
-            applications: decodeObject('{{applications}}'),
-            managementApiUrl: '{{managementApiUrl}}',
-            statisticsApiUrl: '{{statisticsApiUrl}}',
-            xpUrl: '{{xpUrl}}',
-            sites: decodeObject('{{sites}}'),
-            assetsUri: '{{assetsUri}}',
-            isLoggedIn: '{{isLoggedIn}}',
-            phrases: decodeObject('{{phrases}}'),
-        });
-    </script>
-    <script type="module" src="{{assetsUri}}/main.js"></script>
-    <header id="header">
-        <div id="header-logo">
-            <img src="{{assetsUri}}/common/icons/icon-xp.svg">
-        </div>
-        <div id="header-title">
-            <div id="header-title-container">
-                <span id="header-title-xp" class="font-size-big">Enonic XP</span>
-                <span id="header-title-version" class="font-size-medium text-color-gray">v{{xpVersion}}</span>
-            </div>
-            <div id="header-title-tip" class="font-size-small text-color-gray">{{rawPhrases.header_httpEngine_hint}} <a href="{{xpUrl}}" target="_blank">{{xpUrl}}</a></div>
-        </div>
-        <div id="header-tip">
-            <span id="header-tip-bold">{{rawPhrases.header_tip}}</span>
-            <span id="header-tip-text">{{rawPhrases.header_tip_text}}</span>
-        </div>
-
-    </header>
-    <main>
-        <h1 class="font-size-big text-color-gray">{{rawPhrases.system_title}}</h1>
-        <div class="section-container system">
-
-            <section class="inverted">
-                <div class="section-contents">
-                    <h3 class="font-size-medium">{{rawPhrases.system_admin_name}}</h3>
-                    <a class="link" href="/admin" target="_blank">/admin</a>
-                    <p class="hint text-color-gray font-size-small">{{rawPhrases.system_admin_description}}</p>
-                </div>
-                <button id="xp-admin-button" onclick="window.open('/admin', '_blank');" class="font-size-medium {{^isLoggedIn}}bg-color-red{{/isLoggedIn}}{{#isLoggedIn}}bg-color-blue{{/isLoggedIn}}">{{^isLoggedIn}}{{rawPhrases.system_admin_login}}{{/isLoggedIn}}{{#isLoggedIn}}{{rawPhrases.system_admin_open}}{{/isLoggedIn}}</button>
-            </section>
-
-            <section>
-                <div class="section-contents">
-                    <h3 class="font-size-medium">{{rawPhrases.system_management_name}}</h3>
-                    <a class="link" href="{{managementApiUrl}}" target="_blank">{{managementApiUrl}}</a>
-                    <p class="hint text-color-gray font-size-small">{{rawPhrases.system_management_description}}</p>
-                </div>
-            </section>
-
-            <section>
-                <div class="section-contents">
-                    <h3 class="font-size-medium">{{rawPhrases.system_statistics_name}}</h3>
-                    <a class="link" href="{{statisticsApiUrl}}" target="_blank">{{statisticsApiUrl}}</a>
-                    <p class="hint text-color-gray font-size-small">{{rawPhrases.system_statistics_description}}</p>
-                </div>
-            </section>
-        </div>
-
-        {{#hasSites}}
-        <h1 class="font-size-big text-color-gray">{{rawPhrases.sites_title}}</h1>
-        <div class="section-container sites">
-            {{#rawSites}}
-            <section>
-                <img class="section-icon" src="{{assetsUri}}/common/icons/icon-site.svg">
-                <div class="section-contents">
-                    <h3 class="font-size-medium">{{displayName}}
-                    {{#language}}
-                        <span class="text-color-gray font-size-small">({{language}})</span>
-                    {{/language}}
-                    </h3>
-                    <span class="text-color-gray font-size-small">{{repositoryName}} | {{path}}</span>
-                    <div class="section-bottom text-color-gray font-size-small">
-                        <span class="site-draft">
-                        {{#hasDraft}}
-                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/draft/{{path}}" target="_blank">{{rawPhrases.sites_drafts}}</a>
-                        {{/hasDraft}}
-                        {{^hasDraft}}
-                            {{rawPhrases.sites_no_drafts}}
-                        {{/hasDraft}}
-                        </span>
-                        |
-                        <span class="site-master">
-                        {{#hasMaster}}
-                            <a class="link" href="{{xpUrl}}/site/{{repositoryName}}/master/{{path}}" target="_blank">{{rawPhrases.sites_published}}</a>
-                        {{/hasMaster}}
-                        {{^hasMaster}}
-                            {{rawPhrases.sites_not_published}}
-                        {{/hasMaster}}
-                        </span>
-                    </div>
-                </div>
-            </section>
-            {{/rawSites}}
-        </div>
-        {{/hasSites}}
-
-        {{#hasApplications}}
-        <h1 class="font-size-big text-color-gray">{{rawPhrases.webapps_title}}</h1>
-        <div class="section-container apps">
-            {{#rawApplications}}
-            <section>
-                {{#icon}}
-                <img class="section-icon" src="{{icon}}">
-                {{/icon}}
-                {{^icon}}
-                <img class="section-icon" src="{{assetsUri}}/common/icons/icon-app.svg">
-                {{/icon}}
-                <div class="section-contents">
-                    <h3 class="font-size-medium">{{displayName}}</h3>
-                    <a class="link" href="{{deploymentUrl}}" target="_blank">{{deploymentUrl}}</a>
-                </div>
-            </section>
-            {{/rawApplications}}
-        </div>
-        {{/hasApplications}}
-    </main>
+    <script src="{{assetsUri}}/main.js" data-config-service-url="{{configServiceUrl}}"></script>
 </body>
 </html>

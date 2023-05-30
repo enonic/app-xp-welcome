@@ -15,17 +15,3 @@ declare interface WelcomeSite {
     hasDraft: boolean;
     hasMaster: boolean;
 }
-
-declare interface WelcomeConfig {
-    xpVersion: string;
-    applications: WelcomeApplication[];
-    managementApiUrl: string;
-    statisticsApiUrl: string;
-    xpUrl: string;
-    sites: WelcomeSite[];
-    assetsUri: string;
-    isLoggedIn: boolean;
-    phrases: Record<string, string>;
-}
-
-declare const CONFIG: WelcomeConfig;

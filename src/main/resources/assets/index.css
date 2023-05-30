@@ -2,9 +2,6 @@
 @import './common/styles/classes.css';
 @import './common/themes/light.css';
 
-/* TODO: Remove after refactoring */
-@import './common/styles/legacy.css';
-
 html,
 body {
     position: absolute;
