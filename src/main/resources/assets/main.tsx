@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client';
 
 import App from './components/App/App';
 
-import './main.css';
+import './index.css';
 import 'modern-normalize/modern-normalize.css';
 
 const container = document.getElementById('root');

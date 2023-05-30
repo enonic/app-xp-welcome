@@ -1,0 +1,18 @@
+.Header {
+    max-width: 1024px;
+    margin: 0 auto;
+    font-size: 1rem;
+}
+
+.Header-Title {
+    margin: 0;
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.Header-Subtitle {
+    margin: 0 0 0 0.35em;
+    font-size: 0.875em;
+    font-weight: 600;
+    color: var(--color-font-sub);
+}

@@ -34,7 +34,7 @@
   },
   "include": [
     "./welcome/",
-    "../../../types/beans.d.ts"
+    "../../../types"
   ],
   "exclude": [
     "./assets/"

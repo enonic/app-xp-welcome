@@ -22,19 +22,22 @@ exports.get = function () {
 
     const params = {
         xpVersion: admin.getVersion(),
-        applications: webApplications.applications,
+        applications: JSON.stringify(webApplications.applications),
+        rawApplications: webApplications.applications,
         managementApiUrl: bean.getManagementApiUrl(),
         statisticsApiUrl: bean.getStatisticsApiUrl(),
         xpUrl: bean.getXpUrl(),
         hasSites: siteDetails.sites.length > 0,
         hasApplications: webApplications.applications.length > 0,
-        sites: siteDetails.sites,
+        sites: JSON.stringify(siteDetails.sites),
+        rawSites: siteDetails.sites,
         assetsUri: portal.assetUrl({
             path: '',
             application: app.name,
         }),
         isLoggedIn: !!auth.getUser(),
-        phrases,
+        phrases: JSON.stringify(phrases),
+        rawPhrases: phrases,
     };
     return {
         contentType: 'text/html',

@@ -98,8 +98,11 @@ javadoc.dependsOn jar, vite
 compileTestJava.dependsOn jar, vite
 
 jar {
-    exclude 'assets/**/*.less'
-    exclude 'assets/main.js'
+    exclude 'assets/common'
+    exclude 'assets/**/*.ts'
+    exclude 'assets/**/*.tsx'
+    exclude 'assets/*/**/*.css'
+    exclude 'assets/index.css'
     if (isProd()) {
         exclude 'assets/**/*.map'
     }

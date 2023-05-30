@@ -20,11 +20,12 @@
     "jsx": "react-jsx"
   },
   "files": [
-    "vite.config.ts"
+    "vite.config.ts",
   ],
   "include": [
     "src",
-    "config"
+    "config",
+    "types"
   ],
   "exclude": [
     "build/**/*"

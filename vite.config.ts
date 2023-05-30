@@ -7,32 +7,46 @@ import EnvironmentPlugin from 'vite-plugin-environment';
 const isProd = process.env.NODE_ENV !== 'production';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    EnvironmentPlugin('all'),
-  ],
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/main/resources/assets/main.tsx'),
-      },
-      output: {
-        dir: resolve(__dirname, 'build/resources/main'),
-        // Prevent from adding hash to file names
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
-      },
+    base: '',
+    plugins: [
+        react(),
+        EnvironmentPlugin('all'),
+    ],
+    build: {
+        rollupOptions: {
+            input: {
+                main: resolve(__dirname, 'src/main/resources/assets/main.tsx'),
+            },
+            output: {
+                dir: resolve(__dirname, 'build/resources/main/assets'),
+                // Prevent from adding hash to file names
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                // assetFileNames: '[name].[ext]',
+                assetFileNames: ({name = ''}) => {
+                    if (name === 'index.css') {
+                        return 'main.css';
+                    }
+                    if (/(ttf)/.test(name)) {
+                        return 'fonts/[name][extname]';
+                    }
+                    if (/\.(gif|jpeg|jpg|png|svg)$/.test(name)) {
+                        return 'images/[name][extname]';
+                    }
+                    return '[name][extname]';
+                },
+            },
+        },
+        minify: isProd,
+        sourcemap: isProd ? 'hidden' : 'inline',
+        // Prevent "EBUSY: resource busy or locked" error when trying to rmdir
+        emptyOutDir: false,
     },
-    minify: isProd,
-    // Prevent "EBUSY: resource busy or locked" error when trying to rmdir
-    emptyOutDir: false,
-  },
-  css: {
-    postcss: {
-      plugins: [
-        autoprefixer({}),
-      ],
+    css: {
+        postcss: {
+            plugins: [
+                autoprefixer({}),
+            ],
+        },
     },
-  },
 });
