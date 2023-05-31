@@ -5,3 +5,7 @@ export function createHref(url: string | URL, base: string | URL): string {
         return '#';
     }
 }
+
+export function changeOriginPort(port: number): string {
+    return window.location.origin.replace(/:\d+/, `:${port}`);
+}

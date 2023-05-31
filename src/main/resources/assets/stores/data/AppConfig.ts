@@ -1,5 +1,6 @@
 export interface AppConfig {
     loggedIn: boolean;
+    vhostEnabled: boolean;
     xpVersion: string;
     applications: WelcomeApplication[];
     sites: WelcomeSite[];

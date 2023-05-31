@@ -1,20 +1,21 @@
 .Button {
+    --Button-size: 40px;
     --Button-color: var(--color-accent);
     --Button-color-hover: var(--color-accent-lighter);
 
     position: relative;
     border: 0;
     border-radius: 2px;
-    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .Button_default {
-    --Button-size: 40px;
-
     min-width: var(--Button-size);
     height: var(--Button-size);
     padding: 0 16px;
     background-color: var(--Button-color);
+    font-size: 1.125rem;
     color: var(--color-font-alt);
 }
 
@@ -24,6 +25,8 @@
 
 .Button_link {
     padding: 0;
+    background-color: transparent;
+    font-size: 1rem;
     font-weight: 600;
 }
 

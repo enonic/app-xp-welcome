@@ -7,6 +7,7 @@ export type ConfigStore = AppConfig & {loaded: boolean};
 
 const config = map<ConfigStore>({
     loggedIn: false,
+    vhostEnabled: false,
     xpVersion: '0.0.0',
     applications: [],
     sites: [],

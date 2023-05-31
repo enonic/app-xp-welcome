@@ -9,7 +9,7 @@
     --color-ui-shadow: hsl(0, 0%, 50%);
 
     /** FONT */
-    --color-font-main: hsl(0, 0%, 0%);;
+    --color-font-main: hsl(0, 0%, 0%);
     --color-font-sub: hsl(0, 0%, 50%);
     --color-font-alt: hsl(0, 0%, 100%);
     --color-font-disabled: hsl(0, 0%, 70%);
@@ -20,6 +20,7 @@
     --color-accent-lighter: hsl(215, 80%, 60%);
     /* XP logo, other corporate links */
     --color-xp: hsl(10, 85%, 55%);
+    --color-xp-lighter: hsl(10, 85%, 60%);
 
     /** COMPLEX STYLES */
     --ui-box-shadow: 1px 1px 5px 0 hsla(0, 0%, 0%, 0.20), 0 5px 16px 0 hsla(0, 0%, 0%, 0.05);
