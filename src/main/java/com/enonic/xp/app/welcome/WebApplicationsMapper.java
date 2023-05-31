@@ -21,8 +21,9 @@ public class WebApplicationsMapper
         gen.array( "applications" );
         applications.forEach( application -> {
             gen.map();
-            gen.value( "displayName", application.getDisplayName() );
             gen.value( "applicationKey", application.getKey() );
+            gen.value( "displayName", application.getDisplayName() );
+            gen.value( "description", application.getDescription() );
             gen.value( "version", application.getVersion() );
             gen.value( "url", application.getUrl() );
             gen.value( "deploymentUrl", application.getDeploymentUrl() );

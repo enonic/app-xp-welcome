@@ -1,11 +1,21 @@
 .Panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
     max-width: var(--size-ui-width);
     margin: 0 auto;
     font-size: 1rem;
 }
 
 .Panel-Description {
+    grid-column: 1 / -1;
     font-size: 1em;
     font-weight: 400;
-    margin: 0 0 24px;
+    margin: 0 0 8px;
+}
+
+@media screen and (max-width: 720px) {
+    .Panel {
+        grid-template-columns: 1fr;
+    }
 }

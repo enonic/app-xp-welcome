@@ -1,8 +1,15 @@
 .Navigator {
     display: flex;
+    width: fit-content;
 }
 
 .Navigator-Segment {
     font-size: 1em;
     color: var(--color-font-main);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.Navigator-Segment:not(:first-child) {
+    flex: 1 0;
 }

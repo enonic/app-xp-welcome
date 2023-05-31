@@ -89,6 +89,7 @@ public class WelcomePageScriptBean
                 applications.add( WebApplication.create().
                     application( application ).
                     deploymentUrl( deploymentUrl + "/" ).
+                    description( getApplicationDescription( applicationKey ) ).
                     iconAsBase64( getApplicationIconAsBase64( applicationKey ) ).
                     build() );
             }
@@ -163,6 +164,12 @@ public class WelcomePageScriptBean
             sorted( Comparator.comparing( RepositoryId::toString ) ).
             collect( Collectors.toList() ) );
         return repositoryIds;
+    }
+
+    private String getApplicationDescription( final ApplicationKey applicationKey )
+    {
+        ApplicationDescriptor applicationDescriptor = applicationDescriptorServiceSupplier.get().get( applicationKey );
+        return applicationDescriptor != null ? applicationDescriptor.getDescription() : null;
     }
 
     private String getApplicationIconAsBase64( final ApplicationKey applicationKey )

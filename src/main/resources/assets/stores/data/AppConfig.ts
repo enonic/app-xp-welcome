@@ -1,7 +1,7 @@
 export interface AppConfig {
     loggedIn: boolean;
     xpVersion: string;
-    application: WelcomeApplication[];
+    applications: WelcomeApplication[];
     sites: WelcomeSite[];
     urls: {
         xp: string;

@@ -18,4 +18,5 @@ generated-java
 classes/
 out/
 .xp/
+bin/
 .eslintcache

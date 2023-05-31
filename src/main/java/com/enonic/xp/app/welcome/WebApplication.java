@@ -10,6 +10,8 @@ public class WebApplication
 
     private final String displayName;
 
+    private final String description;
+
     private final String url;
 
     private final String deploymentUrl;
@@ -21,6 +23,7 @@ public class WebApplication
         this.key = builder.application.getKey().toString();
         this.version = builder.application.getVersion().toString();
         this.displayName = builder.application.getDisplayName();
+        this.description = builder.description;
         this.url = builder.application.getUrl();
         this.deploymentUrl = builder.developmentUrl;
         this.iconAsBase64 = builder.iconAsBase64;
@@ -39,6 +42,11 @@ public class WebApplication
     public String getDisplayName()
     {
         return displayName;
+    }
+
+    public String getDescription()
+    {
+        return description;
     }
 
     public String getUrl()
@@ -67,6 +75,8 @@ public class WebApplication
 
         String developmentUrl;
 
+        String description;
+
         String iconAsBase64;
 
         public Builder application( final Application application )
@@ -78,6 +88,12 @@ public class WebApplication
         public Builder deploymentUrl( final String developmentUrl )
         {
             this.developmentUrl = developmentUrl;
+            return this;
+        }
+
+        public Builder description( final String description )
+        {
+            this.description = description;
             return this;
         }
 
