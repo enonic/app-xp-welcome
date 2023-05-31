@@ -24,9 +24,3 @@
 .underline {
     text-decoration: underline;
 }
-
-.card {
-    border-radius: 2px;
-    background-color: var(--color-ui-fg);
-    box-shadow: 0 0 2px var(--color-ui-shadow);
-}

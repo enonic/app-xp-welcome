@@ -20,4 +20,7 @@
     --color-accent-lighter: hsl(215, 80%, 60%);
     /* XP logo, other corporate links */
     --color-xp: hsl(10, 85%, 55%);
+
+    /** COMPLEX STYLES */
+    --ui-box-shadow: 1px 1px 5px 0 hsla(0, 0%, 0%, 0.20), 0 5px 16px 0 hsla(0, 0%, 0%, 0.05);
 }

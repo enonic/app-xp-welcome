@@ -1,11 +1,11 @@
-declare type FnVoid = () => void;
-
 declare interface WelcomeApplication {
-    key: string;
-    version: string;
-    displayName: string;
+    applicationKey: string;
+    deploymentUrl: string;
     url: string;
-    iconAsBase64: string;
+    displayName: string;
+    description: string;
+    icon: string;
+    version: string;
 }
 
 declare interface WelcomeSite {

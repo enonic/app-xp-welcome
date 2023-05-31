@@ -8,7 +8,7 @@ export type ConfigStore = AppConfig & {loaded: boolean};
 const config = map<ConfigStore>({
     loggedIn: false,
     xpVersion: '0.0.0',
-    application: [],
+    applications: [],
     sites: [],
     urls: {
         xp: '0.0.0',
