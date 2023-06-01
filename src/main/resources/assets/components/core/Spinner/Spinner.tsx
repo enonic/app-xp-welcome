@@ -2,8 +2,6 @@ import React from 'react';
 
 import Icomoon from '../Icomoon/Icomoon';
 
-import './Spinner.css';
-
 export interface Props {
     className?: string;
 }

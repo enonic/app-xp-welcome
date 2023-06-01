@@ -17,11 +17,6 @@
     grid-column: 1 / -1;
 }
 
-.EndpointsArea-ExpandButton:hover,
-.EndpointsArea-ExpandButton:focus {
-
-}
-
 @media screen and (min-width: 560px) and (max-width: 800px) {
     .EndpointsArea {
         grid-template-columns: repeat(2, 1fr);
