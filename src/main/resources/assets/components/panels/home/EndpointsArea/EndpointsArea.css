@@ -1,0 +1,43 @@
+.EndpointsArea {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+}
+
+.EndpointsArea_collapsed .EndpointsArea-Card:nth-child(n+4) {
+    display: none;
+}
+
+.EndpointsArea_collapsed .EndpointsArea-ExpandButton {
+    grid-row: 2;
+}
+
+.EndpointsArea-ExpandButton {
+    --Button-size: 40px;
+    --Button-color-hover: var(--color-ui-bg-hover);
+    grid-column: 1 / -1;
+}
+
+.EndpointsArea-ExpandButton:hover,
+.EndpointsArea-ExpandButton:focus {
+
+}
+
+@media screen and (min-width: 560px) and (max-width: 800px) {
+    .EndpointsArea {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .EndpointsArea_collapsed .EndpointsArea-Card:nth-child(n+3) {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .EndpointsArea {
+        grid-template-columns: 1fr;
+    }
+
+    .EndpointsArea_collapsed .EndpointsArea-ExpandButton {
+        grid-row: 4;
+    }
+}

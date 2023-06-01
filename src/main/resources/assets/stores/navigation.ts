@@ -1,4 +1,4 @@
-import {computed,map} from 'nanostores';
+import {computed, map} from 'nanostores';
 
 import {NavigationSegment} from './data/NavigationSegment';
 import {ScreenType} from './data/ScreenType';
@@ -26,7 +26,11 @@ export const segments = computed(navigation, ({screen}) => {
     ];
 
     if (screen === ScreenType.WEBAPPS) {
-        navSegments.push({name: ScreenType.WEBAPPS});
+        navSegments.push({name: 'webapp'});
+    }
+
+    if (screen === ScreenType.CONTENTS) {
+        navSegments.push({name: 'site'});
     }
 
     return navSegments;

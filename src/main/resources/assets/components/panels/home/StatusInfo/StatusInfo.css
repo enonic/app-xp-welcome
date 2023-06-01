@@ -1,0 +1,11 @@
+.StatusInfo-Name {
+    color: var(--color-font-sub);
+}
+
+.StatusInfo-Name::after {
+    content: ':\00a0';
+}
+
+.StatusInfo-Value {
+    color: var(--color-font-main);
+}

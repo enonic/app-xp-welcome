@@ -1,0 +1,24 @@
+.AdminCard {
+    background: linear-gradient(250deg, hsl(220, 10%, 5%), hsl(0, 0%, 35%));
+    color: var(--color-font-alt);
+}
+
+.AdminCard .Card-Subtitle {
+    color: var(--color-font-disabled);
+}
+
+.AdminCard-ActionLogin {
+    margin: 24px 0 0;
+}
+
+.AdminCard-ActionCreate {
+    --Button-size: 40px;
+    --Button-color: var(--color-font-alt);
+    --Button-color-hover: var(--color-font-alt);
+
+    margin: 0 auto;
+}
+
+.AdminCard-ActionCreate::before {
+    content: '…';
+}

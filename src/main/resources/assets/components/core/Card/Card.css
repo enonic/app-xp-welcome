@@ -1,11 +1,13 @@
 .Card {
     display: grid;
+    grid-template-rows: auto 1fr;
     padding: 24px;
     font-size: 1rem;
     box-sizing: border-box;
     border-radius: 2px;
     background-color: var(--color-ui-fg);
     box-shadow: var(--ui-box-shadow);
+    overflow: hidden;
 }
 
 .Card-Header {
