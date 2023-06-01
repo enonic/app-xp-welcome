@@ -4,6 +4,9 @@
     --Button-color-hover: var(--color-accent-lighter);
 
     position: relative;
+    min-width: var(--Button-size);
+    height: var(--Button-size);
+    background-color: var(--Button-color);
     border: 0;
     border-radius: 2px;
     overflow: hidden;
@@ -11,10 +14,7 @@
 }
 
 .Button_default {
-    min-width: var(--Button-size);
-    height: var(--Button-size);
     padding: 0 16px;
-    background-color: var(--Button-color);
     font-size: 1.125rem;
     color: var(--color-font-alt);
 }
@@ -24,6 +24,9 @@
 }
 
 .Button_link {
+    --Button-size: initial;
+    --Button-color-hover: transparent;
+
     padding: 0;
     background-color: transparent;
     font-size: 1rem;
@@ -38,10 +41,6 @@
     cursor: pointer;
 }
 
-.Button_default:not(:disabled):not(:active):hover {
+.Button:not(:disabled):not(:active):hover {
     background-color: var(--Button-color-hover);
-}
-
-.Button_link:not(:disabled):not(:active):hover {
-    color: var(--Button-color-hover);
 }

@@ -20,3 +20,4 @@ out/
 .xp/
 bin/
 .eslintcache
+.vscode

@@ -1,15 +1,3 @@
 .HomePanel {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-@media screen and (min-width: 560px) and (max-width: 800px) {
-    .HomePanel {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media screen and (max-width: 560px) {
-    .HomePanel {
-        grid-template-columns: 1fr;
-    }
+    grid-template-columns: 1fr;
 }

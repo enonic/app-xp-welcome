@@ -1,6 +1,7 @@
 .theme-light {
     /** BACKGROUND */
     --color-ui-bg: hsl(0, 0%, 93%);
+    --color-ui-bg-hover: hsl(0, 0%, 90%);
 
     /* Cards and Widgets */
     --color-ui-fg: hsl(0, 0%, 100%);
@@ -18,11 +19,9 @@
     /* Main action button and links */
     --color-accent: hsl(215, 80%, 55%);
     --color-accent-lighter: hsl(215, 80%, 60%);
-    --color-accent-disabled: hsl(215, 80%, 70%);
     /* XP logo, other corporate links */
     --color-xp: hsl(10, 85%, 55%);
     --color-xp-lighter: hsl(10, 85%, 60%);
-    --color-xp-disabled: hsl(10, 85%, 70%);
 
     /** COMPLEX STYLES */
     --ui-box-shadow: 1px 1px 5px 0 hsla(0, 0%, 0%, 0.20), 0 5px 16px 0 hsla(0, 0%, 0%, 0.05);
