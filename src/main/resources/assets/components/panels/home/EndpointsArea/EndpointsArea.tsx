@@ -54,9 +54,9 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithLink
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.metrics.title')}
-                subtitle=':2606'
+                subtitle=':2609'
                 description={useI18n('home.card.metrics.description')}
-                link={{label: useI18n('home.card.metrics.action'), url: changeOriginPort(2606)}}
+                link={{label: useI18n('home.card.metrics.action'), url: changeOriginPort(2609)}}
             />
 
             <CardWithLink
