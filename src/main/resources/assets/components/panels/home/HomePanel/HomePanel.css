@@ -2,7 +2,7 @@
     grid-template-columns: repeat(3, 1fr);
 }
 
-@media screen and (min-width: 560px) and (max-width: 720px) {
+@media screen and (min-width: 560px) and (max-width: 800px) {
     .HomePanel {
         grid-template-columns: repeat(2, 1fr);
     }

@@ -1,0 +1,9 @@
+.effect-spin {
+    animation: effectSpinAnimation 0.5s linear infinite;
+}
+
+@keyframes effectSpinAnimation {
+    100% {
+        transform: rotate(360deg);
+    }
+}

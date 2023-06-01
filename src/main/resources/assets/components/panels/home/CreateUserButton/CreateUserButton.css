@@ -1,0 +1,11 @@
+.CreateUserButton {
+    --Button-color: var(--color-font-alt);
+    --Button-color-hover: var(--color-font-alt);
+
+    height: var(--Button-size);
+    margin: 0 auto;
+}
+
+.CreateUserButton::before {
+    content: '…';
+}

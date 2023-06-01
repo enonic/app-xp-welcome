@@ -40,3 +40,7 @@ export async function fetchAppConfig(): Promise<AppConfig | never> {
 
     return await get(configServiceUrl);
 }
+
+export async function loginAsSu(idProviderUrl: string): Promise<boolean | never> {
+    return await post<boolean>(idProviderUrl, {action: 'loginAsSu'});
+}

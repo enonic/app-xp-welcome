@@ -1,4 +1,5 @@
 export interface AppConfig {
+    hasAdmin: boolean;
     loggedIn: boolean;
     vhostEnabled: boolean;
     xpVersion: string;
@@ -8,6 +9,7 @@ export interface AppConfig {
         xp: string;
         managementApi: string;
         statisticsApi: string;
+        idProvider: string;
     };
-    phrases: Record<string, string>;
+    phrases: Record<string, string> | undefined;
 }

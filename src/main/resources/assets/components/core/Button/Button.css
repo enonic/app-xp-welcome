@@ -20,7 +20,7 @@
 }
 
 .Button_default:disabled {
-    filter: brightness(0.75);
+    filter: opacity(0.75) grayscale(0.25);
 }
 
 .Button_link {

@@ -1,0 +1,9 @@
+.LoginButton {
+    --Button-color: var(--color-xp);
+    --Button-color-hover: var(--color-xp-lighter);
+}
+
+.LoginButton-Spinner {
+    position: absolute;
+    margin: 0.1em 0 0 -1.25em;
+}

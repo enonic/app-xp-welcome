@@ -1,4 +1,4 @@
-import {computed,map} from 'nanostores';
+import {computed, map} from 'nanostores';
 
 import {NavigationSegment} from './data/NavigationSegment';
 import {ScreenType} from './data/ScreenType';
