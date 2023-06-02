@@ -43,7 +43,7 @@ public class WelcomeWebHandler
         portalRequest.setApplicationKey( applicationKey );
 
         ResourceKey scriptDir = ResourceKey.from( applicationKey, "welcome" );
-        ControllerScript controllerScript = controllerScriptFactory.fromDir( scriptDir );
+        ControllerScript controllerScript = controllerScriptFactory.fromScript( scriptDir.resolve( scriptDir.getName() + ".js" ) );
         return controllerScript.execute( portalRequest );
     }
 }

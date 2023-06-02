@@ -19,6 +19,11 @@ import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
+import com.enonic.xp.app.welcome.json.ProjectJson;
+import com.enonic.xp.app.welcome.json.SiteJson;
+import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
+import com.enonic.xp.app.welcome.mapper.SitesMapper;
+import com.enonic.xp.app.welcome.mapper.WebApplicationsMapper;
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentConstants;
@@ -133,7 +138,13 @@ public class WelcomePageScriptBean
             } );
         } );
 
-        return new SiteMapper( siteJsons );
+        return new SitesMapper( siteJsons );
+    }
+
+    public Object getProjects()
+    {
+        List<Project> projects = projectServiceSupplier.get().list().getList();
+        return new ProjectsMapper( projects );
     }
 
     public String getXpUrl()

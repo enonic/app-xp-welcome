@@ -9,3 +9,7 @@ export function createHref(url: string | URL, base: string | URL): string {
 export function changeOriginPort(port: number): string {
     return window.location.origin.replace(/:\d+/, `:${port}`);
 }
+
+export const URLS = {
+    projectIcon: '/admin/rest-v2/cs/project/icon',
+};

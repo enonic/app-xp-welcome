@@ -17,3 +17,10 @@ declare interface WelcomeSite {
     hasDraft: boolean;
     hasMaster: boolean;
 }
+
+declare interface Project {
+    name: string;
+    displayName?: string;
+    description?: string;
+    parent?: string;
+}

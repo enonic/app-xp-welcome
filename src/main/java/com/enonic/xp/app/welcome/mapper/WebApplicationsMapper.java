@@ -1,7 +1,8 @@
-package com.enonic.xp.app.welcome;
+package com.enonic.xp.app.welcome.mapper;
 
 import java.util.List;
 
+import com.enonic.xp.app.welcome.WebApplication;
 import com.enonic.xp.script.serializer.MapGenerator;
 import com.enonic.xp.script.serializer.MapSerializable;
 
@@ -10,7 +11,7 @@ public class WebApplicationsMapper
 {
     private final List<WebApplication> applications;
 
-    WebApplicationsMapper( final List<WebApplication> applications )
+    public WebApplicationsMapper( final List<WebApplication> applications )
     {
         this.applications = applications;
     }
