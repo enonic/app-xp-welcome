@@ -1,8 +1,8 @@
-package com.enonic.xp.app.welcome;
+package com.enonic.xp.app.welcome.json;
 
 import com.enonic.xp.app.Application;
 
-public class WebApplication
+public class ApplicationJson
 {
     private final String key;
 
@@ -18,7 +18,7 @@ public class WebApplication
 
     private final String iconAsBase64;
 
-    private WebApplication( final Builder builder )
+    private ApplicationJson( final Builder builder )
     {
         this.key = builder.application.getKey().toString();
         this.version = builder.application.getVersion().toString();
@@ -103,9 +103,9 @@ public class WebApplication
             return this;
         }
 
-        public WebApplication build()
+        public ApplicationJson build()
         {
-            return new WebApplication( this );
+            return new ApplicationJson( this );
         }
     }
 }

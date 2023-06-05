@@ -1,4 +1,4 @@
-declare interface WelcomeApplication {
+declare interface Application {
     applicationKey: string;
     deploymentUrl: string;
     url: string;
@@ -8,7 +8,7 @@ declare interface WelcomeApplication {
     version: string;
 }
 
-declare interface WelcomeSite {
+declare interface Site {
     displayName: string;
     projectName: string;
     repositoryName: string;
@@ -23,4 +23,5 @@ declare interface Project {
     displayName?: string;
     description?: string;
     parent?: string;
+    icon: string;
 }

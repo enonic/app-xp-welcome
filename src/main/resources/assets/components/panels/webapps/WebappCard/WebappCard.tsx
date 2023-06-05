@@ -9,7 +9,7 @@ import './WebappCard.css';
 
 export interface Props {
     className?: string;
-    application: WelcomeApplication;
+    application: Application;
     xpUrl: string;
 }
 
