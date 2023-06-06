@@ -1,4 +1,4 @@
-declare interface Application {
+declare interface WebApplication {
     applicationKey: string;
     deploymentUrl: string;
     url: string;

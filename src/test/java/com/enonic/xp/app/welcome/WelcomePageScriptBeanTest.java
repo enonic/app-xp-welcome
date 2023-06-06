@@ -2,6 +2,7 @@ package com.enonic.xp.app.welcome;
 
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.osgi.framework.Version;
 
+import com.google.common.io.ByteSource;
 import com.google.common.net.MediaType;
 
 import com.enonic.xp.app.Application;
@@ -17,6 +19,7 @@ import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.app.Applications;
+import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentId;
 import com.enonic.xp.content.ContentIds;
@@ -70,24 +73,24 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
-    public void testGetWebApps()
+    public void testgetWebApplications()
     {
-        ApplicationKey applicationKey = ApplicationKey.from( "webAppKey" );
-        Application webApplication = mockApplication( applicationKey, "webApp" );
+        ApplicationKey applicationKey = ApplicationKey.from( "applicationKey" );
+        Application application = mockApplication( applicationKey, "application" );
 
-        ApplicationKey applicationKey2 = ApplicationKey.from( "webAppKey2" );
-        Application webApplication2 = mockApplication( applicationKey2, "webApp2" );
+        ApplicationKey applicationKey2 = ApplicationKey.from( "applicationKey2" );
+        Application application2 = mockApplication( applicationKey2, "application2" );
 
-        ApplicationKey nonWebAppKey = ApplicationKey.from( "nonWebAppKey" );
-        Application nonWebApplication = mockApplication( nonWebAppKey, "nonWebApp" );
+        ApplicationKey nonApplicationKey = ApplicationKey.from( "nonApplicationKey" );
+        Application nonApplication = mockApplication( nonApplicationKey, "nonApplication" );
 
-        Applications applications = Applications.from( webApplication, webApplication2, nonWebApplication );
+        Applications applications = Applications.from( application, application2, nonApplication );
 
         Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
 
         mockResource( applicationKey, true );
         mockResource( applicationKey2, true );
-        mockResource( nonWebAppKey, false );
+        mockResource( nonApplicationKey, false );
 
         Mockito.when( applicationDescriptorService.get( applicationKey ) ).thenReturn( null );
 
@@ -95,7 +98,7 @@ public class WelcomePageScriptBeanTest
         ApplicationDescriptor applicationDescriptor2 = ApplicationDescriptor.create().key( applicationKey2 ).icon( icon ).build();
         Mockito.when( applicationDescriptorService.get( applicationKey2 ) ).thenReturn( applicationDescriptor2 );
 
-        runFunction( "/test/WelcomePageScriptBeanTest.js", "getWebApps" );
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getApplications" );
     }
 
     @Test
@@ -182,6 +185,27 @@ public class WelcomePageScriptBeanTest
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getSites" );
     }
 
+    @Test
+    public void testGetProjects()
+    {
+        ProjectName projectName1 = ProjectName.from( "project1" );
+        Project project1 = mockProject( projectName1 );
+
+        ProjectName projectName2 = ProjectName.from( "project2" );
+        Project project2 = mockProject( projectName2, projectName1 );
+
+        ArrayList<Project> projects = new ArrayList<>();
+        projects.add( project1 );
+        projects.add( project2 );
+
+        Mockito.when( projectService.list() ).thenReturn( Projects.from( projects ) );
+
+        ByteSource icon = ByteSource.wrap( new byte[]{123} );
+        Mockito.when( projectService.getIcon( Mockito.mock( ProjectName.class ) ) ).thenReturn( icon );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getProjects" );
+    }
+
     private Application mockApplication( ApplicationKey applicationKey, String displayName )
     {
         Application application = Mockito.mock( Application.class );
@@ -189,6 +213,25 @@ public class WelcomePageScriptBeanTest
         Mockito.when( application.getVersion() ).thenReturn( Version.valueOf( "1.0.0" ) );
         Mockito.when( application.getDisplayName() ).thenReturn( displayName );
         return application;
+    }
+
+    private Project mockProject( ProjectName name)
+    {
+        Project project = Mockito.mock( Project.class );
+        Mockito.when( project.getName() ).thenReturn( name );
+        Mockito.when( project.getDisplayName() ).thenReturn( "displayName" );
+        Mockito.when( project.getDescription() ).thenReturn( "description" );
+        Attachment attachment = Mockito.mock( Attachment.class );
+        Mockito.when( attachment.getMimeType() ).thenReturn( MediaType.SVG_UTF_8.toString() );
+        Mockito.when( project.getIcon() ).thenReturn( attachment );
+        return project;
+    }
+
+    private Project mockProject( ProjectName name, ProjectName parent )
+    {
+        Project project = this.mockProject( name );
+        Mockito.when( project.getParent() ).thenReturn( parent );
+        return project;
     }
 
     private void mockResource( ApplicationKey applicationKey, boolean exists )

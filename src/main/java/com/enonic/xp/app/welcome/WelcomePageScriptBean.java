@@ -12,23 +12,18 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.WebApplicationException;
-
-import com.google.common.io.ByteSource;
-import com.google.common.net.MediaType;
-
 import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
+import com.enonic.xp.app.welcome.json.WebApplicationJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
-import com.enonic.xp.app.welcome.json.ApplicationJson;
+import com.enonic.xp.app.welcome.mapper.WebApplicationsMapper;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
 import com.enonic.xp.attachment.Attachment;
-import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentConstants;
@@ -57,6 +52,8 @@ import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
 import com.enonic.xp.web.servlet.ServletRequestHolder;
 import com.enonic.xp.web.servlet.ServletRequestUrlHelper;
+import com.google.common.io.ByteSource;
+import com.google.common.net.MediaType;
 
 public class WelcomePageScriptBean
     implements ScriptBean
@@ -84,9 +81,9 @@ public class WelcomePageScriptBean
         this.applicationDescriptorServiceSupplier = beanContext.getService( ApplicationDescriptorService.class );
     }
 
-    public Object getWebApps()
+    public Object getWebApplications()
     {
-        List<ApplicationJson> applications = new ArrayList<>();
+        List<WebApplicationJson> applications = new ArrayList<>();
         for ( Application application : applicationServiceSupplier.get().getInstalledApplications() )
         {
             ApplicationKey applicationKey = application.getKey();
@@ -96,7 +93,7 @@ public class WelcomePageScriptBean
                 String deploymentUrl =
                     ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
 
-                applications.add( ApplicationJson.create().
+                applications.add( WebApplicationJson.create().
                     application( application ).
                     deploymentUrl( deploymentUrl + "/" ).
                     description( getApplicationDescription( applicationKey ) ).
@@ -104,7 +101,7 @@ public class WelcomePageScriptBean
                     build() );
             }
         }
-        return new ApplicationsMapper( applications );
+        return new WebApplicationsMapper( applications );
     }
 
     public Object getSites()
@@ -209,7 +206,8 @@ public class WelcomePageScriptBean
     {
         final Attachment iconAttachment = project.getIcon();
         final ByteSource icon = projectServiceSupplier.get().getIcon( project.getName() );
-        byte[] iconBytes = icon != null ? getIconFromByteSource( icon ) : getDefaultIcon( "project.svg" );
+        final String defaultIconName = project.getParent() == null ? "project.svg" : "layer.svg";
+        byte[] iconBytes = icon != null ? getIconFromByteSource( icon ) : getDefaultIcon( defaultIconName );
         String mimeType = icon != null ? iconAttachment.getMimeType() : MediaType.SVG_UTF_8.toString();
         return "data:" + mimeType + ";base64, " + Base64.getEncoder().encodeToString( iconBytes );
     }

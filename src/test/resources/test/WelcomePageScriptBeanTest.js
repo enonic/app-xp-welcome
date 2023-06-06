@@ -1,23 +1,23 @@
 const assert = require('/lib/xp/testing');
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 
-exports.getWebApps = function () {
-  const webApps = __.toNativeObject(bean.getWebApps());
+exports.getApplications = function () {
+  const applications = __.toNativeObject(bean.getWebApplications());
 
-  assert.assertEquals(2, webApps.applications.length);
+  assert.assertEquals(2, applications.applications.length);
 
-  const application1 = webApps.applications[0];
+  const application1 = applications.applications[0];
 
-  assert.assertEquals('/webapp/webAppKey/', application1.deploymentUrl);
+  assert.assertEquals('/webapp/applicationKey/', application1.deploymentUrl);
   assert.assertEquals('1.0.0', application1.version);
-  assert.assertEquals('webAppKey', application1.applicationKey);
+  assert.assertEquals('applicationKey', application1.applicationKey);
   assert.assertNotNull(application1.icon);
 
-  const application2 = webApps.applications[1];
+  const application2 = applications.applications[1];
 
-  assert.assertEquals('/webapp/webAppKey2/', application2.deploymentUrl);
+  assert.assertEquals('/webapp/applicationKey2/', application2.deploymentUrl);
   assert.assertEquals('1.0.0', application2.version);
-  assert.assertEquals('webAppKey2', application2.applicationKey);
+  assert.assertEquals('applicationKey2', application2.applicationKey);
   assert.assertNotNull(application2.icon);
 };
 
@@ -68,3 +68,25 @@ exports.getSites = function () {
   assert.assertTrue(site2.hasDraft);
   assert.assertTrue(site2.hasMaster);
 };
+
+exports.getProjects = function () {
+    const projects = __.toNativeObject(bean.getProjects()).projects;
+
+    assert.assertEquals(2, projects.length);
+
+    const project1 = projects[0];
+    assert.assertEquals('project1', project1.name);
+    assert.assertEquals('displayName', project1.displayName);
+    assert.assertEquals('description', project1.description);
+    assert.assertNull(project1.parent);
+    assert.assertNotNull(project1.icon);
+    assert.assertTrue(project1.icon.startsWith('data:image/svg+xml; charset=utf-8;base64,'));
+
+    const project2 = projects[1];
+    assert.assertEquals('project2', project2.name);
+    assert.assertEquals('displayName', project2.displayName);
+    assert.assertEquals('description', project2.description);
+    assert.assertEquals(project1.name, project2.parent);
+    assert.assertNotNull(project2.icon);
+    assert.assertTrue(project2.icon.startsWith('data:image/svg+xml; charset=utf-8;base64,'));
+  };

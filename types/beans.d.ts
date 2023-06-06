@@ -1,6 +1,6 @@
 declare interface XpBeans {
     'com.enonic.xp.app.welcome.WelcomePageScriptBean': {
-        getWebApps: () => ({applications: Application[]});
+        getWebApplications: () => ({applications: WebApplication[]});
         getSites: () => ({sites: Site[]});
         getProjects: () => ({projects: Project[]});
         getXpUrl: () => string;

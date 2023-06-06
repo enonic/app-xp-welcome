@@ -16,7 +16,7 @@ function isAdminCreationEnabled() {
 }
 
 exports.get = function () {
-    const applications = __.toNativeObject(bean.getWebApps());
+    const applications = __.toNativeObject(bean.getWebApplications());
     const sites = __.toNativeObject(bean.getSites());
     const projects = __.toNativeObject(bean.getProjects());
     const phrases = i18nLib.getPhrases(adminLib.getLocales(), ['i18n/phrases']);
