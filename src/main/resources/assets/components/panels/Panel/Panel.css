@@ -9,9 +9,18 @@
 
 .Panel-Description {
     grid-column: 1 / -1;
+    margin: 0 0 8px;
     font-size: 1em;
     font-weight: 400;
-    margin: 0 0 8px;
+}
+
+.Panel-EmptyHint {
+    position: absolute;
+    grid-column: 1 / -1;
+    width: 256px;
+    height: 120px;
+    top: calc(50vh - 60px);
+    left: calc(50vw - 128px);
 }
 
 @media screen and (max-width: 720px) {

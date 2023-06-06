@@ -1,0 +1,23 @@
+.EmptyHint {
+    text-align: center;
+}
+
+.EmptyHint-Icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    color: var(--color-ui-stamp);
+}
+
+.EmptyHint-Title {
+    margin: 4px 0;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--color-ui-border);
+}
+
+.EmptyHint-Description {
+    margin: 0;
+    font-weight: 400;
+    color: var(--color-ui-border);
+}

@@ -159,13 +159,16 @@ public class WelcomePageScriptBean
     public Object getProjects()
     {
         List<ProjectJson> projects = new ArrayList<>();
-        for ( Project project : projectServiceSupplier.get().list() )
-        {
-            projects.add( ProjectJson.create().
+        projects.addAll( createAdminContext( ContentConstants.CONTENT_REPO_ID ).
+            callWith( () -> projectServiceSupplier.get().list() ).
+            stream().
+            filter( project -> !project.getName().getRepoId().equals( ContentConstants.CONTENT_REPO_ID ) ).
+            sorted( Comparator.comparing( project -> project.getName().getRepoId().toString() ) ).
+            map( project -> ProjectJson.create().
                 project( project ).
                 iconAsBase64( getProjectIconAsBase64( project ) ).
-                build() );
-        }
+                build() ).
+            collect( Collectors.toList() ) );
 
         return new ProjectsMapper( projects );
     }
@@ -218,7 +221,7 @@ public class WelcomePageScriptBean
     private String getProjectIconAsBase64( final Project project )
     {
         final Attachment iconAttachment = project.getIcon();
-        final ByteSource icon = projectServiceSupplier.get().getIcon( project.getName() );
+        final ByteSource icon = createAdminContext().callWith( () -> projectServiceSupplier.get().getIcon( project.getName() ) );
         final String defaultIconName = project.getParent() == null ? "project.svg" : "layer.svg";
         byte[] iconBytes = icon != null ? getIconFromByteSource( icon ) : getDefaultIcon( defaultIconName );
         String mimeType = icon != null ? iconAttachment.getMimeType() : MediaType.SVG_UTF_8.toString();
@@ -249,19 +252,34 @@ public class WelcomePageScriptBean
         }
     }
 
+    private Context createAdminContext()
+    {
+        return ContextBuilder.create().authInfo( this.createAdminAuthInfo() ).build();
+    }
+
+    private Context createAdminContext( final RepositoryId repositoryId )
+    {
+        return ContextBuilder.create().repositoryId( repositoryId ).authInfo( this.createAdminAuthInfo() ).build();
+    }
+
     private Context createAdminContext( final RepositoryId repositoryId, final Branch branch )
     {
         return ContextBuilder.create().
             branch( branch ).
             repositoryId( repositoryId ).
-            authInfo( AuthenticationInfo.create().
-                principals( RoleKeys.ADMIN ).
-                user( User.create().
-                    key( PrincipalKey.ofSuperUser() ).
-                    login( PrincipalKey.ofSuperUser().getId() ).
-                    build() ).
-                build() ).
+            authInfo( this.createAdminAuthInfo() ).
             build();
+    }
+
+    private AuthenticationInfo createAdminAuthInfo()
+    {
+        return AuthenticationInfo.create().
+        principals( RoleKeys.ADMIN ).
+        user( User.create().
+            key( PrincipalKey.ofSuperUser() ).
+            login( PrincipalKey.ofSuperUser().getId() ).
+            build() ).
+        build();
     }
 
     private String createUrl( final int port )
