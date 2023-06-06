@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {createHref} from '../../../../common/utils/url';
+import {WebApplication} from '../../../../stores/data/WebApplication';
 import Card from '../../../core/Card/Card';
 import Icomoon from '../../../core/Icomoon/Icomoon';
 import Link from '../../../core/Link/Link';

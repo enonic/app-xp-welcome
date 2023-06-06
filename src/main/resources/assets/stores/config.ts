@@ -13,6 +13,7 @@ const config = map<ConfigStore>({
     xpVersion: '0.0.0',
     applications: [],
     sites: [],
+    projects: [],
     urls: {
         xp: '0.0.0',
         managementApi: '',

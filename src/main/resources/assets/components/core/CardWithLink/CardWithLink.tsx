@@ -8,7 +8,7 @@ import './CardWithLink.css';
 
 export interface CardLinkData {
     label: string;
-    url: string;
+    url: string | undefined;
 }
 
 export interface Props {
@@ -16,6 +16,7 @@ export interface Props {
     title: string;
     subtitle: string | ReactNode;
     description: string | ReactNode;
+    icon?: string;
     link: CardLinkData;
 }
 
@@ -24,6 +25,7 @@ export default function CardWithLink({
     title,
     subtitle,
     description,
+    icon,
     link,
 }: Props): JSX.Element {
     const classNames = `CardWithLink ${className ?? ''}`.trim();
@@ -34,11 +36,14 @@ export default function CardWithLink({
             title={title}
             subtitle={subtitle}
             description={description}
+            icon={icon}
         >
+            {link.url &&
             <Link className='CardWithLink-Link' url={link.url}>
                 <span className='CardWithLink-LinkLabel'>{link.label}</span>
                 <Icomoon className='CardWithLink-LinkIcon' icon='newtab' />
             </Link>
+            }
         </Card>
     );
 }

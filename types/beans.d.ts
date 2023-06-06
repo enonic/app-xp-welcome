@@ -6,5 +6,6 @@ declare interface XpBeans {
         getXpUrl: () => string;
         getManagementApiUrl: () => string;
         getStatisticsApiUrl: () => string;
+        getContentStudioUrl: () => string;
     };
 }

@@ -17,6 +17,7 @@ import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
+import com.enonic.xp.app.Applications;
 import com.enonic.xp.app.welcome.json.WebApplicationJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
@@ -79,6 +80,18 @@ public class WelcomePageScriptBean
         this.contentServiceSupplier = beanContext.getService( ContentService.class );
         this.projectServiceSupplier = beanContext.getService( ProjectService.class );
         this.applicationDescriptorServiceSupplier = beanContext.getService( ApplicationDescriptorService.class );
+    }
+
+    public String getContentStudioUrl()
+    {
+        for ( Application application : applicationServiceSupplier.get().getInstalledApplications() )
+        {
+            if ( application.getKey().equals( ApplicationKey.from( "com.enonic.app.contentstudio" ) ) )
+            {
+                return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/admin/tool/" + application.getKey() + "/main#/" );
+            }
+        }
+        return null;
     }
 
     public Object getWebApplications()

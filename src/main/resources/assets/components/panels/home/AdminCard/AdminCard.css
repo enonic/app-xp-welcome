@@ -7,10 +7,6 @@
     color: var(--color-font-disabled);
 }
 
-.AdminCard-ActionLogin {
-    margin: 24px 0 0;
-}
-
 .AdminCard-ActionCreate {
     --Button-size: 40px;
     --Button-color: var(--color-font-alt);

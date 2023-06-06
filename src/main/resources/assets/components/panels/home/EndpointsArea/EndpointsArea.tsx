@@ -40,7 +40,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 title={useI18n('home.card.content.title')}
                 subtitle=':8080/site'
                 description={useI18n('home.card.content.description')}
-                action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.CONTENTS)}}
+                action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.PROJECTS)}}
             />
 
             <CardWithButton
