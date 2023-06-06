@@ -1,5 +1,7 @@
 import React, {ReactNode} from 'react';
 
+import EmptyHint from '../../core/EmptyHint/EmptyHint';
+
 import './Panel.css';
 
 export interface Props {
@@ -14,7 +16,7 @@ export default function Panel({className, description, children}: Props): JSX.El
     return (
         <div className={classNames}>
             {description && <h4 className='Panel-Description'>{description}</h4>}
-            {children}
+            {children || <EmptyHint className='Panel-EmptyHint' />}
         </div>
     );
 }
