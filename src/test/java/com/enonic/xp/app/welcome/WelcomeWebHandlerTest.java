@@ -64,7 +64,7 @@ public class WelcomeWebHandlerTest
 
         ControllerScript controllerScript = mock( ControllerScript.class );
         when( controllerScript.execute( any( PortalRequest.class ) ) ).thenReturn( portalResponse );
-        when( controllerScriptFactory.fromDir( any( ResourceKey.class ) ) ).thenReturn( controllerScript );
+        when( controllerScriptFactory.fromScript( any( ResourceKey.class ) ) ).thenReturn( controllerScript );
 
         this.request.setRawPath( "/" );
         this.request.setMethod( HttpMethod.GET );

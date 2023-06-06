@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "checkJs": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "types": [
+      "@enonic-types/global",
+    ],
+    "lib": [
+      "es2015"
+    ],
+    "baseUrl": "../../../",
+    "paths": {
+      "/lib/xp/core": [
+        "node_modules/@enonic-types/core"
+      ],
+      "/lib/xp/testing": [
+        "types/testing.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "./test/",
+    "../../../types"
+  ],
+}

@@ -1,5 +1,8 @@
 node_modules/
 build/
+out/
+.xp/
+bin/
 .eslintrc.js
 **/*.d.ts
 src/main/resources/welcome

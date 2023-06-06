@@ -3,8 +3,8 @@ export interface AppConfig {
     loggedIn: boolean;
     vhostEnabled: boolean;
     xpVersion: string;
-    applications: WelcomeApplication[];
-    sites: WelcomeSite[];
+    applications: WebApplication[];
+    sites: Site[];
     urls: {
         xp: string;
         managementApi: string;

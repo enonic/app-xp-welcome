@@ -1,4 +1,4 @@
-package com.enonic.xp.app.welcome;
+package com.enonic.xp.app.welcome.json;
 
 public class SiteJson
 {

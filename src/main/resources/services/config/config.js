@@ -16,8 +16,9 @@ function isAdminCreationEnabled() {
 }
 
 exports.get = function () {
-    const webApplications = __.toNativeObject(bean.getWebApps());
-    const siteDetails = __.toNativeObject(bean.getSites());
+    const applications = __.toNativeObject(bean.getWebApplications());
+    const sites = __.toNativeObject(bean.getSites());
+    const projects = __.toNativeObject(bean.getProjects());
     const phrases = i18nLib.getPhrases(adminLib.getLocales(), ['i18n/phrases']);
     const hasAdmin = !(isSystemIdProvider() && isAdminCreationEnabled());
 
@@ -29,8 +30,9 @@ exports.get = function () {
             loggedIn: !!authLib.getUser(),
             vhostEnabled: vhostLib.isEnabled(),
             xpVersion: adminLib.getVersion(),
-            applications: webApplications.applications,
-            sites: siteDetails.sites,
+            applications: applications.applications,
+            sites: sites.sites,
+            projects: projects.projects,
             urls: {
                 xp: bean.getXpUrl(),
                 managementApi: bean.getManagementApiUrl(),
