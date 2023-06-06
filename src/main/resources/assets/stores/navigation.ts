@@ -29,7 +29,7 @@ export const segments = computed(navigation, ({screen}) => {
         navSegments.push({name: 'webapp'});
     }
 
-    if (screen === ScreenType.CONTENTS) {
+    if (screen === ScreenType.PROJECTS) {
         navSegments.push({name: 'site'});
     }
 

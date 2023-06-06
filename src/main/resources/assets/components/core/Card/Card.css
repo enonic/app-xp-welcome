@@ -1,6 +1,7 @@
 .Card {
     display: grid;
     grid-template-rows: auto 1fr;
+    row-gap: 16px;
     padding: 24px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -14,7 +15,6 @@
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
-    margin: 0 0 16px;
 }
 
 .Card-Icon {

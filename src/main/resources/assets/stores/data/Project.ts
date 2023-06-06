@@ -3,4 +3,5 @@ export interface Project {
     displayName?: string;
     description?: string;
     parent?: string;
+    icon: string;
 }

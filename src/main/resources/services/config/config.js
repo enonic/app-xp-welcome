@@ -38,6 +38,7 @@ exports.get = function () {
                 managementApi: bean.getManagementApiUrl(),
                 statisticsApi: bean.getStatisticsApiUrl(),
                 idProvider: portalLib.idProviderUrl({}),
+                contentStudio: bean.getContentStudioUrl(),
             },
             phrases,
         },

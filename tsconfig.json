@@ -24,8 +24,7 @@
   ],
   "include": [
     "src",
-    "config",
-    "types"
+    "config"
   ],
   "exclude": [
     "build/**/*"

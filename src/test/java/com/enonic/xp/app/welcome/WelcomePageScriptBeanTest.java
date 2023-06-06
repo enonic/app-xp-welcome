@@ -120,6 +120,19 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
+    public void testGetContentStudioUrl()
+    {
+        ApplicationKey csKey = ApplicationKey.from( "com.enonic.app.contentstudio" );
+        Application cs = mockApplication( csKey, "Content Studio" );
+
+        Applications applications = Applications.from( cs );
+
+        Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getContentStudioUrl" );
+    }
+
+    @Test
     public void testHost()
     {
         JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );

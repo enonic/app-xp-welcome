@@ -14,13 +14,13 @@ export default function WebappsPanel({className}: Props): JSX.Element {
     const description = useI18n('webapps.description');
 
     const {applications, urls} = useStore(config, {keys: ['applications', 'urls']});
-    const webapps = applications.map((app, index) => <WebappCard key={index} application={app} xpUrl={urls.xp} />);
+    const cards = applications.map((app, index) => <WebappCard key={index} application={app} xpUrl={urls.xp} />);
 
     const classNames = `WebappsPanel ${className ?? ''}`.trim();
 
     return (
         <Panel className={classNames} description={description}>
-            {webapps}
+            {cards}
         </Panel>
     );
 }
