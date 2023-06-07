@@ -11,6 +11,8 @@ exports.getApplications = function () {
     assert.assertNull(application1.deploymentUrl);
     assert.assertEquals('1.0.0', application1.version);
     assert.assertEquals('applicationKey', application1.applicationKey);
+    assert.assertEquals(1, application1.adminToolsUrls.length);
+    assert.assertEquals('admin/tool/applicationKey/main', application1.adminToolsUrls[0]);
     assert.assertNotNull(application1.icon);
 
     const application2 = applications.applications[1];
@@ -18,6 +20,7 @@ exports.getApplications = function () {
     assert.assertEquals('/webapp/webApplicationKey', application2.deploymentUrl);
     assert.assertEquals('1.0.0', application2.version);
     assert.assertEquals('webApplicationKey', application2.applicationKey);
+    assert.assertEquals(0, application2.adminToolsUrls.length);
     assert.assertNotNull(application2.icon);
 
     const application3 = applications.applications[2];
@@ -25,6 +28,7 @@ exports.getApplications = function () {
     assert.assertNull(application3.deploymentUrl);
     assert.assertEquals('1.0.0', application3.version);
     assert.assertEquals('regularApplicationKey', application3.applicationKey);
+    assert.assertEquals(0, application3.adminToolsUrls.length);
     assert.assertNotNull(application3.icon);
 };
 

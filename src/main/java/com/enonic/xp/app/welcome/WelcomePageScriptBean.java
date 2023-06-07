@@ -12,6 +12,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.enonic.xp.admin.tool.AdminToolDescriptor;
+import com.enonic.xp.admin.tool.AdminToolDescriptorService;
+import com.enonic.xp.admin.tool.AdminToolDescriptors;
 import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
@@ -70,6 +73,8 @@ public class WelcomePageScriptBean
 
     private Supplier<ApplicationDescriptorService> applicationDescriptorServiceSupplier;
 
+    private Supplier<AdminToolDescriptorService> adminToolDescriptorServiceSupplier;
+
     @Override
     public void initialize( final BeanContext beanContext )
     {
@@ -79,6 +84,7 @@ public class WelcomePageScriptBean
         this.contentServiceSupplier = beanContext.getService( ContentService.class );
         this.projectServiceSupplier = beanContext.getService( ProjectService.class );
         this.applicationDescriptorServiceSupplier = beanContext.getService( ApplicationDescriptorService.class );
+        this.adminToolDescriptorServiceSupplier = beanContext.getService( AdminToolDescriptorService.class );
     }
 
     public String getContentStudioUrl()
@@ -111,6 +117,9 @@ public class WelcomePageScriptBean
                     ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
                 builder.webappUrl( webappUrl );
             }
+
+            List<String> adminToolsUris = getApplicationAdminToolsUris( applicationKey );
+            adminToolsUris.forEach( uri -> builder.addAdminToolsUrl( uri ) );
 
             applications.add( builder.build() );
         }
@@ -203,6 +212,17 @@ public class WelcomePageScriptBean
             sorted( Comparator.comparing( RepositoryId::toString ) ).
             collect( Collectors.toList() ) );
         return repositoryIds;
+    }
+
+    private List<String> getApplicationAdminToolsUris( final ApplicationKey applicationKey )
+    {
+        AdminToolDescriptorService service = this.adminToolDescriptorServiceSupplier.get();
+        AdminToolDescriptors descriptors = service.getByApplication( applicationKey );
+
+        return descriptors.getList().
+            stream().
+            map( descriptor -> service.generateAdminToolUri( applicationKey.toString(), descriptor.getName() ) ).
+            collect( Collectors.toList() );
     }
 
     private String getApplicationDescription( final ApplicationKey applicationKey )

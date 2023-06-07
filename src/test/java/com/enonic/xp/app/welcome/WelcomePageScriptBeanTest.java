@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.osgi.framework.Version;
 
-import com.google.common.io.ByteSource;
-import com.google.common.net.MediaType;
-
+import com.enonic.xp.admin.tool.AdminToolDescriptor;
+import com.enonic.xp.admin.tool.AdminToolDescriptorService;
+import com.enonic.xp.admin.tool.AdminToolDescriptors;
 import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
@@ -28,6 +28,7 @@ import com.enonic.xp.content.Contents;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.content.GetContentByIdsParams;
 import com.enonic.xp.icon.Icon;
+import com.enonic.xp.page.DescriptorKey;
 import com.enonic.xp.project.Project;
 import com.enonic.xp.project.ProjectName;
 import com.enonic.xp.project.ProjectService;
@@ -37,6 +38,8 @@ import com.enonic.xp.resource.Resource;
 import com.enonic.xp.resource.ResourceKey;
 import com.enonic.xp.resource.ResourceService;
 import com.enonic.xp.testing.ScriptTestSupport;
+import com.google.common.io.ByteSource;
+import com.google.common.net.MediaType;
 
 public class WelcomePageScriptBeanTest
     extends ScriptTestSupport
@@ -49,6 +52,8 @@ public class WelcomePageScriptBeanTest
 
     private ApplicationDescriptorService applicationDescriptorService;
 
+    private AdminToolDescriptorService adminToolDescriptorService;
+
     private ResourceService resourceService;
 
     @Override
@@ -60,6 +65,7 @@ public class WelcomePageScriptBeanTest
         this.applicationService = Mockito.mock( ApplicationService.class );
         this.projectService = Mockito.mock( ProjectService.class );
         this.applicationDescriptorService = Mockito.mock( ApplicationDescriptorService.class );
+        this.adminToolDescriptorService = Mockito.mock( AdminToolDescriptorService.class );
         this.resourceService = Mockito.mock( ResourceService.class );
 
         JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
@@ -69,6 +75,7 @@ public class WelcomePageScriptBeanTest
         addService( JettyConfigService.class, this.jettyConfigService );
         addService( ProjectService.class, this.projectService );
         addService( ApplicationDescriptorService.class, this.applicationDescriptorService );
+        addService( AdminToolDescriptorService.class, this.adminToolDescriptorService );
         addService( ResourceService.class, this.resourceService );
     }
 
@@ -88,7 +95,7 @@ public class WelcomePageScriptBeanTest
 
         Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
 
-        mockApplication( applicationKey, false );
+        mockApplication( applicationKey, false, "main" );
         mockApplication( webApplicationKey, true );
         mockApplication( regularApplicationKey, false );
 
@@ -260,5 +267,19 @@ public class WelcomePageScriptBeanTest
         Icon icon = Icon.from( new byte[]{123}, MediaType.JPEG.toString(), Instant.now() );
         ApplicationDescriptor applicationDescriptor = ApplicationDescriptor.create().key( applicationKey ).icon( icon ).build();
         Mockito.when( applicationDescriptorService.get( applicationKey ) ).thenReturn( applicationDescriptor );
+
+        Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn( AdminToolDescriptors.empty() );
+    }
+
+    private void mockApplication( ApplicationKey applicationKey, boolean isWebapp, String descriptorName )
+    {
+        mockApplication( applicationKey, isWebapp );
+
+        DescriptorKey descriptorKey = DescriptorKey.from( applicationKey, descriptorName );
+        AdminToolDescriptor adminToolDescriptor = AdminToolDescriptor.create().key( descriptorKey ).build();
+        Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn( AdminToolDescriptors.from( adminToolDescriptor ) );
+
+        String adminToolUri = "admin/tool/" + applicationKey.toString() + "/" + descriptorName;
+        Mockito.when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn( adminToolUri );
     }
 }
