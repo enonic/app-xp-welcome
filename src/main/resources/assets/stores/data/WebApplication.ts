@@ -1,9 +1,5 @@
-export interface WebApplication {
-    applicationKey: string;
+import {Application} from './Application';
+
+export interface WebApplication extends Application {
     deploymentUrl: string;
-    url: string;
-    displayName: string;
-    description: string;
-    icon: string;
-    version: string;
 }

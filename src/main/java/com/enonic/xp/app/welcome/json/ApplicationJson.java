@@ -1,8 +1,11 @@
 package com.enonic.xp.app.welcome.json;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.enonic.xp.app.Application;
 
-public class WebApplicationJson
+public class ApplicationJson
 {
     private final String key;
 
@@ -14,18 +17,21 @@ public class WebApplicationJson
 
     private final String url;
 
-    private final String deploymentUrl;
+    private final String webappUrl;
+
+    private final List<String> adminToolsUrls;
 
     private final String iconAsBase64;
 
-    private WebApplicationJson( final Builder builder )
+    private ApplicationJson( final Builder builder )
     {
         this.key = builder.application.getKey().toString();
         this.version = builder.application.getVersion().toString();
         this.displayName = builder.application.getDisplayName();
         this.description = builder.description;
         this.url = builder.application.getUrl();
-        this.deploymentUrl = builder.developmentUrl;
+        this.webappUrl = builder.webappUrl;
+        this.adminToolsUrls = builder.adminToolsUrls;
         this.iconAsBase64 = builder.iconAsBase64;
     }
 
@@ -59,9 +65,14 @@ public class WebApplicationJson
         return iconAsBase64;
     }
 
-    public String getDeploymentUrl()
+    public String getWebappUrl()
     {
-        return deploymentUrl;
+        return webappUrl;
+    }
+
+    public List<String> getAdminToolsUrls()
+    {
+        return adminToolsUrls;
     }
 
     public static Builder create()
@@ -73,11 +84,18 @@ public class WebApplicationJson
     {
         Application application;
 
-        String developmentUrl;
+        String webappUrl;
+
+        List<String> adminToolsUrls;
 
         String description;
 
         String iconAsBase64;
+
+        private Builder()
+        {
+            this.adminToolsUrls = new ArrayList<String>();
+        }
 
         public Builder application( final Application application )
         {
@@ -85,9 +103,15 @@ public class WebApplicationJson
             return this;
         }
 
-        public Builder deploymentUrl( final String developmentUrl )
+        public Builder webappUrl( final String webappUrl )
         {
-            this.developmentUrl = developmentUrl;
+            this.webappUrl = webappUrl;
+            return this;
+        }
+
+        public Builder addAdminToolsUrl( final String adminToolsUrl )
+        {
+            this.adminToolsUrls.add( adminToolsUrl );
             return this;
         }
 
@@ -103,9 +127,9 @@ public class WebApplicationJson
             return this;
         }
 
-        public WebApplicationJson build()
+        public ApplicationJson build()
         {
-            return new WebApplicationJson( this );
+            return new ApplicationJson( this );
         }
     }
 }

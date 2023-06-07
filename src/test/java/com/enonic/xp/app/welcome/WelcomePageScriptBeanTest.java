@@ -73,30 +73,24 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
-    public void testgetWebApplications()
+    public void testgetApplications()
     {
         ApplicationKey applicationKey = ApplicationKey.from( "applicationKey" );
         Application application = mockApplication( applicationKey, "application" );
 
-        ApplicationKey applicationKey2 = ApplicationKey.from( "applicationKey2" );
-        Application application2 = mockApplication( applicationKey2, "application2" );
+        ApplicationKey webApplicationKey = ApplicationKey.from( "webApplicationKey" );
+        Application webApplication = mockApplication( webApplicationKey, "webApplication" );
 
-        ApplicationKey nonApplicationKey = ApplicationKey.from( "nonApplicationKey" );
-        Application nonApplication = mockApplication( nonApplicationKey, "nonApplication" );
+        ApplicationKey regularApplicationKey = ApplicationKey.from( "regularApplicationKey" );
+        Application regularApplication = mockApplication( regularApplicationKey, "regularApplication" );
 
-        Applications applications = Applications.from( application, application2, nonApplication );
+        Applications applications = Applications.from( application, webApplication, regularApplication );
 
         Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
 
-        mockResource( applicationKey, true );
-        mockResource( applicationKey2, true );
-        mockResource( nonApplicationKey, false );
-
-        Mockito.when( applicationDescriptorService.get( applicationKey ) ).thenReturn( null );
-
-        Icon icon = Icon.from( new byte[]{123}, MediaType.JPEG.toString(), Instant.now() );
-        ApplicationDescriptor applicationDescriptor2 = ApplicationDescriptor.create().key( applicationKey2 ).icon( icon ).build();
-        Mockito.when( applicationDescriptorService.get( applicationKey2 ) ).thenReturn( applicationDescriptor2 );
+        mockApplication( applicationKey, false );
+        mockApplication( webApplicationKey, true );
+        mockApplication( regularApplicationKey, false );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getApplications" );
     }
@@ -257,10 +251,14 @@ public class WelcomePageScriptBeanTest
         return project;
     }
 
-    private void mockResource( ApplicationKey applicationKey, boolean exists )
+    private void mockApplication( ApplicationKey applicationKey, boolean isWebapp )
     {
         Resource resource = Mockito.mock( Resource.class );
-        Mockito.when( resource.exists() ).thenReturn( exists );
+        Mockito.when( resource.exists() ).thenReturn( isWebapp );
         Mockito.when( resourceService.getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) ) ).thenReturn( resource );
+
+        Icon icon = Icon.from( new byte[]{123}, MediaType.JPEG.toString(), Instant.now() );
+        ApplicationDescriptor applicationDescriptor = ApplicationDescriptor.create().key( applicationKey ).icon( icon ).build();
+        Mockito.when( applicationDescriptorService.get( applicationKey ) ).thenReturn( applicationDescriptor );
     }
 }

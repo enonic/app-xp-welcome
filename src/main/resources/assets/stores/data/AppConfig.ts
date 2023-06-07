@@ -1,13 +1,13 @@
+import {Application} from './Application';
 import {Project} from './Project';
 import {Site} from './Site';
-import {WebApplication} from './WebApplication';
 
 export interface AppConfig {
     hasAdmin: boolean;
     loggedIn: boolean;
     vhostEnabled: boolean;
     xpVersion: string;
-    applications: WebApplication[];
+    applications: Application[];
     sites: Site[];
     projects: Project[];
     urls: {

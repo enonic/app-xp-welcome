@@ -2,16 +2,16 @@ package com.enonic.xp.app.welcome.mapper;
 
 import java.util.List;
 
-import com.enonic.xp.app.welcome.json.WebApplicationJson;
+import com.enonic.xp.app.welcome.json.ApplicationJson;
 import com.enonic.xp.script.serializer.MapGenerator;
 import com.enonic.xp.script.serializer.MapSerializable;
 
-public class WebApplicationsMapper
+public class ApplicationsMapper
     implements MapSerializable
 {
-    private final List<WebApplicationJson> applications;
+    private final List<ApplicationJson> applications;
 
-    public WebApplicationsMapper( final List<WebApplicationJson> applications )
+    public ApplicationsMapper( final List<ApplicationJson> applications )
     {
         this.applications = applications;
     }
@@ -27,7 +27,8 @@ public class WebApplicationsMapper
             gen.value( "description", application.getDescription() );
             gen.value( "version", application.getVersion() );
             gen.value( "url", application.getUrl() );
-            gen.value( "deploymentUrl", application.getDeploymentUrl() );
+            gen.value( "deploymentUrl", application.getWebappUrl() );
+            gen.value( "adminToolsUrls", application.getAdminToolsUrls() );
             gen.value( "icon", application.getIconAsBase64() );
             gen.end();
         } );
