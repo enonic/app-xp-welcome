@@ -19,10 +19,10 @@ import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
-import com.enonic.xp.app.welcome.json.WebApplicationJson;
+import com.enonic.xp.app.welcome.json.ApplicationJson;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
-import com.enonic.xp.app.welcome.mapper.WebApplicationsMapper;
+import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
 import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.content.Content;
@@ -93,27 +93,28 @@ public class WelcomePageScriptBean
         return null;
     }
 
-    public Object getWebApplications()
+    public Object getApplications()
     {
-        List<WebApplicationJson> applications = new ArrayList<>();
+        List<ApplicationJson> applications = new ArrayList<>();
         for ( Application application : applicationServiceSupplier.get().getInstalledApplications() )
         {
             ApplicationKey applicationKey = application.getKey();
+            ApplicationJson.Builder builder = ApplicationJson.create().
+                application( application ).
+                description( getApplicationDescription( applicationKey ) ).
+                iconAsBase64( getApplicationIconAsBase64( applicationKey ) );
+
             Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
             if ( resource.exists() )
             {
-                String deploymentUrl =
+                String webappUrl =
                     ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
-
-                applications.add( WebApplicationJson.create().
-                    application( application ).
-                    deploymentUrl( deploymentUrl + "/" ).
-                    description( getApplicationDescription( applicationKey ) ).
-                    iconAsBase64( getApplicationIconAsBase64( applicationKey ) ).
-                    build() );
+                builder.webappUrl( webappUrl );
             }
+
+            applications.add( builder.build() );
         }
-        return new WebApplicationsMapper( applications );
+        return new ApplicationsMapper( applications );
     }
 
     public Object getSites()

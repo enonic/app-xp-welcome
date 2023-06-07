@@ -2,23 +2,30 @@ const assert = require('/lib/xp/testing');
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 
 exports.getApplications = function () {
-    const applications = __.toNativeObject(bean.getWebApplications());
+    const applications = __.toNativeObject(bean.getApplications());
 
-    assert.assertEquals(2, applications.applications.length);
+    assert.assertEquals(3, applications.applications.length);
 
     const application1 = applications.applications[0];
 
-    assert.assertEquals('/webapp/applicationKey/', application1.deploymentUrl);
+    assert.assertNull(application1.deploymentUrl);
     assert.assertEquals('1.0.0', application1.version);
     assert.assertEquals('applicationKey', application1.applicationKey);
     assert.assertNotNull(application1.icon);
 
     const application2 = applications.applications[1];
 
-    assert.assertEquals('/webapp/applicationKey2/', application2.deploymentUrl);
+    assert.assertEquals('/webapp/webApplicationKey', application2.deploymentUrl);
     assert.assertEquals('1.0.0', application2.version);
-    assert.assertEquals('applicationKey2', application2.applicationKey);
+    assert.assertEquals('webApplicationKey', application2.applicationKey);
     assert.assertNotNull(application2.icon);
+
+    const application3 = applications.applications[2];
+
+    assert.assertNull(application3.deploymentUrl);
+    assert.assertEquals('1.0.0', application3.version);
+    assert.assertEquals('regularApplicationKey', application3.applicationKey);
+    assert.assertNotNull(application3.icon);
 };
 
 exports.getXpUrl = function () {

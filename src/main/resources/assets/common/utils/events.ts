@@ -1,3 +1,6 @@
+type CustomMouseKeyboardEvent<T extends HTMLElement = HTMLElement> = React.MouseEvent<T> | React.KeyboardEvent<T>;
+export type MouseKeyboardEvent = CustomMouseKeyboardEvent<HTMLElement>;
+
 export type ReactKeyboardHandler<T> = (event: React.KeyboardEvent<T>) => void;
 export type ReactMouseHandler<T> = (event: React.MouseEvent<T>) => void;
 

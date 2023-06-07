@@ -1,11 +1,12 @@
-declare interface WebApplication {
+declare interface Application {
     applicationKey: string;
-    deploymentUrl: string;
-    url: string;
+    version: string;
     displayName: string;
     description: string;
+    url: string;
+    deploymentUrl?: string;
+    adminToolsUrls: string[];
     icon: string;
-    version: string;
 }
 
 declare interface Site {
