@@ -22,6 +22,8 @@ public class SitesMapper
         gen.array( "sites" );
         sites.forEach( site -> {
             gen.map();
+            gen.value( "id", site.getId() );
+            gen.value( "name", site.getName() );
             gen.value( "displayName", site.getDisplayName() );
             gen.value( "projectName", site.getProjectName() );
             gen.value( "repositoryName", site.getRepositoryName() );

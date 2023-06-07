@@ -33,5 +33,9 @@ export const segments = computed(navigation, ({screen}) => {
         navSegments.push({name: 'site'});
     }
 
+    if (screen === ScreenType.SITES) {
+        navSegments.push({name: 'sites'});
+    }
+
     return navSegments;
 });

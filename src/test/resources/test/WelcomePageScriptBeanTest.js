@@ -46,7 +46,7 @@ exports.getStatisticsApiUrlWithZeroHost = function () {
 };
 
 exports.getContentStudioUrl = function () {
-    assert.assertEquals('/admin/tool/com.enonic.app.contentstudio/main#/', bean.getContentStudioUrl());
+    assert.assertEquals('/admin/tool/com.enonic.app.contentstudio/main', bean.getContentStudioUrl());
 };
 
 exports.getSites = function () {
@@ -55,20 +55,24 @@ exports.getSites = function () {
     assert.assertEquals(2, sites.length);
 
     const site1 = sites[0];
+    assert.assertEquals('siteId1', site1.id);
+    assert.assertEquals('test-site1', site1.name);
     assert.assertEquals('displayName1', site1.displayName);
-    assert.assertEquals('com.enonic.cms.default', site1.projectName);
-    assert.assertEquals('default', site1.repositoryName);
+    assert.assertEquals('default', site1.projectName);
+    assert.assertEquals('com.enonic.cms.default', site1.repositoryName);
     assert.assertEquals('en', site1.language);
-    assert.assertEquals('test-site1', site1.path);
+    assert.assertEquals('/parent/test-site1', site1.path);
     assert.assertTrue(site1.hasDraft);
     assert.assertFalse(site1.hasMaster);
 
     const site2 = sites[1];
+    assert.assertEquals('siteId2', site2.id);
+    assert.assertEquals('test-site2', site2.name);
     assert.assertEquals('displayName2', site2.displayName);
-    assert.assertEquals('com.enonic.cms.custom', site2.projectName);
-    assert.assertEquals('custom', site2.repositoryName);
+    assert.assertEquals('custom', site2.projectName);
+    assert.assertEquals('com.enonic.cms.custom', site2.repositoryName);
     assert.assertNull(site2.language);
-    assert.assertEquals('test-site2', site2.path);
+    assert.assertEquals('/parent/test-site2', site2.path);
     assert.assertTrue(site2.hasDraft);
     assert.assertTrue(site2.hasMaster);
 };

@@ -17,13 +17,12 @@ import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
-import com.enonic.xp.app.Applications;
-import com.enonic.xp.app.welcome.json.WebApplicationJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
-import com.enonic.xp.app.welcome.mapper.WebApplicationsMapper;
+import com.enonic.xp.app.welcome.json.WebApplicationJson;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
+import com.enonic.xp.app.welcome.mapper.WebApplicationsMapper;
 import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.content.Content;
@@ -88,7 +87,7 @@ public class WelcomePageScriptBean
         {
             if ( application.getKey().equals( ApplicationKey.from( "com.enonic.app.contentstudio" ) ) )
             {
-                return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/admin/tool/" + application.getKey() + "/main#/" );
+                return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/admin/tool/" + application.getKey() + "/main" );
             }
         }
         return null;
@@ -139,10 +138,12 @@ public class WelcomePageScriptBean
             draftSitesAsMap.keySet().forEach( siteId -> {
                 Content site = draftSitesAsMap.get( siteId );
                 final SiteJson.Builder builder = SiteJson.create().
+                    id( siteId.toString() ).
+                    name( site.getName().toString() ).
                     displayName( site.getDisplayName() ).
-                    projectName( repositoryId.toString() ).
-                    repositoryName( repositoryId.toString().replaceFirst( ProjectConstants.PROJECT_REPO_ID_PREFIX, "" ) ).
-                    path( site.getPath().getName() ).
+                    projectName( repositoryId.toString().replaceFirst( ProjectConstants.PROJECT_REPO_ID_PREFIX, "" ) ).
+                    repositoryName( repositoryId.toString() ).
+                    path( site.getPath().toString() ).
                     hasDraft( draftSitesAsMap.containsKey( siteId ) ).
                     hasMaster( masterSitesAsMap.containsKey( siteId ) );
                 if ( site.getLanguage() != null )

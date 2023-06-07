@@ -2,6 +2,10 @@ package com.enonic.xp.app.welcome.json;
 
 public class SiteJson
 {
+    private final String id;
+
+    private final String name;
+
     private final String displayName;
 
     private final String projectName;
@@ -18,6 +22,8 @@ public class SiteJson
 
     private SiteJson( Builder builder )
     {
+        this.id = builder.id;
+        this.name = builder.name;
         this.displayName = builder.displayName;
         this.projectName = builder.projectName;
         this.repositoryName = builder.repositoryName;
@@ -25,6 +31,16 @@ public class SiteJson
         this.language = builder.language;
         this.hasDraft = builder.hasDraft;
         this.hasMaster = builder.hasMaster;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 
     public String getDisplayName()
@@ -69,6 +85,10 @@ public class SiteJson
 
     public static class Builder
     {
+        String id;
+
+        String name;
+
         String displayName;
 
         String projectName;
@@ -82,6 +102,18 @@ public class SiteJson
         Boolean hasDraft;
 
         Boolean hasMaster;
+
+        public Builder id( final String id )
+        {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name( final String name )
+        {
+            this.name = name;
+            return this;
+        }
 
         public Builder displayName( final String displayName )
         {

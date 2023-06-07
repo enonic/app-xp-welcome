@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 
 import Icomoon from '../Icomoon/Icomoon';
 import Img from '../Img/Img';
@@ -8,7 +8,7 @@ import './Card.css';
 export interface Props {
     className?: string;
     children?: ReactNode;
-    title: string;
+    title: string | ReactNode;
     subtitle?: string | ReactNode;
     icon?: string;
     description?: string | ReactNode;
@@ -23,8 +23,6 @@ function createIcon(icon: string | undefined): JSX.Element | undefined {
         <Icomoon className='Card-Icon' icon={icon} /> :
         <Img className='Card-Icon' src={icon} alt='icon' />;
 }
-
-const mod = (modifier: string): string => `Card_${modifier}`;
 
 export default function Card({
     className,

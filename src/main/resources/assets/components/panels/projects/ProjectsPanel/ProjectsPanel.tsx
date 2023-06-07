@@ -15,7 +15,7 @@ export default function ProjectsPanel({className}: Props): JSX.Element {
 
     const {projects, urls} = useStore(config, {keys: ['projects', 'urls']});
     const cards = projects.map((project, index) => {
-        return <ProjectCard key={index} project={project} xpUrl={urls.xp} csUrl={urls.contentStudio} />;
+        return <ProjectCard key={index} project={project} csUrl={urls.contentStudio} />;
     });
 
     const classNames = `ProjectsPanel ${className ?? ''}`.trim();
