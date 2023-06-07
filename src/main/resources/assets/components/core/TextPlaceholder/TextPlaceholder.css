@@ -1,0 +1,12 @@
+.TextPlaceholder {
+    color: var(--color-font-disabled);
+    user-select: none;
+}
+
+.TextPlaceholder::before {
+    content: '<';
+}
+
+.TextPlaceholder::after {
+    content: '>';
+}

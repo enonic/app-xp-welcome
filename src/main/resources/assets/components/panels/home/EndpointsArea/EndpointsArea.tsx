@@ -1,5 +1,5 @@
 import {useStore} from '@nanostores/react';
-import React, {ReactNode} from 'react';
+import React from 'react';
 
 import {changeOriginPort} from '../../../../common/utils/url';
 import {useI18n} from '../../../../hooks/useI18n';
@@ -65,6 +65,14 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 subtitle=':4848'
                 description={useI18n('home.card.management.description')}
                 link={{label: useI18n('field.docs'), url: 'https://developer.enonic.com/docs/xp/stable/runtime/management'}}
+            />
+
+            <CardWithButton
+                className='EndpointsArea-Card'
+                title={useI18n('home.card.site.title')}
+                subtitle={useI18n('home.card.site.subtitle')}
+                description={useI18n('home.card.site.description')}
+                action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
             />
 
             <CardWithLink

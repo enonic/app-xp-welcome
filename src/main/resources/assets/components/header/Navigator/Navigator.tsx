@@ -1,11 +1,9 @@
-import React from 'react';
 
 import {kebab} from '../../../common/utils/array';
 import {NavigationSegment} from '../../../stores/data/NavigationSegment';
-import {ScreenType} from '../../../stores/data/ScreenType';
-import {goToScreen, segments, setNavigationState} from '../../../stores/navigation';
+import {segments, setNavigationState} from '../../../stores/navigation';
 import Button, {ButtonType} from '../../core/Button/Button';
-import Slash from '../../core/Slash/Slash';
+import Separator from '../../core/Separator/Separator';
 
 import './Navigator.css';
 
@@ -13,9 +11,10 @@ export interface Props {
     className?: string;
 }
 
-function createSegment({name, state}: NavigationSegment): JSX.Element {
+function createSegment({name, state}: NavigationSegment, key: number): JSX.Element {
     return <Button
         className='Navigator-Segment'
+        key={key}
         type={ButtonType.LINK}
         label={name}
         action={{handler: () => state && setNavigationState(state)}}
@@ -24,7 +23,7 @@ function createSegment({name, state}: NavigationSegment): JSX.Element {
 }
 
 function createSegments(segments: NavigationSegment[]): JSX.Element[] {
-    return kebab(segments.map(segment => createSegment(segment)), <Slash />);
+    return kebab(segments.map((segment, index) => createSegment(segment, index)), <Separator />);
 }
 
 export default function Navigator({className}: Props): JSX.Element {

@@ -171,18 +171,28 @@ public class WelcomePageScriptBeanTest
     @Test
     public void testGetSites()
     {
-        Content content1 =
-            Content.create().id( ContentId.from( "siteId1" ) ).displayName( "displayName1" ).name( "name1" ).path( "/test-site1" ).language(
-                Locale.ENGLISH ).build();
+        Content content1 = Content.create().
+                id( ContentId.from( "siteId1" ) ).
+                displayName( "displayName1" ).
+                path( "/parent/test-site1" ).
+                language( Locale.ENGLISH ).
+                build();
 
-        Content content2 =
-            Content.create().id( ContentId.from( "siteId2" ) ).displayName( "displayName2" ).name( "name2" ).path( "/test-site2" ).build();
+        Content content2 = Content.create().
+            id( ContentId.from( "siteId2" ) ).
+            displayName( "displayName2" ).
+            path( "/parent/test-site2" ).
+            build();
 
-        Project defaultProject =
-            Project.create().name( ProjectName.from( RepositoryId.from( "com.enonic.cms.default" ) ) ).displayName( "default" ).build();
+        Project defaultProject = Project.create().
+            name( ProjectName.from( RepositoryId.from( "com.enonic.cms.default" ) ) ).
+            displayName( "default" ).
+            build();
 
-        Project customProject =
-            Project.create().name( ProjectName.from( RepositoryId.from( "com.enonic.cms.custom" ) ) ).displayName( "custom" ).build();
+        Project customProject = Project.create().
+            name( ProjectName.from( RepositoryId.from( "com.enonic.cms.custom" ) ) ).
+            displayName( "custom" ).
+            build();
 
         Projects projects = Projects.create().addAll( List.of( defaultProject, customProject ) ).build();
 

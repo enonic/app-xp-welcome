@@ -1,0 +1,9 @@
+.Separator {
+    display: inline;
+    user-select: none;
+}
+
+.Separator::before,
+.Separator::after {
+    content: '\00a0';
+}

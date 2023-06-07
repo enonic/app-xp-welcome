@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 
 import Card from '../Card/Card';
 import Icomoon from '../Icomoon/Icomoon';
@@ -13,9 +13,9 @@ export interface CardLinkData {
 
 export interface Props {
     className?: string;
-    title: string;
+    title: string | ReactNode;
     subtitle: string | ReactNode;
-    description: string | ReactNode;
+    description?: string | ReactNode;
     icon?: string;
     link: CardLinkData;
 }
