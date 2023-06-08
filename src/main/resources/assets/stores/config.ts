@@ -1,5 +1,5 @@
 import merge from 'lodash.merge';
-import {computed,map} from 'nanostores';
+import {computed, map} from 'nanostores';
 
 import {fetchAppConfig} from '../common/utils/requests';
 import {AppConfig} from './data/AppConfig';
@@ -25,14 +25,18 @@ const config = map<ConfigStore>({
     phrases: undefined,
 });
 
-fetchAppConfig().then(data => {
-    config.set(merge({}, config.get(), data));
-}).catch(console.error);
+(function init(): void {
+    fetchAppConfig().then(data => {
+        config.set(merge({}, config.get(), data));
+    }).catch(console.error);
+})();
 
 export default config;
 
 const isWebApplication = (app: Application): app is WebApplication => app.deploymentUrl != null;
 
 export const webapps = computed(config, ({applications}) => applications.filter(isWebApplication));
+
+export const initialized = computed(config, ({phrases, xpVersion}) => phrases != null && xpVersion !== '0.0.0');
 
 export const setLoggedIn = (loggedIn: boolean): void => config.setKey('loggedIn', loggedIn);

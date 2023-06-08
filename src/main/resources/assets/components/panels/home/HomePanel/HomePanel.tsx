@@ -1,6 +1,7 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 
 import Panel from '../../Panel/Panel';
+import ApplicationsArea from '../ApplicationsArea/ApplicationsArea';
 import EndpointsArea from '../EndpointsArea/EndpointsArea';
 
 import './HomePanel.css';
@@ -15,6 +16,7 @@ export default function HomePanel({className}: Props): JSX.Element {
     return (
         <Panel className={classNames}>
             <EndpointsArea />
+            <ApplicationsArea />
         </Panel>
     );
 }

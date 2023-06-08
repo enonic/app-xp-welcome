@@ -1,0 +1,54 @@
+.ApplicationsArea {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    width: 100%;
+    padding: 24px;
+    border-radius: 2px;
+    background-color: var(--color-ui-fg);
+    box-shadow: var(--ui-box-shadow);
+    overflow: hidden;
+}
+
+.ApplicationsArea_hidden {
+    display: none;
+}
+
+.ApplicationsArea-Title {
+    grid-column: 1 / -1;
+    margin: 0 0 8px 0;
+    font-size: 1.5em;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media screen and (min-width: 840px) and (max-width: 960px) {
+    .ApplicationsArea {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media screen and (min-width: 720px) and (max-width: 840px) {
+    .ApplicationsArea {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (min-width: 560px) and (max-width: 720px) {
+    .ApplicationsArea {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (min-width: 400px) and (max-width: 560px) {
+    .ApplicationsArea {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .ApplicationsArea {
+        grid-template-columns: 1fr;
+    }
+}

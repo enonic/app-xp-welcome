@@ -10,6 +10,12 @@
     cursor: default;
 }
 
+.App_loading a,
+.App_loading button {
+    pointer-events: none;
+    user-select: none;
+}
+
 @media screen and (max-width: 560px) {
     .App {
         padding: 16px;

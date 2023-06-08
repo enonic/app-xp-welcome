@@ -9,7 +9,7 @@ export interface RequestStore {
 }
 
 const request = map<RequestStore>({
-  loginState: RequestState.DONE,
+    loginState: RequestState.DONE,
 });
 
 export default request;
