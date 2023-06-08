@@ -14,7 +14,7 @@ export default function WebappsPanel({className}: Props): JSX.Element {
     const description = useI18n('webapps.description');
 
     const {urls} = useStore(config, {keys: ['urls']});
-    const cards = webapps.get().map((app, index) => <WebappCard key={index} application={app} xpUrl={urls.xp} />);
+    const cards = useStore(webapps).map((app, index) => <WebappCard key={index} application={app} xpUrl={urls.xp} />);
 
     const classNames = `WebappsPanel ${className ?? ''}`.trim();
 

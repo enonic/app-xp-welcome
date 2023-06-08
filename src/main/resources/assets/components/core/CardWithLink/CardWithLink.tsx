@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 
 import Card from '../Card/Card';
 import Icomoon from '../Icomoon/Icomoon';

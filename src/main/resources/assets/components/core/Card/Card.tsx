@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 
 import Icomoon from '../Icomoon/Icomoon';
 import Img from '../Img/Img';

@@ -5,6 +5,7 @@
 
     /* Cards and Widgets */
     --color-ui-fg: hsl(0, 0%, 100%);
+    --color-ui-fg-hover: hsl(0, 0%, 97%);
 
     --color-ui-icon: hsl(0, 0%, 20%);
     --color-ui-border: hsl(0, 10%, 80%);
