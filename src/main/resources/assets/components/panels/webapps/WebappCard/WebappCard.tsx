@@ -15,7 +15,7 @@ export interface Props {
 }
 
 export default function WebappCard({className, application, xpUrl}: Props): JSX.Element {
-    const url = createHref(xpUrl, application.deploymentUrl);
+    const url = createHref(application.deploymentUrl, xpUrl);
 
     const classNames = `WebappCard ${className ?? ''}`.trim();
 
