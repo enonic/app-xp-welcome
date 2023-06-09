@@ -9,10 +9,12 @@ export interface Props {
     className?: string;
 }
 
+function openCreateAdmin(): void {
+    window.open('/admin#createAdmin', '_blank');
+}
+
 export default function CreateUserButton({className}: Props): JSX.Element {
     const label = useI18n('home.card.admin.action.create');
-
-    const handler = () => void 0;
 
     const classNames = `CreateUserButton ${className ?? ''}`.trim();
 
@@ -21,7 +23,7 @@ export default function CreateUserButton({className}: Props): JSX.Element {
             className={classNames}
             type={ButtonType.LINK}
             label={label}
-            action={{handler}}
+            action={{handler: openCreateAdmin}}
         />
     );
 }

@@ -17,17 +17,17 @@ exports.getApplications = function () {
 
     const application2 = applications.applications[1];
 
-    assert.assertEquals('/webapp/webApplicationKey', application2.deploymentUrl);
+    assert.assertNull(application2.deploymentUrl);
     assert.assertEquals('1.0.0', application2.version);
-    assert.assertEquals('webApplicationKey', application2.applicationKey);
+    assert.assertEquals('regularApplicationKey', application2.applicationKey);
     assert.assertEquals(0, application2.adminToolsUrls.length);
     assert.assertNotNull(application2.icon);
 
     const application3 = applications.applications[2];
 
-    assert.assertNull(application3.deploymentUrl);
+    assert.assertEquals('/webapp/webApplicationKey', application3.deploymentUrl);
     assert.assertEquals('1.0.0', application3.version);
-    assert.assertEquals('regularApplicationKey', application3.applicationKey);
+    assert.assertEquals('webApplicationKey', application3.applicationKey);
     assert.assertEquals(0, application3.adminToolsUrls.length);
     assert.assertNotNull(application3.icon);
 };
@@ -58,6 +58,10 @@ exports.getStatisticsApiUrlWithZeroHost = function () {
 
 exports.getContentStudioUrl = function () {
     assert.assertEquals('/admin/tool/com.enonic.app.contentstudio/main', bean.getContentStudioUrl());
+};
+
+exports.canLoginAsSu = function () {
+    assert.assertTrue(bean.canLoginAsSu());
 };
 
 exports.getSites = function () {
