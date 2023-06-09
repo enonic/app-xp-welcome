@@ -3,6 +3,7 @@
     --Button-color: var(--color-font-alt);
 
     margin: 0 auto;
+    display: none;
 }
 
 .CreateUserButton::before {
