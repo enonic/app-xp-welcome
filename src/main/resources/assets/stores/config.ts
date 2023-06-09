@@ -9,7 +9,7 @@ import {WebApplication} from './data/WebApplication';
 export type ConfigStore = AppConfig;
 
 const config = map<ConfigStore>({
-    hasAdmin: false,
+    canLoginAsSu: false,
     loggedIn: false,
     vhostEnabled: false,
     xpVersion: '0.0.0',

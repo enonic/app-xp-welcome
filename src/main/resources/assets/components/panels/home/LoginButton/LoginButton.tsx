@@ -22,15 +22,15 @@ export default function LoginButton({className}: Props): JSX.Element {
     const {loginState} = useStore(request, {keys: ['loginState']});
     const isInProgress = loginState === RequestState.IN_PROGRESS;
 
-    const {hasAdmin, loggedIn, urls} = useStore(config, {keys: ['hasAdmin', 'loggedIn', 'urls']});
+    const {canLoginAsSu, loggedIn, urls} = useStore(config, {keys: ['canLoginAsSu', 'loggedIn', 'urls']});
     const idProviderUrl = urls.idProvider;
 
-    const label = useI18n(loggedIn ? 'home.card.admin.action.open' :
-                          hasAdmin ? 'home.card.admin.action.login' :
-                                     'home.card.admin.action.guest');
+    const label = useI18n(loggedIn ?     'home.card.admin.action.open' :
+                          canLoginAsSu ? 'home.card.admin.action.guest' :
+                                         'home.card.admin.action.login');
 
     function handler(): void {
-        if (!loggedIn && !hasAdmin) {
+        if (!loggedIn && canLoginAsSu) {
             login(idProviderUrl, openAdmin);
         } else {
             openAdmin();

@@ -6,27 +6,17 @@ const vhostLib = require('/lib/xp/vhost');
 
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 
-function isSystemIdProvider() {
-    return portalLib.getIdProviderKey() === 'system';
-}
-
-function isAdminCreationEnabled() {
-    var idProviderConfig = authLib.getIdProviderConfig();
-    return !!idProviderConfig && idProviderConfig.adminUserCreationEnabled === true;
-}
-
 exports.get = function () {
     const applications = __.toNativeObject(bean.getApplications());
     const sites = __.toNativeObject(bean.getSites());
     const projects = __.toNativeObject(bean.getProjects());
     const phrases = i18nLib.getPhrases(adminLib.getLocales(), ['i18n/phrases']);
-    const hasAdmin = !(isSystemIdProvider() && isAdminCreationEnabled());
 
     return {
         status: 200,
         contentType: 'application/json',
         body: {
-            hasAdmin,
+            canLoginAsSu: bean.canLoginAsSu(),
             loggedIn: !!authLib.getUser(),
             vhostEnabled: vhostLib.isEnabled(),
             xpVersion: adminLib.getVersion(),

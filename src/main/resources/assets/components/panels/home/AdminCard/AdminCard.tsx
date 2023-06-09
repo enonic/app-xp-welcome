@@ -14,7 +14,8 @@ export interface Props {
 }
 
 export default function AdminCard({className}: Props): JSX.Element {
-    const {hasAdmin} = useStore(config, {keys: ['hasAdmin']});
+    const {canLoginAsSu, loggedIn} = useStore(config, {keys: ['canLoginAsSu', 'loggedIn']});
+    const canCreateAdmin = canLoginAsSu && !loggedIn;
 
     const classNames = `AdminCard ${className ?? ''}`.trim();
 
@@ -26,7 +27,7 @@ export default function AdminCard({className}: Props): JSX.Element {
             description={useI18n('home.card.admin.description')}
         >
             <LoginButton className='AdminCard-ActionLogin' />
-            {!hasAdmin && <CreateUserButton />}
+            {canCreateAdmin && <CreateUserButton />}
         </Card>
     );
 }

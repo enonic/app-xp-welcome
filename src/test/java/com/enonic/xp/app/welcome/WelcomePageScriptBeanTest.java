@@ -27,6 +27,7 @@ import com.enonic.xp.content.ContentQuery;
 import com.enonic.xp.content.Contents;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.content.GetContentByIdsParams;
+import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.icon.Icon;
 import com.enonic.xp.page.DescriptorKey;
 import com.enonic.xp.project.Project;
@@ -37,6 +38,10 @@ import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.resource.Resource;
 import com.enonic.xp.resource.ResourceKey;
 import com.enonic.xp.resource.ResourceService;
+import com.enonic.xp.security.IdProvider;
+import com.enonic.xp.security.IdProviderConfig;
+import com.enonic.xp.security.IdProviderKey;
+import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.testing.ScriptTestSupport;
 import com.google.common.io.ByteSource;
 import com.google.common.net.MediaType;
@@ -50,11 +55,13 @@ public class WelcomePageScriptBeanTest
 
     private ProjectService projectService;
 
+    private ResourceService resourceService;
+
+    private SecurityService securityService;
+
     private ApplicationDescriptorService applicationDescriptorService;
 
     private AdminToolDescriptorService adminToolDescriptorService;
-
-    private ResourceService resourceService;
 
     @Override
     protected void initialize()
@@ -64,9 +71,10 @@ public class WelcomePageScriptBeanTest
 
         this.applicationService = Mockito.mock( ApplicationService.class );
         this.projectService = Mockito.mock( ProjectService.class );
+        this.resourceService = Mockito.mock( ResourceService.class );
+        this.securityService = Mockito.mock( SecurityService.class );
         this.applicationDescriptorService = Mockito.mock( ApplicationDescriptorService.class );
         this.adminToolDescriptorService = Mockito.mock( AdminToolDescriptorService.class );
-        this.resourceService = Mockito.mock( ResourceService.class );
 
         JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
         this.jettyConfigService = new JettyConfigService( jettyConfig );
@@ -74,9 +82,10 @@ public class WelcomePageScriptBeanTest
         addService( ApplicationService.class, this.applicationService );
         addService( JettyConfigService.class, this.jettyConfigService );
         addService( ProjectService.class, this.projectService );
+        addService( ResourceService.class, this.resourceService );
+        addService( SecurityService.class, this.securityService );
         addService( ApplicationDescriptorService.class, this.applicationDescriptorService );
         addService( AdminToolDescriptorService.class, this.adminToolDescriptorService );
-        addService( ResourceService.class, this.resourceService );
     }
 
     @Test
@@ -85,19 +94,19 @@ public class WelcomePageScriptBeanTest
         ApplicationKey applicationKey = ApplicationKey.from( "applicationKey" );
         Application application = mockApplication( applicationKey, "application" );
 
-        ApplicationKey webApplicationKey = ApplicationKey.from( "webApplicationKey" );
-        Application webApplication = mockApplication( webApplicationKey, "webApplication" );
-
         ApplicationKey regularApplicationKey = ApplicationKey.from( "regularApplicationKey" );
         Application regularApplication = mockApplication( regularApplicationKey, "regularApplication" );
 
-        Applications applications = Applications.from( application, webApplication, regularApplication );
+        ApplicationKey webApplicationKey = ApplicationKey.from( "webApplicationKey" );
+        Application webApplication = mockApplication( webApplicationKey, "webApplication" );
+
+        Applications applications = Applications.from( application, regularApplication, webApplication );
 
         Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
 
         mockApplication( applicationKey, false, "main" );
-        mockApplication( webApplicationKey, true );
         mockApplication( regularApplicationKey, false );
+        mockApplication( webApplicationKey, true );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getApplications" );
     }
@@ -167,6 +176,24 @@ public class WelcomePageScriptBeanTest
         addService( JettyConfigService.class, this.jettyConfigService );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getStatisticsApiUrlWithZeroHost" );
+    }
+
+    @Test
+    public void testcanLoginAsSu()
+    {
+        PropertyTree config = new PropertyTree();
+        config.setBoolean( "adminUserCreationEnabled", true );
+        IdProviderConfig idProviderConfig = IdProviderConfig.create().
+            applicationKey( ApplicationKey.from( "com.enonic.xp.app.standardidprovider" ) ).
+            config( config ).
+            build();
+
+        IdProvider idProvider = Mockito.mock( IdProvider.class );
+
+        Mockito.when( idProvider.getIdProviderConfig() ).thenReturn( idProviderConfig );
+        Mockito.when( securityService.getIdProvider( Mockito.any( IdProviderKey.class ) ) ).thenReturn( idProvider );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "canLoginAsSu" );
     }
 
     @Test

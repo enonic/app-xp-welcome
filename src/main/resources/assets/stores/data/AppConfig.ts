@@ -3,7 +3,7 @@ import {Project} from './Project';
 import {Site} from './Site';
 
 export interface AppConfig {
-    hasAdmin: boolean;
+    canLoginAsSu: boolean;
     loggedIn: boolean;
     vhostEnabled: boolean;
     xpVersion: string;

@@ -36,7 +36,9 @@ import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.content.GetContentByIdsParams;
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextBuilder;
+import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.icon.Icon;
+import com.enonic.xp.portal.PortalRequest;
 import com.enonic.xp.project.Project;
 import com.enonic.xp.project.ProjectConstants;
 import com.enonic.xp.project.ProjectName;
@@ -48,8 +50,12 @@ import com.enonic.xp.resource.ResourceService;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
+import com.enonic.xp.security.IdProvider;
+import com.enonic.xp.security.IdProviderConfig;
+import com.enonic.xp.security.IdProviderKey;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.RoleKeys;
+import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
 import com.enonic.xp.web.servlet.ServletRequestHolder;
@@ -70,6 +76,8 @@ public class WelcomePageScriptBean
 
     private Supplier<ProjectService> projectServiceSupplier;
 
+    private Supplier<SecurityService> securityServiceSupplier;
+
     private Supplier<ApplicationDescriptorService> applicationDescriptorServiceSupplier;
 
     private Supplier<AdminToolDescriptorService> adminToolDescriptorServiceSupplier;
@@ -82,6 +90,7 @@ public class WelcomePageScriptBean
         this.jettyConfigServiceSupplier = beanContext.getService( JettyConfigService.class );
         this.contentServiceSupplier = beanContext.getService( ContentService.class );
         this.projectServiceSupplier = beanContext.getService( ProjectService.class );
+        this.securityServiceSupplier = beanContext.getService( SecurityService.class );
         this.applicationDescriptorServiceSupplier = beanContext.getService( ApplicationDescriptorService.class );
         this.adminToolDescriptorServiceSupplier = beanContext.getService( AdminToolDescriptorService.class );
     }
@@ -96,6 +105,23 @@ public class WelcomePageScriptBean
             }
         }
         return null;
+    }
+
+    public Boolean canLoginAsSu()
+    {
+        final IdProvider idProvider = createAdminContext().callWith( () -> {
+            return securityServiceSupplier.get().getIdProvider( IdProviderKey.from( "system" ) );
+        } );
+
+        if ( idProvider == null )
+        {
+            return false;
+        }
+
+        final PropertyTree config = idProvider.getIdProviderConfig().getConfig();
+        final Boolean adminUserCreationEnabled = config.getBoolean( "adminUserCreationEnabled" );
+
+        return adminUserCreationEnabled != null && adminUserCreationEnabled == true;
     }
 
     public Object getApplications()

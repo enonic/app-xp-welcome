@@ -1,3 +1,4 @@
+import React from 'react';
 
 import {kebab} from '../../../common/utils/array';
 import {NavigationSegment} from '../../../stores/data/NavigationSegment';
@@ -23,7 +24,7 @@ function createSegment({name, state}: NavigationSegment, key: number): JSX.Eleme
 }
 
 function createSegments(segments: NavigationSegment[]): JSX.Element[] {
-    return kebab(segments.map((segment, index) => createSegment(segment, index)), <Separator />);
+    return kebab(segments.map((segment, index) => createSegment(segment, index)), (index: number) => <Separator key={`s${index}`} />);
 }
 
 export default function Navigator({className}: Props): JSX.Element {
