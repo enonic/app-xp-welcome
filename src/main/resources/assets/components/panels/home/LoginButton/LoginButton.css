@@ -1,4 +1,4 @@
-.LoginButton {
+.LoginButton_login {
     --Button-color: var(--color-xp);
     --Button-color-hover: var(--color-xp-lighter);
 }

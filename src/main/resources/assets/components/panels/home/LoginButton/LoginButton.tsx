@@ -18,6 +18,8 @@ function openAdmin(): void {
     window.open('/admin', '_blank');
 }
 
+const mod = (modifier: string, on = true): string => on ? `LoginButton_${modifier}` : '';
+
 export default function LoginButton({className}: Props): JSX.Element {
     const {loginState} = useStore(request, {keys: ['loginState']});
     const isInProgress = loginState === RequestState.IN_PROGRESS;
@@ -37,7 +39,7 @@ export default function LoginButton({className}: Props): JSX.Element {
         }
     }
 
-    const classNames = `LoginButton ${className ?? ''}`.trim();
+    const classNames = `LoginButton ${mod('login', !loggedIn)} ${className ?? ''}`.trim();
 
     return (
         <Button

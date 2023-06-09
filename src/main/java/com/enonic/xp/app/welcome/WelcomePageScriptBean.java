@@ -205,7 +205,6 @@ public class WelcomePageScriptBean
         projects.addAll( createAdminContext( ContentConstants.CONTENT_REPO_ID ).
             callWith( () -> projectServiceSupplier.get().list() ).
             stream().
-            filter( project -> !project.getName().getRepoId().equals( ContentConstants.CONTENT_REPO_ID ) ).
             sorted( Comparator.comparing( project -> project.getName().getRepoId().toString() ) ).
             map( project -> ProjectJson.create().
                 project( project ).
