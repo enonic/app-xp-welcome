@@ -7,12 +7,12 @@
   border-radius: 4px;
 }
 
-.ApplicationView:hover {
-    background-color: var(--color-ui-fg-hover);
-}
-
 .ApplicationView_clickable {
     text-decoration: none;
+}
+
+.ApplicationView_clickable:hover {
+    background-color: var(--color-ui-fg-hover);
 }
 
 .ApplicationView_clickable .ApplicationView-Title {
@@ -44,8 +44,4 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.ApplicationView-Subtitle::before {
-    content: 'v';
 }

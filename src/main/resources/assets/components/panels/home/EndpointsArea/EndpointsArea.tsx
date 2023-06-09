@@ -43,12 +43,31 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.PROJECTS)}}
             />
 
+            <CardWithLink
+                className='EndpointsArea-Card'
+                title={useI18n('home.card.vhosts.title')}
+                subtitle={<StatusInfo
+                    name={useI18n('field.status')}
+                    value={useI18n(vhostEnabled ? 'field.enabled' : 'field.disabled')}
+                />}
+                description={useI18n('home.card.vhosts.description')}
+                link={{label: useI18n('field.docs'), url: 'https://developer.enonic.com/docs/xp/stable/deployment/vhosts'}}
+            />
+
             <CardWithButton
                 className='EndpointsArea-Card'
-                title={useI18n('home.card.webapp.title')}
+                title={useI18n('home.card.webapps.title')}
                 subtitle=':8080/webapp'
-                description={useI18n('home.card.webapp.description')}
-                action={{label: useI18n('home.card.webapp.action'), handler: () => goToScreen(ScreenType.WEBAPPS)}}
+                description={useI18n('home.card.webapps.description')}
+                action={{label: useI18n('home.card.webapps.action'), handler: () => goToScreen(ScreenType.WEBAPPS)}}
+            />
+
+            <CardWithButton
+                className='EndpointsArea-Card'
+                title={useI18n('home.card.site.title')}
+                subtitle={useI18n('home.card.site.subtitle')}
+                description={useI18n('home.card.site.description')}
+                action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
             />
 
             <CardWithLink
@@ -65,25 +84,6 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 subtitle=':4848'
                 description={useI18n('home.card.management.description')}
                 link={{label: useI18n('field.docs'), url: 'https://developer.enonic.com/docs/xp/stable/runtime/management'}}
-            />
-
-            <CardWithButton
-                className='EndpointsArea-Card'
-                title={useI18n('home.card.site.title')}
-                subtitle={useI18n('home.card.site.subtitle')}
-                description={useI18n('home.card.site.description')}
-                action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
-            />
-
-            <CardWithLink
-                className='EndpointsArea-Card'
-                title={useI18n('home.card.vhost.title')}
-                subtitle={<StatusInfo
-                    name={useI18n('field.status')}
-                    value={useI18n(vhostEnabled ? 'field.enabled' : 'field.disabled')}
-                />}
-                description={useI18n('home.card.vhost.description')}
-                link={{label: useI18n('field.docs'), url: 'https://developer.enonic.com/docs/xp/stable/deployment/vhosts'}}
             />
 
             <Button

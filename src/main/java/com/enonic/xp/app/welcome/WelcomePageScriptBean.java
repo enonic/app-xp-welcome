@@ -103,6 +103,11 @@ public class WelcomePageScriptBean
         List<ApplicationJson> applications = new ArrayList<>();
         for ( Application application : applicationServiceSupplier.get().getInstalledApplications() )
         {
+            if ( application.isSystem() )
+            {
+                continue;
+            }
+
             ApplicationKey applicationKey = application.getKey();
             ApplicationJson.Builder builder = ApplicationJson.create().
                 application( application ).
@@ -122,6 +127,8 @@ public class WelcomePageScriptBean
 
             applications.add( builder.build() );
         }
+        applications.sort( Comparator.comparing( ApplicationJson::getDisplayName ) );
+
         return new ApplicationsMapper( applications );
     }
 
