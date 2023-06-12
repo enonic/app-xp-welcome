@@ -25,7 +25,7 @@ export default function SiteCard({className, site, csUrl}: Props): JSX.Element {
     return (
         <CardWithLink className={classNames}
             title={displayName || <TextPlaceholder text={defaultDisplayName} />}
-            subtitle={`/site/${projectName}/<branch>${path}`}
+            subtitle={`${path.replace(/^\//, '')}`}
             icon={'earth'}
             description={<SiteCardDescription site={site} />}
             link={{label: useI18n('action.openInCS'), url}}

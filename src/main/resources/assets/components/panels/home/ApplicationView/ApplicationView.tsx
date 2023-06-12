@@ -11,11 +11,9 @@ export interface Props {
     application: Application;
 }
 
-function getAppUrl({deploymentUrl, adminToolsUrls}: Application): string | undefined {
-    if (!deploymentUrl && adminToolsUrls.length === 1) {
+function getAppUrl({adminToolsUrls}: Application): string | undefined {
+    if (adminToolsUrls.length === 1) {
         return adminToolsUrls[0];
-    } else if (deploymentUrl && adminToolsUrls.length === 0) {
-        return deploymentUrl;
     }
     return undefined;
 }

@@ -9,13 +9,26 @@ import Navigator from '../Navigator/Navigator';
 
 import './Header.css';
 
+function createHeaderTitlePhrase(screen: ScreenType): string {
+    switch (screen) {
+        case ScreenType.HOME:
+            return 'header.home.title';
+        case ScreenType.PROJECTS:
+            return 'header.projects.title';
+        case ScreenType.WEBAPPS:
+            return 'header.webapps.title';
+        case ScreenType.SITES:
+            return 'header.sites.title';
+    }
+}
+
 export default function Header(): JSX.Element {
     const {screen} = useStore(navigation, {keys: ['screen']});
     const {xpVersion} = useStore(config, {keys: ['xpVersion']});
 
     const isHome = screen === ScreenType.HOME;
 
-    const title = useI18n('header.title');
+    const title = useI18n(createHeaderTitlePhrase(screen));
     const subtitle = useI18n('header.subtitle', xpVersion);
 
     return (
