@@ -2,7 +2,6 @@ import {computed, map} from 'nanostores';
 
 import {NavigationSegment} from './data/NavigationSegment';
 import {ScreenType} from './data/ScreenType';
-import {syncWithSessionStorage} from './storage';
 
 export interface NavigationStore {
   screen: ScreenType;
@@ -11,8 +10,6 @@ export interface NavigationStore {
 const navigation = map<NavigationStore>({
   screen: ScreenType.HOME,
 });
-
-syncWithSessionStorage(navigation, 'navigation');
 
 export default navigation;
 
