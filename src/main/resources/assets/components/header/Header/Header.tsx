@@ -5,6 +5,9 @@ import {useI18n} from '../../../hooks/useI18n';
 import config from '../../../stores/config';
 import {ScreenType} from '../../../stores/data/ScreenType';
 import navigation from '../../../stores/navigation';
+import Button from '../../core/Button/Button';
+import Icomoon from '../../core/Icomoon/Icomoon';
+import BackButton from '../BackButton/BackButton';
 import Navigator from '../Navigator/Navigator';
 
 import './Header.css';
@@ -33,11 +36,9 @@ export default function Header(): JSX.Element {
 
     return (
         <header className={'Header'}>
+            {isHome || <BackButton />}
             <h1 className='Header-Title'>{title}</h1>
-            {isHome ?
-                <p className='Header-Subtitle'>{subtitle}</p> :
-                <Navigator className='Header-Navigator' />
-            }
+            {isHome && <p className='Header-Subtitle'>{subtitle}</p>}
         </header>
     );
 }
