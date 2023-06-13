@@ -14,7 +14,7 @@ const request = map<RequestStore>({
 
 export default request;
 
-export function login(url: string, callback?: FnVoid): void {
+export function login(url: string): void {
     if (request.get().loginState === RequestState.IN_PROGRESS) {
         return;
     }
@@ -24,7 +24,6 @@ export function login(url: string, callback?: FnVoid): void {
         .then(loggedIn => {
             setLoggedIn(loggedIn);
             request.setKey('loginState', RequestState.DONE);
-            callback?.();
         })
         .catch(() => {
             request.setKey('loginState', RequestState.ERROR);
