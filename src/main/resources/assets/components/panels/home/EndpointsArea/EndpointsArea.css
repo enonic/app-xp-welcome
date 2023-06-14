@@ -17,6 +17,10 @@
     grid-column: 1 / -1;
 }
 
+.EndpointsArea-Card {
+    grid-template-rows: auto 1fr minmax(40px, max-content);
+}
+
 @media screen and (min-width: 560px) and (max-width: 800px) {
     .EndpointsArea {
         grid-template-columns: repeat(2, 1fr);

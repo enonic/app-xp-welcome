@@ -41,7 +41,7 @@ export default function Card({
                 <h2 className='Card-Title'>{title}</h2>
                 <p className='Card-Subtitle'>{subtitle}</p>
             </header>
-            {description && <article className='Card-Description'>{description}</article>}
+            <article className='Card-Description'>{description}</article>
             {children}
         </div>
     );

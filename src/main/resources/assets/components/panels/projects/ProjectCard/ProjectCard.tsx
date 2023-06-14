@@ -24,7 +24,7 @@ export default function ProjectCard({className, project, csUrl}: Props): JSX.Ele
     return (
         <CardWithLink className={classNames}
             title={displayName || <TextPlaceholder text={defaultDisplayName} />}
-            subtitle={`/site/${name}`}
+            subtitle={`${name}`}
             icon={project.icon}
             description={description}
             link={{label: useI18n('action.openInCS'), url}}

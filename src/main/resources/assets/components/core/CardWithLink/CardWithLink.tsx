@@ -1,5 +1,6 @@
 import React, {ReactNode} from 'react';
 
+import {isInternalUrl} from '../../../common/utils/url';
 import Card from '../Card/Card';
 import Icomoon from '../Icomoon/Icomoon';
 import Link from '../Link/Link';
@@ -9,6 +10,7 @@ import './CardWithLink.css';
 export interface CardLinkData {
     label: string;
     url: string | undefined;
+    internal?: boolean;
 }
 
 export interface Props {
@@ -28,6 +30,8 @@ export default function CardWithLink({
     icon,
     link,
 }: Props): JSX.Element {
+    const external = !!link.url && !link.internal && !isInternalUrl(link.url);
+
     const classNames = `CardWithLink ${className ?? ''}`.trim();
 
     return (
@@ -41,7 +45,7 @@ export default function CardWithLink({
             {link.url &&
             <Link className='CardWithLink-Link' url={link.url}>
                 <span className='CardWithLink-LinkLabel'>{link.label}</span>
-                <Icomoon className='CardWithLink-LinkIcon' icon='newtab' />
+                {external && <Icomoon className='CardWithLink-LinkIcon' icon='newtab' />}
             </Link>
             }
         </Card>
