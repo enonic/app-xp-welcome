@@ -38,7 +38,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.content.title')}
-                subtitle=':8080/site'
+                subtitle={useI18n('home.card.content.subtitle')}
                 description={useI18n('home.card.content.description')}
                 action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.PROJECTS)}}
             />
@@ -65,7 +65,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.site.title')}
-                subtitle={useI18n('home.card.site.subtitle')}
+                subtitle=':8080/site'
                 description={useI18n('home.card.site.description')}
                 action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
             />
@@ -75,7 +75,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 title={useI18n('home.card.metrics.title')}
                 subtitle=':2609'
                 description={useI18n('home.card.metrics.description')}
-                link={{label: useI18n('home.card.metrics.action'), url: changeOriginPort(2609)}}
+                link={{label: useI18n('home.card.metrics.action'), url: changeOriginPort(2609), internal: true}}
             />
 
             <CardWithLink

@@ -1,19 +1,11 @@
-.CardWithLink {
-    padding: 24px 24px 16px;
-}
-
 .CardWithLink-Link {
     display: inline-flex;
     justify-content: center;
-    align-self: end;
+    align-self: center;
     margin: 0 auto;
     text-decoration: none;
     font-weight: 600;
     text-transform: uppercase;
-}
-
-.CardWithLink-LinkLabel {
-    height: 36px;
 }
 
 .CardWithLink-LinkLabel::after {

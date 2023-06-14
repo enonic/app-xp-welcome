@@ -1,34 +1,33 @@
 .Header {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-wrap: wrap;
     max-width: var(--size-ui-width);
-    min-height: 112px;
     margin: 0 auto;
     padding: 24px 0 32px;
     font-size: 1rem;
 }
 
 .Header-Title {
+    flex: 1;
     margin: 0;
-    font-size: 2em;
-    font-weight: 600;
+    font-size: 2.25em;
+    font-weight: 400;
 }
 
-.Header-Subtitle,
-.Header-Navigator {
+.Header-Subtitle {
     margin: 4px 0 0 0.35em;
     font-size: 0.875em;
     font-weight: 600;
 }
 
 .Header-Subtitle {
+    width: 100%;
     color: var(--color-font-sub);
 }
 
 @media screen and (max-width: 560px) {
     .Header {
         padding: 0 0 24px;
-        min-height: 76px;
+        min-height: 60px;
     }
 }

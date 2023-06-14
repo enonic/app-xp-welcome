@@ -23,3 +23,7 @@ export function createCsEditUrl(csUrl: string, projectName: string, contentId: s
 export function createSitePreviewUrl(project: string, branch: Branch, sitePath: string): string {
     return createHref(`admin/site/preview/${project}/${branch}${sitePath}`);
 }
+
+export function isInternalUrl(url: string): boolean {
+    return url.startsWith(window.location.origin) || url.startsWith('/') || url.startsWith('#');
+}

@@ -33,7 +33,7 @@ export default function LoginButton({className}: Props): JSX.Element {
 
     function handler(): void {
         if (!loggedIn && canLoginAsSu) {
-            login(idProviderUrl, openAdmin);
+            login(idProviderUrl);
         } else {
             openAdmin();
         }

@@ -22,7 +22,7 @@ export default function WebappCard({className, application, xpUrl}: Props): JSX.
     return (
         <Card className={classNames}
             title={application.displayName}
-            subtitle={application.deploymentUrl}
+            subtitle={application.applicationKey}
             icon={application.icon}
             description={application.description}
         >
