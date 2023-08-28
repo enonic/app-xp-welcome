@@ -41,7 +41,7 @@
     "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.15",
     "browserslist-config-enonic": "^1.0.8",
-    "eslint": "^8.47.0",
+    "eslint": "^8.48.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
