@@ -18,6 +18,10 @@ function openAdmin(): void {
     window.open('/admin', '_blank');
 }
 
+function goToAdmin(): void {
+    window.location.href = '/admin';
+}
+
 const mod = (modifier: string, on = true): string => on ? `LoginButton_${modifier}` : '';
 
 export default function LoginButton({className}: Props): JSX.Element {
@@ -33,7 +37,7 @@ export default function LoginButton({className}: Props): JSX.Element {
 
     function handler(): void {
         if (!loggedIn && canLoginAsSu) {
-            login(idProviderUrl);
+            void login(idProviderUrl).then(loggedIn => loggedIn && goToAdmin());
         } else {
             openAdmin();
         }
