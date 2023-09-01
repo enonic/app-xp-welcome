@@ -14,18 +14,20 @@ const request = map<RequestStore>({
 
 export default request;
 
-export function login(url: string): void {
+export async function login(url: string): Promise<boolean> {
     if (request.get().loginState === RequestState.IN_PROGRESS) {
-        return;
+        return false;
     }
 
     request.setKey('loginState', RequestState.IN_PROGRESS);
-    loginAsSu(url)
+    return await loginAsSu(url)
         .then(loggedIn => {
             setLoggedIn(loggedIn);
             request.setKey('loginState', RequestState.DONE);
+            return loggedIn;
         })
         .catch(() => {
             request.setKey('loginState', RequestState.ERROR);
+            return false;
         });
 }
