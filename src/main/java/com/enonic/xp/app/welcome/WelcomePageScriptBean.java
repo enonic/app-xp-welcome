@@ -1,16 +1,35 @@
 package com.enonic.xp.app.welcome;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.ByteSource;
+import com.google.common.net.MediaType;
+import com.google.common.util.concurrent.Striped;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.admin.tool.AdminToolDescriptors;
@@ -19,12 +38,15 @@ import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
+import com.enonic.xp.app.welcome.json.ApplicationInstallResultJson;
 import com.enonic.xp.app.welcome.json.ApplicationJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
+import com.enonic.xp.app.welcome.json.TemplateApplicationJson;
 import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
+import com.enonic.xp.app.welcome.mapper.TemplateApplicationsMapper;
 import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.content.Content;
@@ -35,10 +57,11 @@ import com.enonic.xp.content.ContentService;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.content.GetContentByIdsParams;
 import com.enonic.xp.context.Context;
+import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.context.ContextBuilder;
 import com.enonic.xp.data.PropertyTree;
+import com.enonic.xp.home.HomeDir;
 import com.enonic.xp.icon.Icon;
-import com.enonic.xp.portal.PortalRequest;
 import com.enonic.xp.project.Project;
 import com.enonic.xp.project.ProjectConstants;
 import com.enonic.xp.project.ProjectName;
@@ -51,21 +74,29 @@ import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.security.IdProvider;
-import com.enonic.xp.security.IdProviderConfig;
 import com.enonic.xp.security.IdProviderKey;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
+import com.enonic.xp.util.Exceptions;
+import com.enonic.xp.util.HexEncoder;
 import com.enonic.xp.web.servlet.ServletRequestHolder;
 import com.enonic.xp.web.servlet.ServletRequestUrlHelper;
-import com.google.common.io.ByteSource;
-import com.google.common.net.MediaType;
 
 public class WelcomePageScriptBean
     implements ScriptBean
 {
+    private static final Logger LOG = LoggerFactory.getLogger( WelcomePageScriptBean.class );
+
+    private static final Set<String> ALLOWED_PROTOCOLS = Set.of( "http", "https" );
+
+    private static final Striped<Lock> LOCK_STRIPED = Striped.lazyWeakLock( 100 );
+
+    public static final User SUPER_USER =
+        User.create().key( PrincipalKey.ofSuperUser() ).login( PrincipalKey.ofSuperUser().getId() ).build();
+
     private Supplier<ApplicationService> applicationServiceSupplier;
 
     private Supplier<ResourceService> resourceServiceSupplier;
@@ -101,7 +132,8 @@ public class WelcomePageScriptBean
         {
             if ( application.getKey().equals( ApplicationKey.from( "com.enonic.app.contentstudio" ) ) )
             {
-                return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/admin/tool/" + application.getKey() + "/main" );
+                return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(),
+                                                          "/admin/tool/" + application.getKey() + "/main" );
             }
         }
         return null;
@@ -134,24 +166,7 @@ public class WelcomePageScriptBean
                 continue;
             }
 
-            ApplicationKey applicationKey = application.getKey();
-            ApplicationJson.Builder builder = ApplicationJson.create().
-                application( application ).
-                description( getApplicationDescription( applicationKey ) ).
-                iconAsBase64( getApplicationIconAsBase64( applicationKey ) );
-
-            Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
-            if ( resource.exists() )
-            {
-                String webappUrl =
-                    ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
-                builder.webappUrl( webappUrl );
-            }
-
-            List<String> adminToolsUris = getApplicationAdminToolsUris( applicationKey );
-            adminToolsUris.forEach( uri -> builder.addAdminToolsUrl( uri ) );
-
-            applications.add( builder.build() );
+            applications.add( toApplicationJson( application ) );
         }
         applications.sort( Comparator.comparing( ApplicationJson::getDisplayName ) );
 
@@ -179,15 +194,11 @@ public class WelcomePageScriptBean
 
             draftSitesAsMap.keySet().forEach( siteId -> {
                 Content site = draftSitesAsMap.get( siteId );
-                final SiteJson.Builder builder = SiteJson.create().
-                    id( siteId.toString() ).
-                    name( site.getName().toString() ).
-                    displayName( site.getDisplayName() ).
-                    projectName( repositoryId.toString().replaceFirst( ProjectConstants.PROJECT_REPO_ID_PREFIX, "" ) ).
-                    repositoryName( repositoryId.toString() ).
-                    path( site.getPath().toString() ).
-                    hasDraft( draftSitesAsMap.containsKey( siteId ) ).
-                    hasMaster( masterSitesAsMap.containsKey( siteId ) );
+                final SiteJson.Builder builder = SiteJson.create().id( siteId.toString() ).name( site.getName().toString() ).displayName(
+                    site.getDisplayName() ).projectName(
+                    repositoryId.toString().replaceFirst( ProjectConstants.PROJECT_REPO_ID_PREFIX, "" ) ).repositoryName(
+                    repositoryId.toString() ).path( site.getPath().toString() ).hasDraft( draftSitesAsMap.containsKey( siteId ) ).hasMaster(
+                    masterSitesAsMap.containsKey( siteId ) );
                 if ( site.getLanguage() != null )
                 {
                     builder.language( site.getLanguage().getLanguage() );
@@ -202,17 +213,57 @@ public class WelcomePageScriptBean
     public Object getProjects()
     {
         List<ProjectJson> projects = new ArrayList<>();
-        projects.addAll( createAdminContext( ContentConstants.CONTENT_REPO_ID ).
-            callWith( () -> projectServiceSupplier.get().list() ).
-            stream().
-            sorted( Comparator.comparing( project -> project.getName().getRepoId().toString() ) ).
-            map( project -> ProjectJson.create().
-                project( project ).
-                iconAsBase64( getProjectIconAsBase64( project ) ).
-                build() ).
-            collect( Collectors.toList() ) );
+        projects.addAll(
+            createAdminContext( ContentConstants.CONTENT_REPO_ID ).callWith( () -> projectServiceSupplier.get().list() ).stream().sorted(
+                Comparator.comparing( project -> project.getName().getRepoId().toString() ) ).map(
+                project -> ProjectJson.create().project( project ).iconAsBase64( getProjectIconAsBase64( project ) ).build() ).collect(
+                Collectors.toList() ) );
 
         return new ProjectsMapper( projects );
+    }
+
+    public Object getTemplateApplications()
+    {
+        List<TemplateApplicationJson> templateApps = new ArrayList<>();
+
+        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
+        if ( new File( filePath.toString() ).exists() )
+        {
+            templateApps.addAll( mustParseJsonFile( filePath.toString() ) );
+        }
+
+        return new TemplateApplicationsMapper( templateApps );
+    }
+
+    public Object installApplication( final String urlString, final String shaString )
+    {
+        final byte[] sha512 = Optional.ofNullable( shaString ).map( HexEncoder::fromHex ).orElse( null );
+        final ApplicationInstallResultJson result = new ApplicationInstallResultJson();
+        String failure;
+        try
+        {
+            final URL url = new URL( urlString );
+
+            if ( ALLOWED_PROTOCOLS.contains( url.getProtocol() ) )
+            {
+                return lock( url, () -> installApplication( url, sha512 ) );
+            }
+            else
+            {
+                LOG.error( failure = "Illegal protocol: " + url.getProtocol() );
+                result.setFailure( failure );
+
+                return result;
+            }
+
+        }
+        catch ( IOException e )
+        {
+            LOG.error( failure = "Failed to upload application from " + urlString, e );
+            result.setFailure( failure );
+
+            return result;
+        }
     }
 
     public String getXpUrl()
@@ -230,18 +281,110 @@ public class WelcomePageScriptBean
         return createUrl( jettyConfigServiceSupplier.get().getHttpMonitorPort() );
     }
 
+    private ApplicationInstallResultJson installApplication( final URL url, final byte[] sha512 )
+    {
+        final ApplicationInstallResultJson result = new ApplicationInstallResultJson();
+
+        try
+        {
+            ContextBuilder.from( ContextAccessor.current() ).authInfo(
+                AuthenticationInfo.create().principals( RoleKeys.ADMIN ).user( SUPER_USER ).build() ).build().runWith( () -> {
+
+                final Application application = this.applicationServiceSupplier.get().installGlobalApplication( url, sha512 );
+
+                result.setApplication( toApplicationJson( application ) );
+
+            } );
+
+        }
+        catch ( Exception e )
+        {
+            final String failure = "Failed to process application from " + url;
+            LOG.error( failure, e );
+
+            result.setFailure( failure );
+        }
+        return result;
+    }
+
+    private ApplicationJson toApplicationJson( final Application application )
+    {
+        ApplicationKey applicationKey = application.getKey();
+        ApplicationJson.Builder builder =
+            ApplicationJson.create().application( application ).description( getApplicationDescription( applicationKey ) ).iconAsBase64(
+                getApplicationIconAsBase64( applicationKey ) );
+
+        Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
+        if ( resource.exists() )
+        {
+            String webappUrl = ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
+            builder.webappUrl( webappUrl );
+        }
+
+        List<String> adminToolsUris = getApplicationAdminToolsUris( applicationKey );
+        adminToolsUris.forEach( builder::addAdminToolsUrl );
+
+        return builder.build();
+    }
+
+    private <V> V lock( Object key, Callable<V> callable )
+    {
+        final Lock lock = LOCK_STRIPED.get( key );
+        try
+        {
+            if ( lock.tryLock( 30, TimeUnit.MINUTES ) )
+            {
+                try
+                {
+                    return callable.call();
+                }
+                catch ( Exception e )
+                {
+                    throw Exceptions.unchecked( e );
+                }
+                finally
+                {
+                    lock.unlock();
+                }
+            }
+            else
+            {
+                throw new RuntimeException( "Failed to acquire application service lock for application [" + key + "]" );
+            }
+        }
+        catch ( InterruptedException e )
+        {
+            throw new RuntimeException( "Failed to acquire application service lock for application [" + key + "]", e );
+        }
+    }
+
+    private List<TemplateApplicationJson> mustParseJsonFile( String filePath )
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try
+        {
+            return objectMapper.readValue( new FileInputStream( filePath ), new TypeReference<>()
+            {
+            } );
+        }
+        catch ( JsonProcessingException e )
+        {
+            throw new UncheckedIOException( "Failed to parse template applications file at " + filePath, e );
+        }
+        catch ( IOException e )
+        {
+            throw new UncheckedIOException( "Failed to read template applications file at " + filePath, e );
+        }
+    }
+
     private List<RepositoryId> getProjectIds()
     {
         List<RepositoryId> repositoryIds = new ArrayList<>();
         repositoryIds.add( ContentConstants.CONTENT_REPO_ID );
-        repositoryIds.addAll( createAdminContext( ContentConstants.CONTENT_REPO_ID, ContentConstants.BRANCH_MASTER ).
-            callWith( () -> projectServiceSupplier.get().list() ).
-            stream().
-            map( Project::getName ).
-            map( ProjectName::getRepoId ).
-            filter( repoId -> !repoId.equals( ContentConstants.CONTENT_REPO_ID ) ).
-            sorted( Comparator.comparing( RepositoryId::toString ) ).
-            collect( Collectors.toList() ) );
+        repositoryIds.addAll( createAdminContext( ContentConstants.CONTENT_REPO_ID, ContentConstants.BRANCH_MASTER ).callWith(
+            () -> projectServiceSupplier.get().list() ).stream().map( Project::getName ).map( ProjectName::getRepoId ).filter(
+            repoId -> !repoId.equals( ContentConstants.CONTENT_REPO_ID ) ).sorted( Comparator.comparing( RepositoryId::toString ) ).collect(
+            Collectors.toList() ) );
         return repositoryIds;
     }
 
@@ -250,10 +393,8 @@ public class WelcomePageScriptBean
         AdminToolDescriptorService service = this.adminToolDescriptorServiceSupplier.get();
         AdminToolDescriptors descriptors = service.getByApplication( applicationKey );
 
-        return descriptors.getList().
-            stream().
-            map( descriptor -> service.generateAdminToolUri( applicationKey.toString(), descriptor.getName() ) ).
-            collect( Collectors.toList() );
+        return descriptors.getList().stream().map(
+            descriptor -> service.generateAdminToolUri( applicationKey.toString(), descriptor.getName() ) ).collect( Collectors.toList() );
     }
 
     private String getApplicationDescription( final ApplicationKey applicationKey )
@@ -295,7 +436,7 @@ public class WelcomePageScriptBean
 
     private byte[] getDefaultIcon( final String name )
     {
-        try ( InputStream in = getClass().getResourceAsStream( name ) )
+        try (InputStream in = getClass().getResourceAsStream( name ))
         {
             return in.readAllBytes();
         }
@@ -317,22 +458,13 @@ public class WelcomePageScriptBean
 
     private Context createAdminContext( final RepositoryId repositoryId, final Branch branch )
     {
-        return ContextBuilder.create().
-            branch( branch ).
-            repositoryId( repositoryId ).
-            authInfo( this.createAdminAuthInfo() ).
-            build();
+        return ContextBuilder.create().branch( branch ).repositoryId( repositoryId ).authInfo( this.createAdminAuthInfo() ).build();
     }
 
     private AuthenticationInfo createAdminAuthInfo()
     {
-        return AuthenticationInfo.create().
-        principals( RoleKeys.ADMIN ).
-        user( User.create().
-            key( PrincipalKey.ofSuperUser() ).
-            login( PrincipalKey.ofSuperUser().getId() ).
-            build() ).
-        build();
+        return AuthenticationInfo.create().principals( RoleKeys.ADMIN ).user(
+            User.create().key( PrincipalKey.ofSuperUser() ).login( PrincipalKey.ofSuperUser().getId() ).build() ).build();
     }
 
     private String createUrl( final int port )
