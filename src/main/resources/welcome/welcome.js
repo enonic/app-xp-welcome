@@ -2,8 +2,11 @@ const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18nLib = require('/lib/xp/i18n');
 const mustache = require('/lib/mustache');
+const main = require("../main");
 
 exports.get = function () {
+    main.start();
+
     const view = resolve('./welcome.html');
 
     const phrases = i18nLib.getPhrases(admin.getLocales(), ['i18n/phrases']);
