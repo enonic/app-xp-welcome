@@ -5,6 +5,5 @@ out/
 bin/
 .eslintrc.js
 **/*.d.ts
-src/main/resources/welcome
-src/main/resources/services
+src/main/resources/**/*.js
 src/test

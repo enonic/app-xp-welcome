@@ -16,11 +16,12 @@ app {
     name = 'com.enonic.xp.app.welcome'
     group = 'com.enonic.xp'
     displayName = 'XP Welcome App'
-    systemApp = true
+    systemApp = false
     systemVersion = "${xpVersion}"
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     xp.enonicRepo( 'dev' )
 }
@@ -44,11 +45,17 @@ dependencies {
     implementation "com.enonic.xp:jaxrs-api:${xpVersion}"
     implementation "com.enonic.xp:admin-api:${xpVersion}"
 
+    include "com.enonic.xp:lib-app:${xpVersion}"
     include "com.enonic.xp:lib-admin:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-i18n:${xpVersion}"
     include "com.enonic.xp:lib-vhost:${xpVersion}"
+    include "com.enonic.xp:lib-task:${xpVersion}"
+    include "com.enonic.xp:lib-websocket:${xpVersion}"
+    include "com.enonic.xp:lib-event:${xpVersion}"
+    include "com.enonic.lib:lib-cache:2.2.0"
+    include 'com.enonic.lib:lib-http-client:3.2.1'
     include "com.enonic.lib:lib-mustache:2.1.1"
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
