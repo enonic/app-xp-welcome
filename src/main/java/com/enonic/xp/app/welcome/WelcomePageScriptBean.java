@@ -235,6 +235,19 @@ public class WelcomePageScriptBean
         return new TemplateApplicationsMapper( templateApps );
     }
 
+    public Object createConfigFile( final String appKey, final String config )
+    {
+        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );
+        try
+        {
+            return java.nio.file.Files.writeString( filePath, config );
+        }
+        catch ( IOException e )
+        {
+            throw new UncheckedIOException( "Failed to write config file at " + filePath, e );
+        }
+    }
+
     public Object installApplication( final String urlString, final String shaString )
     {
         final byte[] sha512 = Optional.ofNullable( shaString ).map( HexEncoder::fromHex ).orElse( null );
