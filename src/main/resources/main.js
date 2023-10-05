@@ -89,7 +89,12 @@ const parseTemplate = () => {
     log.info('Parsed template: %s', JSON.stringify(apps, null, 2));
     const tasks = [];
     for (let index = 0; index < apps.length; index++) {
-        tasks.push(submitTask(apps[index].key));
+        let app = apps[index];
+        if (app.config && app.config.length > 0) {
+            const configPath = __.toNativeObject(bean.createConfigFile(app.key, app.config));
+            log.info('Config file for %s created at: %s', app.key, configPath);
+        }
+        tasks.push(submitTask(app.key));
     }
     CACHE.put(TASKS_KEY, JSON.stringify(tasks));
 }
