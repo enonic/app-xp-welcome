@@ -1,7 +1,7 @@
 const taskLib = require('/lib/xp/task');
 const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
-const appLib = require('/lib/xp/app');
+const utils = require('/lib/utils');
 
 const marketUrl = 'https://market.enonic.com/api/graphql';
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
@@ -16,34 +16,23 @@ exports.run = function (params, taskId) {
         throw 'Missing required parameter: key';
     }
 
-    taskLib.progress({info: 'Task started for ' + key, current: 0, total: 3});
+    taskLib.progress({info: 'Task started for ' + key, current: 0, total: 1});
     const appInfoJson = fetchApplicationInfo(marketUrl, key, xpMajorVersion);
 
     const latestVersionJson = findLatestVersion(key, appInfoJson.version, xpMajorVersion);
-    const latestVer = latestVersionJson.versionNumber;
-    taskLib.progress({info: 'Latest supported version for ' + key + ' is: ' + latestVer, current: 1, total: 3});
-
-    const existingApp = appLib.get({key});
-    if (existingApp) {
-        if (compareVersions(latestVer, existingApp.version) <= 0) {
-            const msg = `Application ${key} already installed with version: ${existingApp.version}`
-            log.debug(msg);
-            taskLib.progress({info: msg, current: 3, total: 3});
-            return;
-        } else {
-            log.debug('Updating %s version %s to: %s', key, existingApp.version, latestVer);
-        }
-    } else {
-        log.debug('Installing %s version: %s', key, latestVer);
-    }
-
-    taskLib.progress({info: 'Installing application ' + key + ' version: ' + latestVer, current: 2, total: 3});
 
     const tempUrl = tempDownloadUrl(appInfoJson, latestVersionJson);
 
+    const cachedTask = utils.getTask(taskId);
+    if (cachedTask) {
+        // save the url to match the events later
+        cachedTask.url = tempUrl;
+        utils.updateTask(taskId, cachedTask);
+    }
+
     const appJson = installApplication(key, tempUrl /*latestVersionJson.applicationUrl*/, latestVersionJson.sha512);
 
-    taskLib.progress({info: 'Task complete for ' + key, current: 3, total: 3, application: appJson});
+    taskLib.progress({info: 'Task complete for ' + key, current: 1, total: 1, application: appJson});
 };
 
 function tempDownloadUrl(appJson, latestVersionObj) {

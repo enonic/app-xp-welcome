@@ -1,16 +1,11 @@
-const cacheLib = require('/lib/cache');
 const taskLib = require('/lib/xp/task');
 const eventLib = require('/lib/xp/event');
 const webSocketLib = require('/lib/xp/websocket');
+const appLib = require('/lib/xp/app');
+const utils = require('/lib/utils');
 
 const SOCKET_GROUP = 'welcome-app';
 exports.SOCKET_GROUP = SOCKET_GROUP;
-
-const TASKS_KEY = 'welcome-app-tasks';
-const CACHE = cacheLib.newCache({
-    size: 1,
-    expire: 3600
-});
 
 let listening = false;
 
@@ -32,47 +27,42 @@ const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
     };*/
 function handleXPTaskEvent(xpEvent) {
     const task = xpEvent.data;
-    const cacheValue = CACHE.getIfPresent(TASKS_KEY);
 
-    if (!cacheValue) {
+    if (!utils.getTask(task.id)) {
         return;
     }
-    const json = JSON.parse(cacheValue);
 
-    if (isTaskExist(json, task.id)) {
-
-        switch (xpEvent.type) {
-            case 'task.finished':
-            case 'task.removed':
-            case 'task.failed':
-                log.info('Task %s %s', task.id, task.state);
-                removeTask(json, task.state, task.id);
-                break;
-        }
-        log.info('Task %s progress: %s', task.id, JSON.stringify(task.progress));
-        webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(task));
+    switch (xpEvent.type) {
+        case 'task.finished':
+        case 'task.removed':
+        case 'task.failed':
+            log.info('Task %s %s', task.id, task.state);
+            utils.removeTask(task.id);
+            break;
     }
+
+    log.info('Task %s progress: %s', task.id, JSON.stringify(task.progress));
+    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(task));
 }
 
-const removeTask = (json, taskState, taskId) => {
-    for (let i = 0; i < json.length; i++) {
-        if (json[i] === taskId) {
-            log.info('Removing %s task from cache: %s', taskState, taskId);
-            json.splice(i, 1);
-            CACHE.put(TASKS_KEY, JSON.stringify(json));
-            return;
-        }
-    }
+/*    var xpEvent = {
+          "type": "application",
+          "timestamp": 1696515305453,
+          "localOrigin": true,
+          "distributed": false,
+          "data": {
+            "eventType": "PROGRESS",
+            "applicationUrl": "https://repo.enonic.com/public/com/enonic/app/imagexpert/2.1.0/imagexpert-2.1.0.jar",
+            "progress": 82
+          }
+      }*/
+function handleXPAppEvent(xpEvent) {
+    const app = xpEvent.data;
+
+    log.info('App %s event: %s', app.id, JSON.stringify(xpEvent, null, 2));
+    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(app));
 }
 
-const isTaskExist = (json, taskId) => {
-    for (let i = 0; i < json.length; i++) {
-        if (json[i] === taskId) {
-            return true;
-        }
-    }
-    return false;
-}
 
 const submitTask = (key) => {
     const taskConfig = {
@@ -81,7 +71,12 @@ const submitTask = (key) => {
     };
     const taskId = taskLib.submitTask(taskConfig);
     log.info('Submitted task for %s: %s', key, taskId);
-    return taskId;
+    return {
+        taskId,
+        key,
+        url: '',
+        progress: 0,
+    };
 };
 
 const parseTemplate = () => {
@@ -90,13 +85,20 @@ const parseTemplate = () => {
     const tasks = [];
     for (let index = 0; index < apps.length; index++) {
         let app = apps[index];
+        const existingApp = appLib.get({key: app.key});
+        if (existingApp) {
+            log.info('App %s already installed with version: %s', app.key, existingApp.version);
+            continue;
+        }
+
         if (app.config && app.config.length > 0) {
             const configPath = __.toNativeObject(bean.createConfigFile(app.key, app.config));
-            log.info('Config file for %s created at: %s', app.key, configPath);
+            log.info('Config file for app %s created at: %s', app.key, configPath);
         }
+
         tasks.push(submitTask(app.key));
     }
-    CACHE.put(TASKS_KEY, JSON.stringify(tasks));
+    utils.setCache(tasks);
 }
 
 function listenToTaskEvents() {
@@ -106,8 +108,13 @@ function listenToTaskEvents() {
             localOnly: false,
             callback: handleXPTaskEvent
         });
+        eventLib.listener({
+            type: 'application',
+            localOnly: false,
+            callback: handleXPAppEvent
+        });
         listening = true;
-        log.info('Welcome app is listening for task events...');
+        log.info('Welcome app is listening for task and app events...');
     }
 }
 
