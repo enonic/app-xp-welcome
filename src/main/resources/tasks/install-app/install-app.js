@@ -1,7 +1,7 @@
 const taskLib = require('/lib/xp/task');
 const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
-const utils = require('/lib/utils');
+const store = require('/lib/store');
 
 const marketUrl = 'https://market.enonic.com/api/graphql';
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
@@ -23,11 +23,13 @@ exports.run = function (params, taskId) {
 
     const tempUrl = tempDownloadUrl(appInfoJson, latestVersionJson);
 
-    const cachedTask = utils.getTask(taskId);
+    const cachedTask = store.getTask(taskId);
     if (cachedTask) {
         // save the url to match the events later
         cachedTask.url = tempUrl;
-        utils.updateTask(taskId, cachedTask);
+        cachedTask.icon = appInfoJson.icon.attachmentUrl;
+        cachedTask.version = latestVersionJson.versionNumber;
+        store.updateTask(taskId, cachedTask);
     }
 
     const appJson = installApplication(key, tempUrl /*latestVersionJson.applicationUrl*/, latestVersionJson.sha512);
@@ -149,6 +151,9 @@ function createMarketQuery(key, xpMajorVersion) {
                     identifier 
                     repoUrl
                     artifactId
+                    icon {
+                        attachmentUrl(type: absolute)
+                    }
                     version {
                         sha512 
                         versionNumber 

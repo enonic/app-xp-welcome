@@ -1,7 +1,7 @@
 const cacheLib = require('/lib/cache');
 
 const TASKS_KEY = 'welcome-app-tasks';
-const Utils = cacheLib.newCache({
+const Store = cacheLib.newCache({
     size: 1,
     expire: 3600
 });
@@ -13,18 +13,18 @@ exports.removeTask = (taskId, json) => {
     for (let i = 0; i < json.length; i++) {
         if (json[i].taskId === taskId) {
             json.splice(i, 1);
-            Utils.put(TASKS_KEY, JSON.stringify(json));
+            Store.put(TASKS_KEY, JSON.stringify(json));
             return;
         }
     }
 }
 
 exports.setCache = function (json) {
-    Utils.put(TASKS_KEY, JSON.stringify(json));
+    Store.put(TASKS_KEY, JSON.stringify(json));
 }
 
 const getCache = function () {
-    const cacheValue = Utils.getIfPresent(TASKS_KEY);
+    const cacheValue = Store.getIfPresent(TASKS_KEY);
     if (!cacheValue) {
         return [];
     }
@@ -36,8 +36,10 @@ exports.getTask = function (taskId, json) {
         json = getCache();
     }
     for (let i = 0; i < json.length; i++) {
-        if (json[i].taskId === taskId) {
-            return json[i];
+        let cachedTask = json[i];
+        if (typeof taskId === 'string' && cachedTask.taskId === taskId
+            || typeof taskId === 'function' && taskId(cachedTask)) {
+            return cachedTask;
         }
     }
     return undefined;
@@ -52,5 +54,5 @@ exports.updateTask = function (taskId, info, json) {
             json[i] = info;
         }
     }
-    Utils.put(TASKS_KEY, JSON.stringify(json));
+    Store.put(TASKS_KEY, JSON.stringify(json));
 }
