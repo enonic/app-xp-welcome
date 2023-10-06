@@ -1,7 +1,7 @@
 import merge from 'lodash.merge';
 import {computed, map} from 'nanostores';
 
-import {fetchAppConfig} from '../common/utils/requests';
+import {fetchAppConfig, getWebSocketUrl} from '../common/utils/requests';
 import {AppConfig} from './data/AppConfig';
 import {Application} from './data/Application';
 import {WebApplication} from './data/WebApplication';
@@ -23,6 +23,7 @@ const config = map<ConfigStore>({
         idProvider: '',
     },
     phrases: undefined,
+    wsServiceUrl: getWebSocketUrl(),
 });
 
 (function init(): void {

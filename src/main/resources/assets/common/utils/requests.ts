@@ -27,6 +27,15 @@ async function post<T>(url: string, data: Record<string, unknown> = {}): Promise
     return await response.json() as Promise<T>;
 }
 
+export function getWebSocketUrl(): string {
+    const {currentScript} = document;
+    if (currentScript == null) {
+        throw new Error('Legacy browsers are not supported');
+    }
+
+    return currentScript.getAttribute('data-ws-service-url') || '';
+}
+
 export async function fetchAppConfig(): Promise<AppConfig | never> {
     const {currentScript} = document;
     if (currentScript == null) {
