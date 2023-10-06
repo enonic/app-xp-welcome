@@ -2,7 +2,7 @@ const taskLib = require('/lib/xp/task');
 const eventLib = require('/lib/xp/event');
 const webSocketLib = require('/lib/xp/websocket');
 const appLib = require('/lib/xp/app');
-const utils = require('/lib/utils');
+const store = require('/lib/store');
 
 const SOCKET_GROUP = 'welcome-app';
 exports.SOCKET_GROUP = SOCKET_GROUP;
@@ -28,21 +28,21 @@ const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 function handleXPTaskEvent(xpEvent) {
     const task = xpEvent.data;
 
-    if (!utils.getTask(task.id)) {
+    if (!store.getTask(task.id)) {
         return;
     }
 
     switch (xpEvent.type) {
+        case 'task.started':
+            log.info('Task %s %s', task.id, task.state);
+            break;
         case 'task.finished':
         case 'task.removed':
         case 'task.failed':
             log.info('Task %s %s', task.id, task.state);
-            utils.removeTask(task.id);
+            store.removeTask(task.id);
             break;
     }
-
-    log.info('Task %s progress: %s', task.id, JSON.stringify(task.progress));
-    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(task));
 }
 
 /*    var xpEvent = {
@@ -59,12 +59,20 @@ function handleXPTaskEvent(xpEvent) {
 function handleXPAppEvent(xpEvent) {
     const app = xpEvent.data;
 
-    log.info('App %s event: %s', app.id, JSON.stringify(xpEvent, null, 2));
-    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(app));
+    const cachedTask = store.getTask(function(task) { return task.url === app.applicationUrl; });
+    if (!cachedTask) {
+        return;
+    }
+
+    cachedTask.progress = app.progress;
+    store.updateTask(cachedTask.taskId, cachedTask);
+
+    log.info('App %s event: %s', cachedTask.key, JSON.stringify(cachedTask, null, 2));
+    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(cachedTask));
 }
 
 
-const submitTask = (key) => {
+const submitTask = (key, displayName) => {
     const taskConfig = {
         descriptor: 'install-app',
         config: {key}
@@ -73,8 +81,11 @@ const submitTask = (key) => {
     log.info('Submitted task for %s: %s', key, taskId);
     return {
         taskId,
+        displayName,
         key,
         url: '',
+        icon: '',
+        version: 0,
         progress: 0,
     };
 };
@@ -96,9 +107,9 @@ const parseTemplate = () => {
             log.info('Config file for app %s created at: %s', app.key, configPath);
         }
 
-        tasks.push(submitTask(app.key));
+        tasks.push(submitTask(app.key, app.displayName));
     }
-    utils.setCache(tasks);
+    store.setCache(tasks);
 }
 
 function listenToTaskEvents() {
