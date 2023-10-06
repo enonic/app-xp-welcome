@@ -45,7 +45,7 @@ exports.get = function (req) {
         "message": "Hello World"
     }*/
 exports.webSocketEvent = function (socketEvent) {
-    log.info('Task service got web event:\n%s', JSON.stringify(socketEvent));
+    log.info('WS service got web event:\n%s', JSON.stringify(socketEvent));
 
     if (socketEvent.type === 'open' && socketEvent.data.user === 'test') {
         webSocketLib.addToGroup(SOCKET_GROUP, socketEvent.session.id);
