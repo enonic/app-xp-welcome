@@ -5,7 +5,6 @@ const mustache = require('/lib/mustache');
 const main = require("../main");
 
 exports.get = function () {
-    main.start();
 
     const view = resolve('./welcome.html');
 
@@ -17,8 +16,12 @@ exports.get = function () {
             application: app.name,
         }),
         configServiceUrl: portal.serviceUrl({service: 'config'}),
+        wsServiceUrl: portal.serviceUrl({service: 'ws', type: 'websocket'}),
         phrases,
     };
+
+    main.start();
+
     return {
         headers: {
             'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' data:"

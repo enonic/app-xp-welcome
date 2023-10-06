@@ -18,4 +18,5 @@ export interface AppConfig {
         contentStudio?: string;
     };
     phrases: Record<string, string> | undefined;
+    wsServiceUrl: string;
 }
