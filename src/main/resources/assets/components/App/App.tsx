@@ -53,8 +53,12 @@ function getWebSocketOptions(applications: Application[]): Options {
                 if (existingApp) {
                     existingApp.progress = data.progress;
                     if (data.progress === 100) {
-                        existingApp.adminToolsUrls = data.adminToolsUrls;
-                        existingApp.icon = data.icon;
+                        if (data.adminToolsUrls.length > 0) {
+                            existingApp.adminToolsUrls = data.adminToolsUrls;
+                        }
+                        if (data.icon) {
+                            existingApp.icon = data.icon;
+                        }
                     }
                 } else {
                     applications.push({

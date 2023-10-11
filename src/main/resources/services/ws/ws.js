@@ -45,7 +45,6 @@ exports.get = function (req) {
         "message": "Hello World"
     }*/
 exports.webSocketEvent = function (socketEvent) {
-    log.info('WS service got web event:\n%s', JSON.stringify(socketEvent));
 
     if (socketEvent.type === 'open' && socketEvent.data.user === 'app-welcome') {
         webSocketLib.addToGroup(SOCKET_GROUP, socketEvent.session.id);
