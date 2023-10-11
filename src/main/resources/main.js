@@ -28,7 +28,8 @@ const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 function handleXPTaskEvent(xpEvent) {
     const task = xpEvent.data;
 
-    if (!store.getTask(task.id)) {
+    let cachedTask = store.getTask(task.id);
+    if (!cachedTask) {
         return;
     }
 
@@ -36,10 +37,26 @@ function handleXPTaskEvent(xpEvent) {
         case 'task.started':
             log.info('Task %s %s', task.id, task.state);
             break;
+        case 'task.updated':
+            if (task.progress.current === task.progress.total) {
+                try {
+                    const info = JSON.parse(task.progress.info);
+                    if (info.adminToolsUrls) {
+                        cachedTask.adminToolsUrls = info.adminToolsUrls;
+                    }
+                    if (info.icon) {
+                        cachedTask.icon = info.icon;
+                    }
+                    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(cachedTask));
+                } catch (e) {
+                    log.error('Failed to parse progress info: %s', task.progress.info);
+                }
+            }
+            break;
         case 'task.finished':
         case 'task.removed':
         case 'task.failed':
-            log.info('Task %s %s', task.id, task.state);
+            log.info('Task %s %s. Removing...', task.id, task.state);
             store.removeTask(task.id);
             break;
     }
@@ -57,17 +74,21 @@ function handleXPTaskEvent(xpEvent) {
           }
       }*/
 function handleXPAppEvent(xpEvent) {
-    const app = xpEvent.data;
+    const data = xpEvent.data;
 
-    const cachedTask = store.getTask(function(task) { return task.url === app.applicationUrl; });
+    log.debug('App event: %s', JSON.stringify(data));
+
+    const cachedTask = store.getTask(function (task) {
+        return task.url === data.applicationUrl;
+    });
     if (!cachedTask) {
+        log.warning('No cached task for data: %s', data.applicationUrl);
         return;
     }
 
-    cachedTask.progress = app.progress;
+    cachedTask.progress = data.progress;
     store.updateTask(cachedTask.taskId, cachedTask);
 
-    log.info('App %s event: %s', cachedTask.key, JSON.stringify(cachedTask, null, 2));
     webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(cachedTask));
 }
 
@@ -78,7 +99,7 @@ const submitTask = (key, displayName) => {
         config: {key}
     };
     const taskId = taskLib.submitTask(taskConfig);
-    log.info('Submitted task for %s: %s', key, taskId);
+    log.debug('Submitted task for %s: %s', key, taskId);
     return {
         taskId,
         displayName,
@@ -87,24 +108,25 @@ const submitTask = (key, displayName) => {
         icon: '',
         version: 0,
         progress: 0,
+        adminToolsUrls: [],
     };
 };
 
 const parseTemplate = () => {
     const apps = __.toNativeObject(bean.getTemplateApplications()).applications;
-    log.info('Parsed template: %s', JSON.stringify(apps, null, 2));
+    log.debug('Parsed template: %s', JSON.stringify(apps, null, 2));
     const tasks = [];
     for (let index = 0; index < apps.length; index++) {
         let app = apps[index];
         const existingApp = appLib.get({key: app.key});
         if (existingApp) {
-            log.info('App %s already installed with version: %s', app.key, existingApp.version);
+            log.debug('App %s already installed with version: %s', app.key, existingApp.version);
             continue;
         }
 
         if (app.config && app.config.length > 0) {
             const configPath = __.toNativeObject(bean.createConfigFile(app.key, app.config));
-            log.info('Config file for app %s created at: %s', app.key, configPath);
+            log.debug('Config file for app %s created at: %s', app.key, configPath);
         }
 
         tasks.push(submitTask(app.key, app.displayName));
@@ -125,7 +147,7 @@ function listenToTaskEvents() {
             callback: handleXPAppEvent
         });
         listening = true;
-        log.info('Welcome app is listening for task and app events...');
+        log.debug('Welcome app is listening for task and app events...');
     }
 }
 

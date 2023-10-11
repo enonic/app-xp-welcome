@@ -7,4 +7,5 @@ export interface Application {
     deploymentUrl?: string;
     adminToolsUrls: string[];
     icon: string;
+    progress?: number;
 }

@@ -24,7 +24,7 @@ exports.get = function () {
 
     return {
         headers: {
-            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' data:"
+            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' https://market.enonic.com https://market-qa.enonic.com data:"
         },
         contentType: 'text/html',
         body: mustache.render(view, params),

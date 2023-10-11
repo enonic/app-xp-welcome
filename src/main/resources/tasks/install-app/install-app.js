@@ -3,7 +3,7 @@ const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
 const store = require('/lib/store');
 
-const marketUrl = 'https://market.enonic.com/api/graphql';
+const marketUrl = 'https://market-qa.enonic.com/api/graphql';
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
 
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
@@ -16,25 +16,24 @@ exports.run = function (params, taskId) {
         throw 'Missing required parameter: key';
     }
 
-    taskLib.progress({info: 'Task started for ' + key, current: 0, total: 1});
     const appInfoJson = fetchApplicationInfo(marketUrl, key, xpMajorVersion);
 
     const latestVersionJson = findLatestVersion(key, appInfoJson.version, xpMajorVersion);
-
-    const tempUrl = tempDownloadUrl(appInfoJson, latestVersionJson);
+    if (!latestVersionJson.downloadUrl) {
+        throw 'No downloadUrl found for ' + key;
+    }
 
     const cachedTask = store.getTask(taskId);
     if (cachedTask) {
         // save the url to match the events later
-        cachedTask.url = tempUrl;
+        cachedTask.url = latestVersionJson.downloadUrl;
         cachedTask.icon = appInfoJson.icon.attachmentUrl;
         cachedTask.version = latestVersionJson.versionNumber;
         store.updateTask(taskId, cachedTask);
     }
 
-    const appJson = installApplication(key, tempUrl /*latestVersionJson.applicationUrl*/, latestVersionJson.sha512);
-
-    taskLib.progress({info: 'Task complete for ' + key, current: 1, total: 1, application: appJson});
+    const appJson = installApplication(key, latestVersionJson.downloadUrl, latestVersionJson.sha512);
+    taskLib.progress({info: JSON.stringify(appJson), current: 1, total: 1});
 };
 
 function tempDownloadUrl(appJson, latestVersionObj) {
@@ -95,7 +94,7 @@ function installApplication(key, downloadUrl, sha256) {
     if (installResultJson.failure) {
         throw 'Failed to install application: ' + installResultJson.failure;
     } else {
-        return installResultJson.getApplication();
+        return installResultJson.application;
     }
 }
 
@@ -155,6 +154,7 @@ function createMarketQuery(key, xpMajorVersion) {
                         attachmentUrl(type: absolute)
                     }
                     version {
+                        downloadUrl
                         sha512 
                         versionNumber 
                         supportedVersions 

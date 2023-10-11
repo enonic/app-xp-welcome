@@ -7,6 +7,10 @@
   border-radius: 4px;
 }
 
+.ApplicationView-Progress {
+    display: none;
+}
+
 .ApplicationView_clickable {
     text-decoration: none;
 }
@@ -17,6 +21,18 @@
 
 .ApplicationView_clickable .ApplicationView-Title {
     text-decoration: underline;
+}
+
+.ApplicationView_installing {
+    filter: grayscale(1);
+}
+
+.ApplicationView_installing .ApplicationView-Subtitle {
+    display: none;
+}
+
+.ApplicationView_installing .ApplicationView-Progress {
+    display: block;
 }
 
 .ApplicationView-Icon {
