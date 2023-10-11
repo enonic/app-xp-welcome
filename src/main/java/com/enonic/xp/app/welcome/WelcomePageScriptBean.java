@@ -43,6 +43,7 @@ import com.enonic.xp.app.welcome.json.ApplicationJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
 import com.enonic.xp.app.welcome.json.TemplateApplicationJson;
+import com.enonic.xp.app.welcome.mapper.ApplicationInstallResultMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
@@ -240,7 +241,11 @@ public class WelcomePageScriptBean
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );
         try
         {
-            return java.nio.file.Files.writeString( filePath, config );
+            if ( !new File( filePath.toString() ).exists() )
+            {
+                return java.nio.file.Files.writeString( filePath, config );
+            }
+            return null;
         }
         catch ( IOException e )
         {
@@ -259,14 +264,14 @@ public class WelcomePageScriptBean
 
             if ( ALLOWED_PROTOCOLS.contains( url.getProtocol() ) )
             {
-                return lock( url, () -> installApplication( url, sha512 ) );
+                return new ApplicationInstallResultMapper( lock( url, () -> installApplication( url, sha512 ) ) );
             }
             else
             {
                 LOG.error( failure = "Illegal protocol: " + url.getProtocol() );
                 result.setFailure( failure );
 
-                return result;
+                return new ApplicationInstallResultMapper( result );
             }
 
         }
@@ -275,7 +280,7 @@ public class WelcomePageScriptBean
             LOG.error( failure = "Failed to upload application from " + urlString, e );
             result.setFailure( failure );
 
-            return result;
+            return new ApplicationInstallResultMapper( result );
         }
     }
 

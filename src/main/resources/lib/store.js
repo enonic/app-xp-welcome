@@ -1,37 +1,31 @@
-const cacheLib = require('/lib/cache');
+let store = [];
+let isLocked = false;
+const maxRetries = 100;
 
-const TASKS_KEY = 'welcome-app-tasks';
-const Store = cacheLib.newCache({
-    size: 1,
-    expire: 3600
-});
-
-exports.removeTask = (taskId, json) => {
-    if (!json) {
-        json = getCache();
-    }
-    for (let i = 0; i < json.length; i++) {
-        if (json[i].taskId === taskId) {
-            json.splice(i, 1);
-            Store.put(TASKS_KEY, JSON.stringify(json));
-            return;
+function wrapWithLock(fn) {
+    return function () {
+        for (let i = 0; i < maxRetries; i++) {
+            if (!isLocked) {
+                isLocked = true;
+                const result = fn.apply(this, arguments);
+                isLocked = false;
+                return result;
+            } else {
+                log.debug('Waiting for lock to release...');
+            }
         }
     }
 }
 
-exports.setCache = function (json) {
-    Store.put(TASKS_KEY, JSON.stringify(json));
+const setCache = function (json) {
+    store = json;
 }
 
 const getCache = function () {
-    const cacheValue = Store.getIfPresent(TASKS_KEY);
-    if (!cacheValue) {
-        return [];
-    }
-    return JSON.parse(cacheValue);
+    return store || [];
 }
 
-exports.getTask = function (taskId, json) {
+const getTask = function (taskId, json) {
     if (!json) {
         json = getCache();
     }
@@ -45,14 +39,35 @@ exports.getTask = function (taskId, json) {
     return undefined;
 }
 
-exports.updateTask = function (taskId, info, json) {
+const updateTask = function (taskId, info, json) {
     if (!json) {
         json = getCache();
     }
     for (let i = 0; i < json.length; i++) {
         if (json[i].taskId === taskId) {
             json[i] = info;
+            break;
         }
     }
-    Store.put(TASKS_KEY, JSON.stringify(json));
+    setCache(json);
 }
+
+const removeTask = function(taskId, json) {
+    if (!json) {
+        json = getCache();
+    }
+    for (let i = 0; i < json.length; i++) {
+        if (json[i].taskId === taskId) {
+            json.splice(i, 1);
+            setCache(json);
+            break;
+        }
+    }
+}
+
+module.exports = {
+    setCache: wrapWithLock(setCache),
+    getTask: wrapWithLock(getTask),
+    updateTask: wrapWithLock(updateTask),
+    removeTask: wrapWithLock(removeTask)
+};

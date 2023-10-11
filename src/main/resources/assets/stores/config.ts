@@ -28,7 +28,14 @@ const config = map<ConfigStore>({
 
 (function init(): void {
     fetchAppConfig().then(data => {
-        config.set(merge({}, config.get(), data));
+        const existingConfig = config.get();
+        const existingApps = new Array(existingConfig.applications);
+        if (existingApps.length > 0) {
+            // applications has probably been added by websocket
+            existingConfig.applications.length = 0;
+            data.applications = data.applications.concat(...existingApps);
+        }
+        config.set(merge({}, existingConfig, data));
     }).catch(console.error);
 })();
 
