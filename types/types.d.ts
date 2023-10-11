@@ -9,6 +9,12 @@ declare interface Application {
     icon: string;
 }
 
+declare interface TemplateApplication {
+    key: string;
+    displayName: string;
+    config: string;
+}
+
 declare interface Site {
     id: string;
     name: string;

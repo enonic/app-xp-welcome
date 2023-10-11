@@ -1,14 +1,23 @@
 package com.enonic.xp.app.welcome;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 import org.osgi.framework.Version;
+
+import com.google.common.io.ByteSource;
+import com.google.common.net.MediaType;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
@@ -28,6 +37,7 @@ import com.enonic.xp.content.Contents;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.content.GetContentByIdsParams;
 import com.enonic.xp.data.PropertyTree;
+import com.enonic.xp.home.HomeDirSupport;
 import com.enonic.xp.icon.Icon;
 import com.enonic.xp.page.DescriptorKey;
 import com.enonic.xp.project.Project;
@@ -43,8 +53,6 @@ import com.enonic.xp.security.IdProviderConfig;
 import com.enonic.xp.security.IdProviderKey;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.testing.ScriptTestSupport;
-import com.google.common.io.ByteSource;
-import com.google.common.net.MediaType;
 
 public class WelcomePageScriptBeanTest
     extends ScriptTestSupport
@@ -62,6 +70,9 @@ public class WelcomePageScriptBeanTest
     private ApplicationDescriptorService applicationDescriptorService;
 
     private AdminToolDescriptorService adminToolDescriptorService;
+
+    @TempDir
+    public Path temporaryFolder;
 
     @Override
     protected void initialize()
@@ -89,7 +100,7 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
-    public void testgetApplications()
+    public void testGetApplications()
     {
         ApplicationKey applicationKey = ApplicationKey.from( "applicationKey" );
         Application application = mockApplication( applicationKey, "application" );
@@ -109,6 +120,46 @@ public class WelcomePageScriptBeanTest
         mockApplication( webApplicationKey, true );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getApplications" );
+    }
+
+    @Test
+    public void testGetTemplateApplications()
+        throws IOException
+    {
+        InputStream stream = getClass().getResourceAsStream( "config/.template" );
+        Files.createDirectories( temporaryFolder.resolve( "config" ) );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getTemplateApplications" );
+    }
+
+    @Test
+    public void testDeleteTemplateFile()
+        throws IOException
+    {
+        InputStream stream = getClass().getResourceAsStream( "config/.template" );
+        Files.createDirectories( temporaryFolder.resolve( "config" ) );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "deleteTemplateFile" );
+    }
+
+    @Test
+    public void createConfigFile()
+        throws IOException
+    {
+        InputStream stream = getClass().getResourceAsStream( "config/.template" );
+        Path configPath = temporaryFolder.resolve( "config" );
+        Files.createDirectories( configPath );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "createConfigFile", configPath.toString(), File.separator );
     }
 
     @Test
@@ -183,10 +234,9 @@ public class WelcomePageScriptBeanTest
     {
         PropertyTree config = new PropertyTree();
         config.setBoolean( "adminUserCreationEnabled", true );
-        IdProviderConfig idProviderConfig = IdProviderConfig.create().
-            applicationKey( ApplicationKey.from( "com.enonic.xp.app.standardidprovider" ) ).
-            config( config ).
-            build();
+        IdProviderConfig idProviderConfig =
+            IdProviderConfig.create().applicationKey( ApplicationKey.from( "com.enonic.xp.app.standardidprovider" ) ).config(
+                config ).build();
 
         IdProvider idProvider = Mockito.mock( IdProvider.class );
 
@@ -199,28 +249,18 @@ public class WelcomePageScriptBeanTest
     @Test
     public void testGetSites()
     {
-        Content content1 = Content.create().
-                id( ContentId.from( "siteId1" ) ).
-                displayName( "displayName1" ).
-                path( "/parent/test-site1" ).
-                language( Locale.ENGLISH ).
-                build();
+        Content content1 =
+            Content.create().id( ContentId.from( "siteId1" ) ).displayName( "displayName1" ).path( "/parent/test-site1" ).language(
+                Locale.ENGLISH ).build();
 
-        Content content2 = Content.create().
-            id( ContentId.from( "siteId2" ) ).
-            displayName( "displayName2" ).
-            path( "/parent/test-site2" ).
-            build();
+        Content content2 =
+            Content.create().id( ContentId.from( "siteId2" ) ).displayName( "displayName2" ).path( "/parent/test-site2" ).build();
 
-        Project defaultProject = Project.create().
-            name( ProjectName.from( RepositoryId.from( "com.enonic.cms.default" ) ) ).
-            displayName( "default" ).
-            build();
+        Project defaultProject =
+            Project.create().name( ProjectName.from( RepositoryId.from( "com.enonic.cms.default" ) ) ).displayName( "default" ).build();
 
-        Project customProject = Project.create().
-            name( ProjectName.from( RepositoryId.from( "com.enonic.cms.custom" ) ) ).
-            displayName( "custom" ).
-            build();
+        Project customProject =
+            Project.create().name( ProjectName.from( RepositoryId.from( "com.enonic.cms.custom" ) ) ).displayName( "custom" ).build();
 
         Projects projects = Projects.create().addAll( List.of( defaultProject, customProject ) ).build();
 
@@ -229,9 +269,8 @@ public class WelcomePageScriptBeanTest
 
         Mockito.when( projectService.list() ).thenReturn( projects );
         Mockito.when( contentService.find( Mockito.any( ContentQuery.class ) ) ).thenReturn( findContentIdsByQueryResult );
-        Mockito.when( contentService.getByIds( Mockito.any( GetContentByIdsParams.class ) ) ).
-            thenReturn( Contents.create().add( content1 ).build() ).
-            thenReturn( Contents.create().add( content2 ).build() );
+        Mockito.when( contentService.getByIds( Mockito.any( GetContentByIdsParams.class ) ) ).thenReturn(
+            Contents.create().add( content1 ).build() ).thenReturn( Contents.create().add( content2 ).build() );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getSites" );
     }
@@ -266,7 +305,7 @@ public class WelcomePageScriptBeanTest
         return application;
     }
 
-    private Project mockProject( ProjectName name)
+    private Project mockProject( ProjectName name )
     {
         Project project = Mockito.mock( Project.class );
         Mockito.when( project.getName() ).thenReturn( name );
@@ -304,9 +343,11 @@ public class WelcomePageScriptBeanTest
 
         DescriptorKey descriptorKey = DescriptorKey.from( applicationKey, descriptorName );
         AdminToolDescriptor adminToolDescriptor = AdminToolDescriptor.create().key( descriptorKey ).build();
-        Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn( AdminToolDescriptors.from( adminToolDescriptor ) );
+        Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn(
+            AdminToolDescriptors.from( adminToolDescriptor ) );
 
         String adminToolUri = "admin/tool/" + applicationKey.toString() + "/" + descriptorName;
-        Mockito.when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn( adminToolUri );
+        Mockito.when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn(
+            adminToolUri );
     }
 }
