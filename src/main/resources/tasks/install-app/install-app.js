@@ -113,8 +113,8 @@ function compareVersions(a, b) {
     let result = 0;
     let intA, intB;
     for (let i = 0; i < Math.min(aSize, bSize); i++) {
-        intA = parseInt(aList[i]);
-        intB = parseInt(bList[i]);
+        intA = parseInt(aList[i], 10);
+        intB = parseInt(bList[i], 10);
         result = intA - intB;
         if (result !== 0) {
             break;

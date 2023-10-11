@@ -32,6 +32,36 @@ exports.getApplications = function () {
     assert.assertNotNull(application3.icon);
 };
 
+exports.getTemplateApplications = function () {
+    const applications = __.toNativeObject(bean.getTemplateApplications());
+
+    assert.assertEquals(2, applications.applications.length);
+
+    const application1 = applications.applications[0];
+
+    assert.assertNull(application1.deploymentUrl);
+    assert.assertEquals('key1', application1.key);
+    assert.assertEquals('Application1', application1.displayName);
+    assert.assertEquals('config1', application1.config);
+
+    const application2 = applications.applications[1];
+
+    assert.assertNull(application2.deploymentUrl);
+    assert.assertEquals('key2', application2.key);
+    assert.assertEquals('Application2', application2.displayName);
+    assert.assertEquals('', application2.config);
+
+};
+
+exports.createConfigFile = function (tempPath, separator) {
+    const key = "com.enonic.app.test";
+    assert.assertEquals(tempPath + separator + key + ".cfg", bean.createConfigFile(key, "foo=bar\nbar=baz"));
+};
+
+exports.deleteTemplateFile = function () {
+    assert.assertEquals(true, bean.deleteTemplateFile());
+};
+
 exports.getXpUrl = function () {
     assert.assertEquals('http://localhost:8080', bean.getXpUrl());
 };

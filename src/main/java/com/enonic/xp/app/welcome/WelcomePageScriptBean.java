@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -228,7 +229,7 @@ public class WelcomePageScriptBean
         List<TemplateApplicationJson> templateApps = new ArrayList<>();
 
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
-        if ( new File( filePath.toString() ).exists() )
+        if ( Files.exists( filePath ) )
         {
             templateApps.addAll( mustParseJsonFile( filePath.toString() ) );
         }
@@ -254,14 +255,14 @@ public class WelcomePageScriptBean
         return false;
     }
 
-    public Object createConfigFile( final String appKey, final String config )
+    public String createConfigFile( final String appKey, final String config )
     {
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );
         try
         {
             if ( !new File( filePath.toString() ).exists() )
             {
-                return java.nio.file.Files.writeString( filePath, config );
+                return java.nio.file.Files.writeString( filePath, config ).toString();
             }
             return null;
         }
