@@ -236,6 +236,24 @@ public class WelcomePageScriptBean
         return new TemplateApplicationsMapper( templateApps );
     }
 
+    public boolean deleteTemplateFile()
+    {
+        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
+        if ( new File( filePath.toString() ).exists() )
+        {
+            try
+            {
+                java.nio.file.Files.delete( filePath );
+                return true;
+            }
+            catch ( IOException e )
+            {
+                throw new UncheckedIOException( "Could not delete template applications file at " + filePath, e );
+            }
+        }
+        return false;
+    }
+
     public Object createConfigFile( final String appKey, final String config )
     {
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );

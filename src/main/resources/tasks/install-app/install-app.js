@@ -3,7 +3,7 @@ const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
 const store = require('/lib/store');
 
-const marketUrl = 'https://market-qa.enonic.com/api/graphql';
+const marketUrl = 'https://market.enonic.com/api/graphql';
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
 
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
@@ -15,12 +15,13 @@ exports.run = function (params, taskId) {
     if (!key) {
         throw 'Missing required parameter: key';
     }
+    taskLib.progress({info: 'Install task started for: ' + key, current: 0, total: 1});
 
     const appInfoJson = fetchApplicationInfo(marketUrl, key, xpMajorVersion);
 
     const latestVersionJson = findLatestVersion(key, appInfoJson.version, xpMajorVersion);
-    if (!latestVersionJson.downloadUrl) {
-        throw 'No downloadUrl found for ' + key;
+    if (!latestVersionJson || !latestVersionJson.downloadUrl) {
+        throw 'No download url found for ' + key;
     }
 
     const cachedTask = store.getTask(taskId);
@@ -30,6 +31,7 @@ exports.run = function (params, taskId) {
         cachedTask.icon = appInfoJson.icon.attachmentUrl;
         cachedTask.version = latestVersionJson.versionNumber;
         store.updateTask(taskId, cachedTask);
+        log.debug('Updated task %s with data: %s', taskId, JSON.stringify(cachedTask, null, 2));
     }
 
     const appJson = installApplication(key, latestVersionJson.downloadUrl, latestVersionJson.sha512);
@@ -65,6 +67,10 @@ function fetchApplicationInfo(marketUrl, key, xpMajorVersion) {
     }
 
     const responseJson = JSON.parse(response.body);
+
+    if (responseJson.errors) {
+        throw 'Fetch errors from market: ' + JSON.stringify(responseJson.errors, null, 2);
+    }
 
     return responseJson.data.market.queryDsl[0].data;
 }

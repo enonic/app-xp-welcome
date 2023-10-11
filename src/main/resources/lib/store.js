@@ -65,7 +65,12 @@ const removeTask = function(taskId, json) {
     }
 }
 
+const getSize = function () {
+    return getCache().length;
+}
+
 module.exports = {
+    getSize: wrapWithLock(getSize),
     setCache: wrapWithLock(setCache),
     getTask: wrapWithLock(getTask),
     updateTask: wrapWithLock(updateTask),

@@ -2,7 +2,6 @@ const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18nLib = require('/lib/xp/i18n');
 const mustache = require('/lib/mustache');
-const main = require("../main");
 
 exports.get = function () {
 
@@ -20,11 +19,9 @@ exports.get = function () {
         phrases,
     };
 
-    main.start();
-
     return {
         headers: {
-            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' https://market.enonic.com https://market-qa.enonic.com data:"
+            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' market.enonic.com data:"
         },
         contentType: 'text/html',
         body: mustache.render(view, params),

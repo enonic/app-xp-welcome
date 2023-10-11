@@ -38,7 +38,7 @@ function handleXPTaskEvent(xpEvent) {
             log.info('Task %s %s', task.id, task.state);
             break;
         case 'task.updated':
-            if (task.progress.current === task.progress.total) {
+            if (task.progress.current !== 0 && task.progress.current === task.progress.total) {
                 try {
                     const info = JSON.parse(task.progress.info);
                     if (info.adminToolsUrls) {
@@ -58,7 +58,18 @@ function handleXPTaskEvent(xpEvent) {
         case 'task.failed':
             log.info('Task %s %s. Removing...', task.id, task.state);
             store.removeTask(task.id);
+            if (store.getSize() === 0) {
+                log.info('All install tasks have finished');
+                deleteTemplateFile();
+            }
             break;
+    }
+}
+
+function deleteTemplateFile() {
+    const deleted = __.toNativeObject(bean.deleteTemplateFile());
+    if (deleted) {
+        log.debug('Deleted template file');
     }
 }
 
@@ -75,14 +86,14 @@ function handleXPTaskEvent(xpEvent) {
       }*/
 function handleXPAppEvent(xpEvent) {
     const data = xpEvent.data;
-
-    log.debug('App event: %s', JSON.stringify(data));
+    if (!data.applicationUrl) {
+        return;
+    }
 
     const cachedTask = store.getTask(function (task) {
         return task.url === data.applicationUrl;
     });
     if (!cachedTask) {
-        log.warning('No cached task for data: %s', data.applicationUrl);
         return;
     }
 
@@ -99,7 +110,7 @@ const submitTask = (key, displayName) => {
         config: {key}
     };
     const taskId = taskLib.submitTask(taskConfig);
-    log.debug('Submitted task for %s: %s', key, taskId);
+    log.info('Submitted task for %s: %s', key, taskId);
     return {
         taskId,
         displayName,
@@ -120,18 +131,26 @@ const parseTemplate = () => {
         let app = apps[index];
         const existingApp = appLib.get({key: app.key});
         if (existingApp) {
-            log.debug('App %s already installed with version: %s', app.key, existingApp.version);
+            log.info('App %s already installed with version: %s', app.key, existingApp.version);
             continue;
         }
 
         if (app.config && app.config.length > 0) {
             const configPath = __.toNativeObject(bean.createConfigFile(app.key, app.config));
-            log.debug('Config file for app %s created at: %s', app.key, configPath);
+            if (configPath) {
+                log.info('Config file for app %s created at: %s', app.key, configPath);
+            } else {
+                log.info('Config file for app %s already exists, kept user file.', app.key);
+            }
         }
 
         tasks.push(submitTask(app.key, app.displayName));
     }
-    store.setCache(tasks);
+    if (tasks.length === 0) {
+        deleteTemplateFile();
+    } else {
+        store.setCache(tasks);
+    }
 }
 
 function listenToTaskEvents() {
@@ -151,7 +170,9 @@ function listenToTaskEvents() {
     }
 }
 
-exports.start = function () {
+function start() {
     listenToTaskEvents();
     parseTemplate();
 }
+
+start();
