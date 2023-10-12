@@ -231,7 +231,14 @@ public class WelcomePageScriptBean
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
         if ( Files.exists( filePath ) )
         {
-            templateApps.addAll( mustParseJsonFile( filePath.toString() ) );
+            try
+            {
+                templateApps.addAll( mustParseJsonFile( filePath.toString() ) );
+            }
+            catch ( Exception e )
+            {
+                LOG.error( "Could not parse template file", e );
+            }
         }
 
         return new TemplateApplicationsMapper( templateApps );
@@ -244,7 +251,7 @@ public class WelcomePageScriptBean
         {
             try
             {
-                java.nio.file.Files.delete( filePath );
+                Files.delete( filePath );
                 return true;
             }
             catch ( IOException e )
@@ -262,7 +269,7 @@ public class WelcomePageScriptBean
         {
             if ( !new File( filePath.toString() ).exists() )
             {
-                return java.nio.file.Files.writeString( filePath, config ).toString();
+                return Files.writeString( filePath, config ).toString();
             }
             return null;
         }

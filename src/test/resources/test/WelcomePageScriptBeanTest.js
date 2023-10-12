@@ -53,14 +53,49 @@ exports.getTemplateApplications = function () {
 
 };
 
+exports.getTemplateApplicationsWrongFormat = function () {
+    const applications = __.toNativeObject(bean.getTemplateApplications());
+    assert.assertEquals(0, applications.applications.length);
+}
+
 exports.createConfigFile = function (tempPath, separator) {
     const key = "com.enonic.app.test";
     assert.assertEquals(tempPath + separator + key + ".cfg", bean.createConfigFile(key, "foo=bar\nbar=baz"));
 };
 
+exports.createConfigFileAlreadyExists = function (key) {
+    assert.assertEquals(null, bean.createConfigFile(key, "foo=bar\nbar=baz"));
+};
+
 exports.deleteTemplateFile = function () {
     assert.assertEquals(true, bean.deleteTemplateFile());
 };
+
+exports.deleteTemplateFileNotExists = function () {
+    assert.assertEquals(false, bean.deleteTemplateFile());
+};
+
+exports.installApplication = function (app) {
+    const result = __.toNativeObject(bean.installApplication("http://foo.com/app", null));
+    assert.assertNull(result.failure);
+    assert.assertNotNull( result.application);
+
+    const installed = result.application;
+    assert.assertEquals( app.key.toString(), installed.applicationKey );
+    assert.assertEquals( app.displayName, installed.displayName );
+}
+
+exports.installApplicationException = function () {
+    const result = __.toNativeObject(bean.installApplication("http://foo.com/app", null));
+    assert.assertNotNull(result.failure);
+    assert.assertNull( result.application);
+}
+
+exports.installApplicationWrongProtocol = function () {
+    const result = __.toNativeObject(bean.installApplication("ftp://foo.com/app", null));
+    assert.assertNotNull(result.failure);
+    assert.assertNull( result.application);
+}
 
 exports.getXpUrl = function () {
     assert.assertEquals('http://localhost:8080', bean.getXpUrl());

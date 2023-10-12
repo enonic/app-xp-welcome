@@ -4,6 +4,7 @@ package com.enonic.xp.app.welcome;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -136,6 +137,19 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
+    public void testGetTemplateApplicationsWrongFormat()
+        throws IOException
+    {
+        InputStream stream = getClass().getResourceAsStream( "config/.template-corrupt" );
+        Files.createDirectories( temporaryFolder.resolve( "config" ) );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getTemplateApplicationsWrongFormat" );
+    }
+
+    @Test
     public void testDeleteTemplateFile()
         throws IOException
     {
@@ -149,17 +163,68 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
-    public void createConfigFile()
+    public void testDeleteTemplateFileNotExists()
+    {
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "deleteTemplateFileNotExists" );
+    }
+
+    @Test
+    public void testCreateConfigFile()
         throws IOException
     {
-        InputStream stream = getClass().getResourceAsStream( "config/.template" );
         Path configPath = temporaryFolder.resolve( "config" );
         Files.createDirectories( configPath );
-        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
 
         HomeDirSupport.set( temporaryFolder );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "createConfigFile", configPath.toString(), File.separator );
+    }
+
+    @Test
+    public void testCreateConfigFileAlreadyExists()
+        throws IOException
+    {
+        Path configPath = temporaryFolder.resolve( "config" );
+        Files.createDirectories( configPath );
+        final String key = "com.enonic.app.test";
+        Files.createFile( configPath.resolve( key + ".cfg" ) );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "createConfigFileAlreadyExists", key );
+    }
+
+    @Test
+    public void testInstallApplication()
+    {
+        final ApplicationKey key = ApplicationKey.from( "Key1" );
+        final Application app = mockApplication( key, "Application1" );
+
+        mockApplication( key, true, "Descriptor1" );
+
+        Mockito.when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenReturn( app );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplication", app );
+    }
+
+    @Test
+    public void testInstallApplicationException()
+    {
+        final ApplicationKey key = ApplicationKey.from( "Key1" );
+
+        mockApplication( key, true, "Descriptor1" );
+
+        Mockito.when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenThrow( RuntimeException.class );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationException" );
+    }
+
+    @Test
+    public void testInstallApplicationWrongProtocol()
+    {
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationWrongProtocol" );
     }
 
     @Test
