@@ -88,13 +88,19 @@ exports.installApplication = function (app) {
 exports.installApplicationException = function () {
     const result = __.toNativeObject(bean.installApplication("http://foo.com/app", null));
     assert.assertNotNull(result.failure);
-    assert.assertNull( result.application);
+    assert.assertNull(result.application);
 }
 
 exports.installApplicationWrongProtocol = function () {
     const result = __.toNativeObject(bean.installApplication("ftp://foo.com/app", null));
     assert.assertNotNull(result.failure);
-    assert.assertNull( result.application);
+    assert.assertNull(result.application);
+}
+
+exports.installApplicationBadUrl = function () {
+    const result = __.toNativeObject(bean.installApplication("this is not an url", null));
+    assert.assertNotNull(result.failure);
+    assert.assertNull(result.application);
 }
 
 exports.getXpUrl = function () {

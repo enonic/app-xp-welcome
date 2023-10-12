@@ -216,7 +216,8 @@ public class WelcomePageScriptBeanTest
 
         mockApplication( key, true, "Descriptor1" );
 
-        Mockito.when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenThrow( RuntimeException.class );
+        Mockito.when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenThrow(
+            RuntimeException.class );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationException" );
     }
@@ -225,6 +226,12 @@ public class WelcomePageScriptBeanTest
     public void testInstallApplicationWrongProtocol()
     {
         runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationWrongProtocol" );
+    }
+
+    @Test
+    public void testInstallApplicationBadUrl()
+    {
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationBadUrl" );
     }
 
     @Test
