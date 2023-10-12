@@ -3,10 +3,12 @@ const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
 const store = require('/lib/store');
 
-const marketUrl = 'https://market.enonic.com/api/graphql';
+const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
+const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
+
+const marketUrl = __.toNativeObject(marketBean.getGraphqlUrl());
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
 
-const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 
 log.debug('XP major version: %s', xpMajorVersion);
 
@@ -37,15 +39,6 @@ exports.run = function (params, taskId) {
     const appJson = installApplication(key, latestVersionJson.downloadUrl, latestVersionJson.sha512);
     taskLib.progress({info: JSON.stringify(appJson), current: 1, total: 1});
 };
-
-function tempDownloadUrl(appJson, latestVersionObj) {
-
-    const latestVersion = latestVersionObj.versionNumber;
-    const appPath = appJson.identifier.split(".").join("/");
-    const repoUrl = appJson.repoUrl.endsWith('/') ? appJson.repoUrl : appJson.repoUrl + '/';
-
-    return `${repoUrl}${appPath}/${latestVersion}/${appJson.artifactId}-${latestVersion}.jar`;
-}
 
 function fetchApplicationInfo(marketUrl, key, xpMajorVersion) {
     const response = httpClient.request({

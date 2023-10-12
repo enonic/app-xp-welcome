@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
@@ -15,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -30,7 +31,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteSource;
 import com.google.common.net.MediaType;
-import com.google.common.util.concurrent.Striped;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.admin.tool.AdminToolDescriptors;
@@ -82,7 +82,6 @@ import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
-import com.enonic.xp.util.Exceptions;
 import com.enonic.xp.util.HexEncoder;
 import com.enonic.xp.web.servlet.ServletRequestHolder;
 import com.enonic.xp.web.servlet.ServletRequestUrlHelper;
@@ -94,7 +93,7 @@ public class WelcomePageScriptBean
 
     private static final Set<String> ALLOWED_PROTOCOLS = Set.of( "http", "https" );
 
-    private static final Striped<Lock> LOCK_STRIPED = Striped.lazyWeakLock( 100 );
+    public static final String FILE_NAME = "enonic-xp.template";
 
     public static final User SUPER_USER =
         User.create().key( PrincipalKey.ofSuperUser() ).login( PrincipalKey.ofSuperUser().getId() ).build();
@@ -115,9 +114,13 @@ public class WelcomePageScriptBean
 
     private Supplier<AdminToolDescriptorService> adminToolDescriptorServiceSupplier;
 
+    private ObjectMapper objectMapper;
+
     @Override
     public void initialize( final BeanContext beanContext )
     {
+        this.objectMapper = new ObjectMapper();
+
         this.applicationServiceSupplier = beanContext.getService( ApplicationService.class );
         this.resourceServiceSupplier = beanContext.getService( ResourceService.class );
         this.jettyConfigServiceSupplier = beanContext.getService( JettyConfigService.class );
@@ -224,11 +227,11 @@ public class WelcomePageScriptBean
         return new ProjectsMapper( projects );
     }
 
-    public Object getTemplateApplications()
+    public TemplateApplicationsMapper getTemplateApplications()
     {
         List<TemplateApplicationJson> templateApps = new ArrayList<>();
 
-        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
+        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( FILE_NAME );
         if ( Files.exists( filePath ) )
         {
             try
@@ -246,18 +249,19 @@ public class WelcomePageScriptBean
 
     public boolean deleteTemplateFile()
     {
-        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
-        if ( Files.exists( filePath ) )
+        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( FILE_NAME );
+        try
         {
-            try
-            {
-                Files.delete( filePath );
-                return true;
-            }
-            catch ( IOException e )
-            {
-                throw new UncheckedIOException( "Could not delete template applications file at " + filePath, e );
-            }
+            Files.delete( filePath );
+            return true;
+        }
+        catch ( NoSuchFileException e )
+        {
+            // no file to delete
+        }
+        catch ( IOException e )
+        {
+            LOG.warn( "Could not delete template applications file at " + filePath, e );
         }
         return false;
     }
@@ -267,10 +271,10 @@ public class WelcomePageScriptBean
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );
         try
         {
-            if ( !Files.exists( filePath ) )
-            {
-                return Files.writeString( filePath, config ).toString();
-            }
+            return Files.writeString( filePath, config, StandardOpenOption.CREATE_NEW ).toString();
+        }
+        catch ( FileAlreadyExistsException e )
+        {
             return null;
         }
         catch ( IOException e )
@@ -279,18 +283,17 @@ public class WelcomePageScriptBean
         }
     }
 
-    public Object installApplication( final String urlString, final String shaString )
+    public ApplicationInstallResultMapper installApplication( final String urlString, final String shaString )
     {
         final byte[] sha512 = Optional.ofNullable( shaString ).map( HexEncoder::fromHex ).orElse( null );
         final ApplicationInstallResultJson result = new ApplicationInstallResultJson();
         String failure;
         try
         {
-            final URL url = new URL( urlString );
-
+            final URL url = URI.create( urlString ).toURL();
             if ( ALLOWED_PROTOCOLS.contains( url.getProtocol() ) )
             {
-                return new ApplicationInstallResultMapper( lock( url, () -> installApplication( url, sha512 ) ) );
+                return new ApplicationInstallResultMapper( installApplication( url, sha512 ) );
             }
             else
             {
@@ -301,7 +304,7 @@ public class WelcomePageScriptBean
             }
 
         }
-        catch ( MalformedURLException e )
+        catch ( MalformedURLException | IllegalArgumentException e )
         {
             LOG.error( failure = "Failed to upload application from " + urlString, e );
             result.setFailure( failure );
@@ -371,40 +374,8 @@ public class WelcomePageScriptBean
         return builder.build();
     }
 
-    private <V> V lock( Object key, Callable<V> callable )
-    {
-        final Lock lock = LOCK_STRIPED.get( key );
-        try
-        {
-            if ( lock.tryLock( 30, TimeUnit.MINUTES ) )
-            {
-                try
-                {
-                    return callable.call();
-                }
-                catch ( Exception e )
-                {
-                    throw Exceptions.unchecked( e );
-                }
-                finally
-                {
-                    lock.unlock();
-                }
-            }
-            else
-            {
-                throw new RuntimeException( "Failed to acquire application service lock for application [" + key + "]" );
-            }
-        }
-        catch ( InterruptedException e )
-        {
-            throw new RuntimeException( "Failed to acquire application service lock for application [" + key + "]", e );
-        }
-    }
-
     private List<TemplateApplicationJson> mustParseJsonFile( String filePath )
     {
-        ObjectMapper objectMapper = new ObjectMapper();
         try
         {
             return objectMapper.readValue( new FileInputStream( filePath ), new TypeReference<>()
