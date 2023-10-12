@@ -55,6 +55,8 @@ import com.enonic.xp.security.IdProviderKey;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.testing.ScriptTestSupport;
 
+import static com.enonic.xp.app.welcome.WelcomePageScriptBean.FILE_NAME;
+
 public class WelcomePageScriptBeanTest
     extends ScriptTestSupport
 {
@@ -127,9 +129,9 @@ public class WelcomePageScriptBeanTest
     public void testGetTemplateApplications()
         throws IOException
     {
-        InputStream stream = getClass().getResourceAsStream( "config/.template" );
+        InputStream stream = getClass().getResourceAsStream( "config/" + FILE_NAME );
         Files.createDirectories( temporaryFolder.resolve( "config" ) );
-        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( FILE_NAME ) );
 
         HomeDirSupport.set( temporaryFolder );
 
@@ -140,9 +142,9 @@ public class WelcomePageScriptBeanTest
     public void testGetTemplateApplicationsWrongFormat()
         throws IOException
     {
-        InputStream stream = getClass().getResourceAsStream( "config/.template-corrupt" );
+        InputStream stream = getClass().getResourceAsStream( "config/" + FILE_NAME + ".corrupt" );
         Files.createDirectories( temporaryFolder.resolve( "config" ) );
-        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( FILE_NAME ) );
 
         HomeDirSupport.set( temporaryFolder );
 
@@ -153,9 +155,9 @@ public class WelcomePageScriptBeanTest
     public void testDeleteTemplateFile()
         throws IOException
     {
-        InputStream stream = getClass().getResourceAsStream( "config/.template" );
+        InputStream stream = getClass().getResourceAsStream( "config/" + FILE_NAME );
         Files.createDirectories( temporaryFolder.resolve( "config" ) );
-        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( ".template" ) );
+        Files.copy( stream, temporaryFolder.resolve( "config" ).resolve( FILE_NAME ) );
 
         HomeDirSupport.set( temporaryFolder );
 
