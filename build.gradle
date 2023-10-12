@@ -16,12 +16,11 @@ app {
     name = 'com.enonic.xp.app.welcome'
     group = 'com.enonic.xp'
     displayName = 'XP Welcome App'
-    systemApp = false
+    systemApp = true
     systemVersion = "${xpVersion}"
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     xp.enonicRepo( 'dev' )
 }
