@@ -1,10 +1,10 @@
 package com.enonic.xp.app.welcome;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -247,7 +247,7 @@ public class WelcomePageScriptBean
     public boolean deleteTemplateFile()
     {
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( ".template" );
-        if ( new File( filePath.toString() ).exists() )
+        if ( Files.exists( filePath ) )
         {
             try
             {
@@ -267,7 +267,7 @@ public class WelcomePageScriptBean
         Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );
         try
         {
-            if ( !new File( filePath.toString() ).exists() )
+            if ( !Files.exists( filePath ) )
             {
                 return Files.writeString( filePath, config ).toString();
             }
@@ -301,7 +301,7 @@ public class WelcomePageScriptBean
             }
 
         }
-        catch ( IOException e )
+        catch ( MalformedURLException e )
         {
             LOG.error( failure = "Failed to upload application from " + urlString, e );
             result.setFailure( failure );
