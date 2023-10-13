@@ -9,8 +9,8 @@ const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 const marketUrl = __.toNativeObject(marketBean.getGraphqlUrl());
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
 
-
 log.debug('XP major version: %s', xpMajorVersion);
+log.debug('market graphql URL: %s', marketUrl);
 
 exports.run = function (params, taskId) {
     const key = params.key;
@@ -86,10 +86,10 @@ function findLatestVersion(key, versions, xpMajorVersion) {
     return latestVersion;
 }
 
-function installApplication(key, downloadUrl, sha256) {
+function installApplication(key, downloadUrl, sha512) {
     log.debug('Installing %s from: %s', key, downloadUrl);
 
-    const installResultJson = __.toNativeObject(bean.installApplication(downloadUrl, sha256 || null));
+    const installResultJson = __.toNativeObject(bean.installApplication(downloadUrl, sha512 || null));
     if (installResultJson.failure) {
         throw 'Failed to install application: ' + installResultJson.failure;
     } else {

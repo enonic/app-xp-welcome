@@ -3,6 +3,8 @@ const portal = require('/lib/xp/portal');
 const i18nLib = require('/lib/xp/i18n');
 const mustache = require('/lib/mustache');
 
+const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
+
 exports.get = function () {
 
     const view = resolve('./welcome.html');
@@ -19,9 +21,12 @@ exports.get = function () {
         phrases,
     };
 
+    const marketUrl = __.toNativeObject(marketBean.getMarketUrl());
+
     return {
         headers: {
-            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' market.enonic.com data:"
+            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline';" +
+                " object-src 'none'; img-src 'self' " + marketUrl + " data:"
         },
         contentType: 'text/html',
         body: mustache.render(view, params),

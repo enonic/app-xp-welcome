@@ -52,7 +52,7 @@ const updateTask = function (taskId, info, json) {
     setCache(json);
 }
 
-const removeTask = function(taskId, json) {
+const removeTask = function (taskId, json) {
     if (!json) {
         json = getCache();
     }
