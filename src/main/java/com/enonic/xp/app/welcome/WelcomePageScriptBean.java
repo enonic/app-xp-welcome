@@ -199,20 +199,26 @@ public class WelcomePageScriptBean
 
             draftSitesAsMap.keySet().forEach( siteId -> {
                 Content site = draftSitesAsMap.get( siteId );
-                final SiteJson.Builder builder = SiteJson.create().id( siteId.toString() ).name( site.getName().toString() ).displayName(
-                    site.getDisplayName() ).projectName(
-                    repositoryId.toString().replaceFirst( ProjectConstants.PROJECT_REPO_ID_PREFIX, "" ) ).repositoryName(
-                    repositoryId.toString() ).path( site.getPath().toString() ).hasDraft( draftSitesAsMap.containsKey( siteId ) ).hasMaster(
-                    masterSitesAsMap.containsKey( siteId ) );
-                if ( site.getLanguage() != null )
-                {
-                    builder.language( site.getLanguage().getLanguage() );
-                }
-                siteJsons.add( builder.build() );
+                boolean hasMaster = masterSitesAsMap.containsKey( siteId );
+                siteJsons.add( toSiteJson( site, repositoryId, hasMaster ) );
             } );
         } );
 
         return new SitesMapper( siteJsons );
+    }
+
+    private static SiteJson toSiteJson( final Content site, final RepositoryId repositoryId, final boolean hasMaster )
+    {
+        final ContentId siteId = site.getId();
+        final SiteJson.Builder builder =
+            SiteJson.create().id( siteId.toString() ).name( site.getName().toString() ).displayName( site.getDisplayName() ).projectName(
+                repositoryId.toString().replaceFirst( ProjectConstants.PROJECT_REPO_ID_PREFIX, "" ) ).repositoryName(
+                repositoryId.toString() ).path( site.getPath().toString() ).hasDraft( true ).hasMaster( hasMaster );
+        if ( site.getLanguage() != null )
+        {
+            builder.language( site.getLanguage().getLanguage() );
+        }
+        return builder.build();
     }
 
     public Object getProjects()
@@ -376,9 +382,9 @@ public class WelcomePageScriptBean
 
     private List<TemplateApplicationJson> mustParseJsonFile( String filePath )
     {
-        try
+        try (FileInputStream in = new FileInputStream( filePath ))
         {
-            return objectMapper.readValue( new FileInputStream( filePath ), new TypeReference<>()
+            return objectMapper.readValue( in, new TypeReference<>()
             {
             } );
         }
