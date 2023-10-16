@@ -21,11 +21,7 @@ public class StoreBean
 
     public Map<String, Object> getByUrl( String url )
     {
-        return store.values().stream().filter( ( Map<String, Object> val ) -> {
-            Object urlVal = val.get( "url" );
-            String urlString = urlVal != null ? urlVal.toString() : null;
-            return Objects.equals( url, urlString );
-        } ).findFirst().orElse( null );
+        return store.values().stream().filter( val -> Objects.equals( url, val.get( "url" ) ) ).findAny().orElse( null );
     }
 
     public void remove( String key )
