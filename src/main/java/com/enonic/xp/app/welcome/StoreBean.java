@@ -5,19 +5,9 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.enonic.xp.script.bean.BeanContext;
-import com.enonic.xp.script.bean.ScriptBean;
-
 public class StoreBean
-    implements ScriptBean
 {
     private static final ConcurrentMap<String, Map<String, Object>> store = new ConcurrentHashMap<>();
-
-    @Override
-    public void initialize( final BeanContext context )
-    {
-
-    }
 
     public void put( String key, Map<String, Object> value )
     {
