@@ -1,10 +1,10 @@
 const taskLib = require('/lib/xp/task');
 const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
-const store = require('/lib/store');
 
 const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
+const store = __.newBean('com.enonic.xp.app.welcome.StoreBean');
 
 const marketUrl = __.toNativeObject(marketBean.getGraphqlUrl());
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
@@ -26,13 +26,13 @@ exports.run = function (params, taskId) {
         throw 'No download url found for ' + key;
     }
 
-    const cachedTask = store.getTask(taskId);
+    const cachedTask = __.toNativeObject(store.get(taskId));
     if (cachedTask) {
         // save the url to match the events later
         cachedTask.url = latestVersionJson.downloadUrl;
         cachedTask.icon = appInfoJson.icon.attachmentUrl;
         cachedTask.version = latestVersionJson.versionNumber;
-        store.updateTask(taskId, cachedTask);
+        store.put(taskId, cachedTask);
         log.debug('Updated task %s with data: %s', taskId, JSON.stringify(cachedTask, null, 2));
     }
 
