@@ -2,7 +2,6 @@ const taskLib = require('/lib/xp/task');
 const eventLib = require('/lib/xp/event');
 const webSocketLib = require('/lib/xp/websocket');
 const appLib = require('/lib/xp/app');
-const store = require('/lib/store');
 
 const SOCKET_GROUP = 'welcome-app';
 exports.SOCKET_GROUP = SOCKET_GROUP;
@@ -10,6 +9,7 @@ exports.SOCKET_GROUP = SOCKET_GROUP;
 let listening = false;
 
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
+const store = __.newBean('com.enonic.xp.app.welcome.StoreBean');
 
 /*    var xpEvent = {
         "description": "Long running task",
@@ -28,7 +28,7 @@ const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 function handleXPTaskEvent(xpEvent) {
     const task = xpEvent.data;
 
-    let cachedTask = store.getTask(task.id);
+    let cachedTask = __.toNativeObject(store.get(task.id));
     if (!cachedTask) {
         return;
     }
@@ -57,8 +57,8 @@ function handleXPTaskEvent(xpEvent) {
         case 'task.removed':
         case 'task.failed':
             log.info('Task %s %s. Removing...', task.id, task.state);
-            store.removeTask(task.id);
-            if (store.getSize() === 0) {
+            store.remove(task.id);
+            if (__.toNativeObject(store.size()) === 0) {
                 log.info('All install tasks have finished');
                 deleteTemplateFile();
             }
@@ -90,15 +90,13 @@ function handleXPAppEvent(xpEvent) {
         return;
     }
 
-    const cachedTask = store.getTask(function (task) {
-        return task.url === data.applicationUrl;
-    });
+    const cachedTask = __.toNativeObject(store.getByUrl(data.applicationUrl));
     if (!cachedTask) {
         return;
     }
 
     cachedTask.progress = data.progress;
-    store.updateTask(cachedTask.taskId, cachedTask);
+    store.put(cachedTask.taskId, cachedTask);
 
     webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(cachedTask));
 }
@@ -126,7 +124,6 @@ const submitTask = (key, displayName) => {
 const parseTemplate = () => {
     const apps = __.toNativeObject(bean.getTemplateApplications()).applications;
     log.debug('Parsed template: %s', JSON.stringify(apps, null, 2));
-    const tasks = [];
     for (let index = 0; index < apps.length; index++) {
         let app = apps[index];
         const existingApp = appLib.get({key: app.key});
@@ -144,12 +141,11 @@ const parseTemplate = () => {
             }
         }
 
-        tasks.push(submitTask(app.key, app.displayName));
+        const task = submitTask(app.key, app.displayName);
+        store.put(task.taskId, task);
     }
-    if (tasks.length === 0) {
+    if (__.toNativeObject(store.size()) === 0) {
         deleteTemplateFile();
-    } else {
-        store.setCache(tasks);
     }
 }
 
