@@ -20,8 +20,9 @@ exports.run = function (params, taskId) {
     taskLib.progress({info: 'Install task started for: ' + key, current: 0, total: 1});
 
     const appInfoJson = fetchApplicationInfo(marketUrl, key, xpMajorVersion);
+    const appInfoData = appInfoJson.data;
 
-    const latestVersionJson = findLatestVersion(key, appInfoJson.version, xpMajorVersion);
+    const latestVersionJson = findLatestVersion(key, appInfoData.version, xpMajorVersion);
     if (!latestVersionJson || !latestVersionJson.downloadUrl) {
         throw 'No download url found for ' + key;
     }
@@ -29,8 +30,9 @@ exports.run = function (params, taskId) {
     const cachedTask = __.toNativeObject(store.get(taskId));
     if (cachedTask) {
         // save the url to match the events later
+        cachedTask.displayName = appInfoJson.displayName;
         cachedTask.url = latestVersionJson.downloadUrl;
-        cachedTask.icon = appInfoJson.icon.attachmentUrl;
+        cachedTask.icon = appInfoData.icon.attachmentUrl;
         cachedTask.version = latestVersionJson.versionNumber;
         store.put(taskId, cachedTask);
         log.debug('Updated task %s with data: %s', taskId, JSON.stringify(cachedTask, null, 2));
@@ -65,7 +67,7 @@ function fetchApplicationInfo(marketUrl, key, xpMajorVersion) {
         throw 'Fetch errors from market: ' + JSON.stringify(responseJson.errors, null, 2);
     }
 
-    return responseJson.data.market.queryDsl[0].data;
+    return responseJson.data.market.queryDsl[0];
 }
 
 function findLatestVersion(key, versions, xpMajorVersion) {
@@ -144,7 +146,8 @@ function createMarketQuery(key, xpMajorVersion) {
                 {like: {field: "data.version.supportedVersions", value:"${xpMajorVersion}.*" }}
               ]}}
             ) {
-            ... on com_enonic_app_market_Application { 
+            ... on com_enonic_app_market_Application {
+                displayName 
                 data { 
                     identifier 
                     repoUrl

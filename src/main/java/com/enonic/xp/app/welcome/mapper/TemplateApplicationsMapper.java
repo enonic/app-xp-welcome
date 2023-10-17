@@ -23,7 +23,6 @@ public class TemplateApplicationsMapper
         applications.forEach( application -> {
             gen.map();
             gen.value( "key", application.getKey() );
-            gen.value( "displayName", application.getDisplayName() );
             gen.value( "config", application.getConfig() );
             gen.end();
         } );
