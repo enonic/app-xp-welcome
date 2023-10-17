@@ -1,9 +1,7 @@
 package com.enonic.xp.app.welcome.market;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.function.Supplier;
 
 import com.enonic.xp.script.bean.BeanContext;
@@ -22,12 +20,13 @@ public final class GetMarketConfigBean
 
     public String getGraphqlUrl()
     {
+        String marketUrl = null;
         if ( marketConfigSupplier.get() != null )
         {
-            return marketConfigSupplier.get().getGraphqlUrl();
+            marketUrl = marketConfigSupplier.get().getGraphqlUrl();
         }
 
-        return MarketConfig.DEFAULT_GRAPHQL_URL;
+        return marketUrl != null ? marketUrl : MarketConfig.DEFAULT_GRAPHQL_URL;
     }
 
     public String getMarketUrl()
@@ -35,15 +34,15 @@ public final class GetMarketConfigBean
         final String graphqlUrl = getGraphqlUrl();
         try
         {
-            URL url = new URI( graphqlUrl ).toURL();
-            String urlString = url.getProtocol() + "://" + url.getHost();
+            URI url = new URI( graphqlUrl );
+            String urlString = url.getScheme() + "://" + url.getHost();
             if ( url.getPort() > -1 )
             {
                 urlString += ":" + url.getPort();
             }
             return urlString;
         }
-        catch ( MalformedURLException | URISyntaxException e )
+        catch ( URISyntaxException e )
         {
             throw new RuntimeException( e );
         }
