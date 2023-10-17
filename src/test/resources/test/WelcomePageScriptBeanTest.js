@@ -41,14 +41,12 @@ exports.getTemplateApplications = function () {
 
     assert.assertNull(application1.deploymentUrl);
     assert.assertEquals('key1', application1.key);
-    assert.assertEquals('Application1', application1.displayName);
     assert.assertEquals('config1', application1.config);
 
     const application2 = applications.applications[1];
 
     assert.assertNull(application2.deploymentUrl);
     assert.assertEquals('key2', application2.key);
-    assert.assertEquals('Application2', application2.displayName);
     assert.assertEquals('', application2.config);
 
 };

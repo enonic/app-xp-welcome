@@ -102,7 +102,7 @@ function handleXPAppEvent(xpEvent) {
 }
 
 
-const submitTask = (key, displayName) => {
+const submitTask = (key) => {
     const taskConfig = {
         descriptor: 'install-app',
         config: {key}
@@ -111,7 +111,7 @@ const submitTask = (key, displayName) => {
     log.info('Submitted task for %s: %s', key, taskId);
     return {
         taskId,
-        displayName,
+        displayName: '',
         key,
         url: '',
         icon: '',
@@ -141,7 +141,7 @@ const parseTemplate = () => {
             }
         }
 
-        const task = submitTask(app.key, app.displayName);
+        const task = submitTask(app.key);
         store.put(task.taskId, task);
     }
     if (__.toNativeObject(store.size()) === 0) {

@@ -11,7 +11,6 @@ declare interface Application {
 
 declare interface TemplateApplication {
     key: string;
-    displayName: string;
     config: string;
 }
 

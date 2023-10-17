@@ -1,9 +1,7 @@
 [{
-	"displayName": "Application1",
 	"key": "key1",
 	"config": "config1"
 }, {
-	"displayName": "Application2",
 	"key": "key2",
 	"config": ""
 }]
