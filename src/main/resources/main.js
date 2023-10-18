@@ -126,12 +126,12 @@ function handleAppProgress(data) {
 function handleAppInstalled(data) {
     const key = data.applicationKey;
     if (!key) {
-        return;
+        return null;
     }
 
     const app = __.toNativeObject(bean.getInstalledApplication(key));
     if (!app) {
-        return;
+        return null;
     }
 
     return {
@@ -149,7 +149,7 @@ function handleAppInstalled(data) {
 function handleAppUninstalled(data) {
     const key = data.applicationKey;
     if (!key) {
-        return;
+        return null;
     }
 
     return {
