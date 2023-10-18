@@ -23,6 +23,7 @@ interface WsAppData {
     taskId: string;
     progress: number;
     adminToolsUrls: string[];
+    action: 'remove' | undefined;
 }
 
 export default function App(): JSX.Element {
@@ -42,6 +43,10 @@ export default function App(): JSX.Element {
 
 function getWebSocketOptions(applications: Application[]): Options {
     return {
+        shouldReconnect: (e) => {
+            console.log('WebSocket connection closed.', e.code, e.reason);
+            return true;
+        },
         onOpen: () => {
             console.log('WebSocket connection established.');
         },
@@ -49,17 +54,24 @@ function getWebSocketOptions(applications: Application[]): Options {
             const data = JSON.parse(event.data) as WsAppData;
 
             if (applications) {
-                const existingApp = applications.find((app) => app.applicationKey === data.key);
+                const existingApp = applications.find((app) => {
+                    return (data.key && app.applicationKey === data.key)
+                        || (data.url && app.url === data.url);
+                });
                 if (existingApp) {
-                    existingApp.progress = data.progress;
-                    if (data.progress === 100) {
-                        if (data.adminToolsUrls.length > 0) {
-                            existingApp.adminToolsUrls = data.adminToolsUrls;
-                        }
-                        if (data.icon) {
-                            existingApp.icon = data.icon;
-                        }
+                    if (data.action === 'remove') {
+                        applications.splice(applications.indexOf(existingApp), 1);
+                        return;
                     }
+
+                    existingApp.progress = data.progress;
+                    if (data.adminToolsUrls.length > 0) {
+                        existingApp.adminToolsUrls = data.adminToolsUrls;
+                    }
+                    if (data.icon) {
+                        existingApp.icon = data.icon;
+                    }
+
                 } else {
                     applications.push({
                         applicationKey: data.key,
@@ -68,7 +80,7 @@ function getWebSocketOptions(applications: Application[]): Options {
                         description: data.description,
                         url: data.url,
                         icon: data.icon,
-                        adminToolsUrls: [],
+                        adminToolsUrls: data.adminToolsUrls || [],
                     });
                     applications.sort(function (a, b) {
                         return a.displayName.localeCompare(b.displayName);

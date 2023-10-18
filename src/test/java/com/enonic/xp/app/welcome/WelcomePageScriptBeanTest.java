@@ -139,6 +139,24 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
+    public void testGetInstalledApplication()
+    {
+        ApplicationKey applicationKey = ApplicationKey.from( "applicationKey" );
+        Application application = mockApplication( applicationKey, "Application" );
+        mockApplication( applicationKey, true, "main" );
+
+        Mockito.when( applicationService.getInstalledApplication( Mockito.any( ApplicationKey.class ) ) ).thenReturn( application );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetInstalledApplication", applicationKey.toString() );
+    }
+
+    @Test
+    public void getDefaultApplicationIcon()
+    {
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetDefaultApplicationIcon" );
+    }
+
+    @Test
     public void testGetTemplateApplicationsWrongFormat()
         throws IOException
     {

@@ -37,22 +37,6 @@ function handleXPTaskEvent(xpEvent) {
         case 'task.started':
             log.info('Task %s %s', task.id, task.state);
             break;
-        case 'task.updated':
-            if (task.progress.current !== 0 && task.progress.current === task.progress.total) {
-                try {
-                    const info = JSON.parse(task.progress.info);
-                    if (info.adminToolsUrls) {
-                        cachedTask.adminToolsUrls = info.adminToolsUrls;
-                    }
-                    if (info.icon) {
-                        cachedTask.icon = info.icon;
-                    }
-                    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(cachedTask));
-                } catch (e) {
-                    log.error('Failed to parse progress info: %s', task.progress.info);
-                }
-            }
-            break;
         case 'task.finished':
         case 'task.removed':
         case 'task.failed':
@@ -86,19 +70,93 @@ function deleteTemplateFile() {
       }*/
 function handleXPAppEvent(xpEvent) {
     const data = xpEvent.data;
-    if (!data.applicationUrl) {
+
+    let result;
+    switch (data.eventType) {
+        case 'PROGRESS':
+            result = handleAppProgress(data);
+            break;
+        case 'INSTALLED':
+            result = handleAppInstalled(data);
+            break;
+        case 'UNINSTALLED':
+            result = handleAppUninstalled(data);
+            break;
+    }
+    if (!result) {
         return;
     }
 
-    const cachedTask = __.toNativeObject(store.getByUrl(data.applicationUrl));
-    if (!cachedTask) {
+    if (result.taskId) {
+        // only save tasks created by us
+        store.put(result.taskId, result);
+    }
+    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(result));
+}
+
+function handleAppProgress(data) {
+    let cachedTask = __.toNativeObject(store.getByUrl(data.applicationUrl));
+    if (cachedTask) {
+        cachedTask.progress = data.progress;
+    } else {
+        // app is installed by someone else so we have no record of it in cache
+        if (data.progress === 100) {
+            // remove the placeholder on UI
+            cachedTask = {
+                taskId: undefined,
+                url: data.applicationUrl,
+                action: 'remove',
+            }
+        } else {
+            cachedTask = {
+                taskId: undefined,    // use url as taskId because we don't have one
+                displayName: 'Installing...',
+                key: undefined,
+                url: data.applicationUrl,
+                icon: bean.getDefaultApplicationIconAsBase64(),
+                version: 0,
+                progress: data.progress,
+                adminToolsUrls: [],
+            }
+        }
+    }
+    return cachedTask;
+}
+
+function handleAppInstalled(data) {
+    const key = data.applicationKey;
+    if (!key) {
         return;
     }
 
-    cachedTask.progress = data.progress;
-    store.put(cachedTask.taskId, cachedTask);
+    const app = __.toNativeObject(bean.getInstalledApplication(key));
+    if (!app) {
+        return;
+    }
 
-    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify(cachedTask));
+    return {
+        taskId: undefined,
+        displayName: app.displayName,
+        key: app.applicationKey,
+        url: app.url,
+        icon: app.icon,
+        version: app.version,
+        progress: 100,
+        adminToolsUrls: app.adminToolsUrls,
+    }
+}
+
+function handleAppUninstalled(data) {
+    const key = data.applicationKey;
+    if (!key) {
+        return;
+    }
+
+    return {
+        taskId: undefined,
+        key: data.applicationKey,
+        action: 'remove',
+    }
 }
 
 

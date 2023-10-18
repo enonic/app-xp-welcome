@@ -45,6 +45,7 @@ import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
 import com.enonic.xp.app.welcome.json.TemplateApplicationJson;
 import com.enonic.xp.app.welcome.mapper.ApplicationInstallResultMapper;
+import com.enonic.xp.app.welcome.mapper.ApplicationMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
@@ -334,6 +335,22 @@ public class WelcomePageScriptBean
         return createUrl( jettyConfigServiceSupplier.get().getHttpMonitorPort() );
     }
 
+    public String getDefaultApplicationIconAsBase64()
+    {
+        return "data:" + MediaType.SVG_UTF_8.toString() + ";base64, " +
+            Base64.getEncoder().encodeToString( getDefaultIcon( "application.svg" ) );
+    }
+
+    public ApplicationMapper getInstalledApplication( final String key )
+    {
+        if ( key == null || key.isEmpty() )
+        {
+            return null;
+        }
+        final Application application = this.applicationServiceSupplier.get().getInstalledApplication( ApplicationKey.from( key ) );
+        return Optional.ofNullable( application ).map( app -> new ApplicationMapper( toApplicationJson( app ) ) ).orElse( null );
+    }
+
     private ApplicationInstallResultJson installApplication( final URL url, final byte[] sha512 )
     {
         final ApplicationInstallResultJson result = new ApplicationInstallResultJson();
@@ -427,10 +444,12 @@ public class WelcomePageScriptBean
     private String getApplicationIconAsBase64( final ApplicationKey applicationKey )
     {
         ApplicationDescriptor applicationDescriptor = applicationDescriptorServiceSupplier.get().get( applicationKey );
-        Icon icon = applicationDescriptor != null ? applicationDescriptor.getIcon() : null;
-        byte[] iconBytes = icon != null ? icon.toByteArray() : getDefaultIcon( "application.svg" );
-        String mimeType = icon != null ? icon.getMimeType() : MediaType.SVG_UTF_8.toString();
-        return "data:" + mimeType + ";base64, " + Base64.getEncoder().encodeToString( iconBytes );
+        if ( applicationDescriptor == null || applicationDescriptor.getIcon() == null )
+        {
+            return getDefaultApplicationIconAsBase64();
+        }
+        Icon icon = applicationDescriptor.getIcon();
+        return "data:" + icon.getMimeType() + ";base64, " + Base64.getEncoder().encodeToString( icon.toByteArray() );
     }
 
     private String getProjectIconAsBase64( final Project project )

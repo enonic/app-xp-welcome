@@ -51,6 +51,21 @@ exports.getTemplateApplications = function () {
 
 };
 
+exports.testGetInstalledApplication = function (key) {
+    const app = __.toNativeObject(bean.getInstalledApplication(key));
+
+    assert.assertNotNull(app);
+    assert.assertEquals(key, app.applicationKey);
+    assert.assertEquals(1, app.adminToolsUrls.length);
+}
+
+exports.testGetDefaultApplicationIcon = function () {
+    const icon = __.toNativeObject(bean.getDefaultApplicationIconAsBase64());
+
+    assert.assertNotNull(icon);
+    assert.assertTrue(icon.startsWith("data:"));
+}
+
 exports.getTemplateApplicationsWrongFormat = function () {
     const applications = __.toNativeObject(bean.getTemplateApplications());
     assert.assertEquals(0, applications.applications.length);
