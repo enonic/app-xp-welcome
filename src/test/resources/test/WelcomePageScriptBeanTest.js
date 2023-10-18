@@ -59,6 +59,12 @@ exports.testGetInstalledApplication = function (key) {
     assert.assertEquals(1, app.adminToolsUrls.length);
 }
 
+exports.testGetInstalledApplicationEmptyKey = function () {
+    const app = __.toNativeObject(bean.getInstalledApplication(null));
+
+    assert.assertNull(app);
+}
+
 exports.testGetDefaultApplicationIcon = function () {
     const icon = __.toNativeObject(bean.getDefaultApplicationIconAsBase64());
 
