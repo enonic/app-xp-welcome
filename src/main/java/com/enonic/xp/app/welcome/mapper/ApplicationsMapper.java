@@ -22,14 +22,7 @@ public class ApplicationsMapper
         gen.array( "applications" );
         applications.forEach( application -> {
             gen.map();
-            gen.value( "applicationKey", application.getKey() );
-            gen.value( "displayName", application.getDisplayName() );
-            gen.value( "description", application.getDescription() );
-            gen.value( "version", application.getVersion() );
-            gen.value( "url", application.getUrl() );
-            gen.value( "deploymentUrl", application.getWebappUrl() );
-            gen.value( "adminToolsUrls", application.getAdminToolsUrls() );
-            gen.value( "icon", application.getIconAsBase64() );
+            new ApplicationMapper( application ).serialize( gen );
             gen.end();
         } );
         gen.end();

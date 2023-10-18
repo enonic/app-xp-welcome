@@ -8,6 +8,8 @@ declare interface XpBeans {
         deleteTemplateFile: () => boolean;
         createConfigFile: (key: string, config: string) => string;
         installApplication: (url: string, sha: string) => string;
+        getDefaultApplicationIconAsBase64: () => string;
+        getInstalledApplication: (key: string) => Application;
         getXpUrl: () => string;
         getManagementApiUrl: () => string;
         getStatisticsApiUrl: () => string;

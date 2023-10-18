@@ -23,14 +23,7 @@ public class ApplicationInstallResultMapper
         if ( app != null )
         {
             gen.map( "application" );
-            gen.value( "applicationKey", app.getKey() );
-            gen.value( "displayName", app.getDisplayName() );
-            gen.value( "description", app.getDescription() );
-            gen.value( "version", app.getVersion() );
-            gen.value( "url", app.getUrl() );
-            gen.value( "deploymentUrl", app.getWebappUrl() );
-            gen.value( "adminToolsUrls", app.getAdminToolsUrls() );
-            gen.value( "icon", app.getIconAsBase64() );
+            new ApplicationMapper( app ).serialize( gen );
             gen.end();
         }
     }
