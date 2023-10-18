@@ -151,6 +151,12 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
+    public void testGetInstalledApplicationEmptyKey()
+    {
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetInstalledApplicationEmptyKey" );
+    }
+
+    @Test
     public void getDefaultApplicationIcon()
     {
         runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetDefaultApplicationIcon" );
