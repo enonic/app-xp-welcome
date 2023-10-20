@@ -69,8 +69,6 @@ tasks.register('lint', NpmTask) {
     outputs.upToDateWhen { false }
 }
 
-check.dependsOn lint
-
 tasks.register('vite', NpmTask) {
     dependsOn( npmInstall, lint )
     doLast {
@@ -97,9 +95,9 @@ jacocoTestReport {
     }
 }
 
-check.dependsOn jacocoTestReport
-javadoc.dependsOn jar, vite
-compileTestJava.dependsOn jar, vite
+check.dependsOn( lint, jacocoTestReport )
+javadoc.dependsOn( jar, vite )
+compileTestJava.dependsOn( jar, vite )
 
 jar {
     exclude 'assets/common'
