@@ -2,6 +2,7 @@ const taskLib = require('/lib/xp/task');
 const eventLib = require('/lib/xp/event');
 const webSocketLib = require('/lib/xp/websocket');
 const appLib = require('/lib/xp/app');
+const i18nLib = require('/lib/xp/i18n');
 
 const SOCKET_GROUP = 'welcome-app';
 exports.SOCKET_GROUP = SOCKET_GROUP;
@@ -11,20 +12,6 @@ let listening = false;
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 const store = __.newBean('com.enonic.xp.app.welcome.StoreBean');
 
-/*    var xpEvent = {
-        "description": "Long running task",
-        "id": "7ca603c1-3b88-4009-8f30-46ddbcc4bb19",
-        "name": "task-7ca603c1-3b88-4009-8f30-46ddbcc4bb19",
-        "state": "RUNNING",
-        "application": "com.enonic.myapp",
-        "user": "user:store:me",
-        "startTime": "2017-10-01T09:00:00Z",
-        "progress": {
-            "info": "Processing item 33",
-            "current": 33,
-            "total": 42
-        }
-    };*/
 function handleXPTaskEvent(xpEvent) {
     const task = xpEvent.data;
 
@@ -34,16 +21,11 @@ function handleXPTaskEvent(xpEvent) {
     }
 
     switch (xpEvent.type) {
-        case 'task.started':
-            log.info('Task %s %s', task.id, task.state);
-            break;
         case 'task.finished':
         case 'task.removed':
         case 'task.failed':
-            log.info('Task %s %s. Removing...', task.id, task.state);
             store.remove(task.id);
             if (__.toNativeObject(store.size()) === 0) {
-                log.info('All install tasks have finished');
                 deleteTemplateFile();
             }
             break;
@@ -51,23 +33,9 @@ function handleXPTaskEvent(xpEvent) {
 }
 
 function deleteTemplateFile() {
-    const deleted = __.toNativeObject(bean.deleteTemplateFile());
-    if (deleted) {
-        log.debug('Deleted template file');
-    }
+    bean.deleteTemplateFile();
 }
 
-/*    var xpEvent = {
-          "type": "application",
-          "timestamp": 1696515305453,
-          "localOrigin": true,
-          "distributed": false,
-          "data": {
-            "eventType": "PROGRESS",
-            "applicationUrl": "https://repo.enonic.com/public/com/enonic/app/imagexpert/2.1.0/imagexpert-2.1.0.jar",
-            "progress": 82
-          }
-      }*/
 function handleXPAppEvent(xpEvent) {
     const data = xpEvent.data;
 
@@ -109,8 +77,8 @@ function handleAppProgress(data) {
             }
         } else {
             cachedTask = {
-                taskId: undefined,    // use url as taskId because we don't have one
-                displayName: 'Installing...',
+                taskId: undefined,    // not task as it was started by someone else
+                displayName: i18nLib.localize({key: 'webapps.card.installing'}),
                 key: undefined,
                 url: data.applicationUrl,
                 icon: bean.getDefaultApplicationIconAsBase64(),
@@ -166,7 +134,6 @@ const submitTask = (key) => {
         config: {key}
     };
     const taskId = taskLib.submitTask(taskConfig);
-    log.info('Submitted task for %s: %s', key, taskId);
     return {
         taskId,
         displayName: '',
@@ -186,17 +153,11 @@ const parseTemplate = () => {
         let app = apps[index];
         const existingApp = appLib.get({key: app.key});
         if (existingApp) {
-            log.info('App %s already installed with version: %s', app.key, existingApp.version);
             continue;
         }
 
         if (app.config && app.config.length > 0) {
-            const configPath = __.toNativeObject(bean.createConfigFile(app.key, app.config));
-            if (configPath) {
-                log.info('Config file for app %s created at: %s', app.key, configPath);
-            } else {
-                log.info('Config file for app %s already exists, kept user file.', app.key);
-            }
+            bean.createConfigFile(app.key, app.config);
         }
 
         const task = submitTask(app.key);
@@ -220,7 +181,6 @@ function listenToTaskEvents() {
             callback: handleXPAppEvent
         });
         listening = true;
-        log.debug('Welcome app is listening for task and app events...');
     }
 }
 
