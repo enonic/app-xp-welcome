@@ -9,9 +9,6 @@ const store = __.newBean('com.enonic.xp.app.welcome.StoreBean');
 const marketUrl = __.toNativeObject(marketBean.getGraphqlUrl());
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
 
-log.debug('XP major version: %s', xpMajorVersion);
-log.debug('market graphql URL: %s', marketUrl);
-
 exports.run = function (params, taskId) {
     const key = params.key;
     if (!key) {
@@ -35,7 +32,6 @@ exports.run = function (params, taskId) {
         cachedTask.icon = appInfoData.icon.attachmentUrl;
         cachedTask.version = latestVersionJson.versionNumber;
         store.put(taskId, cachedTask);
-        log.debug('Updated task %s with data: %s', taskId, JSON.stringify(cachedTask, null, 2));
     }
 
     const appJson = installApplication(key, latestVersionJson.downloadUrl, latestVersionJson.sha512);
@@ -58,13 +54,13 @@ function fetchApplicationInfo(marketUrl, key, xpMajorVersion) {
     });
 
     if (response.status !== 200) {
-        throw 'Failed to fetch data for application: ' + key;
+        throw `Failed to fetch data for application: ${key}`;
     }
 
     const responseJson = JSON.parse(response.body);
 
     if (responseJson.errors) {
-        throw 'Fetch errors from market: ' + JSON.stringify(responseJson.errors, null, 2);
+        throw `Fetch errors from market: ${JSON.stringify(responseJson.errors, null, 2)}`;
     }
 
     return responseJson.data.market.queryDsl[0];
@@ -82,21 +78,19 @@ function findLatestVersion(key, versions, xpMajorVersion) {
         }
     }
     if (!latestVersion) {
-        throw 'No supported version of ' + key + ' found for XP ' + xpMajorVersion + '.*';
+        throw `No supported version of ${key} found for XP ${xpMajorVersion}.*`;
     }
 
     return latestVersion;
 }
 
 function installApplication(key, downloadUrl, sha512) {
-    log.debug('Installing %s from: %s', key, downloadUrl);
 
     const installResultJson = __.toNativeObject(bean.installApplication(downloadUrl, sha512 || null));
     if (installResultJson.failure) {
         throw 'Failed to install application: ' + installResultJson.failure;
-    } else {
-        return installResultJson.application;
     }
+    return installResultJson.application;
 }
 
 function compareVersions(a, b) {
