@@ -62,14 +62,17 @@ node {
     version = '20.2.0'
 }
 
-task lint( type: NpmTask, group: "verification", dependsOn: npmInstall ) {
+tasks.register('lint', NpmTask) {
+    group 'verification'
+    dependsOn( npmInstall )
     args = [ 'run', 'lint' ]
     outputs.upToDateWhen { false }
 }
 
 check.dependsOn lint
 
-task vite( type: NpmTask, dependsOn: [ npmInstall, lint ] ) {
+tasks.register('vite', NpmTask) {
+    dependsOn( npmInstall, lint )
     doLast {
         println "Build mode: " + nodeEnvironment()
     }
