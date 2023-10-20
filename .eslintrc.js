@@ -1,12 +1,9 @@
 module.exports = {
     'extends': [
-        '@enonic/eslint-config',
         'react-app',
         'react-app/jest',
         'plugin:jsx-a11y/recommended',
         'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
     ],
     'plugins': ['simple-import-sort'],
     'parser': '@typescript-eslint/parser',
