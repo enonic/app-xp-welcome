@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ import com.enonic.xp.app.ApplicationDescriptorService;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.app.Applications;
+import com.enonic.xp.app.welcome.json.ConfigFileJson;
 import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentId;
@@ -220,6 +222,29 @@ public class WelcomePageScriptBeanTest
         HomeDirSupport.set( temporaryFolder );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "createConfigFileAlreadyExists", key );
+    }
+
+    @Test
+    public void testGetConfigs()
+        throws IOException
+    {
+        Path configPath = temporaryFolder.resolve( "config" );
+        Files.createDirectories( configPath );
+        final String key1 = "com.enonic.app.test1.cfg";
+        Path file1 = Files.createFile( configPath.resolve( key1 ) );
+        final String key2 = "com.enonic.app.test2.xml";
+        Path file2 = Files.createFile( configPath.resolve( key2 ) );
+        final String key3 = "com.enonic.app.test3.properties";
+        Path file3 = Files.createFile( configPath.resolve( key3 ) );
+        final String key4 = ".DS_Store";
+        Files.createFile( configPath.resolve( key4 ) );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        final List<ConfigFileJson> files =
+            Arrays.asList( new ConfigFileJson( file1 ), new ConfigFileJson( file2 ), new ConfigFileJson( file3 ) );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetConfigs", files );
     }
 
     @Test

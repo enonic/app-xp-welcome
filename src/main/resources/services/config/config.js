@@ -10,6 +10,7 @@ exports.get = function () {
     const applications = __.toNativeObject(bean.getApplications());
     const sites = __.toNativeObject(bean.getSites());
     const projects = __.toNativeObject(bean.getProjects());
+    const configs = __.toNativeObject(bean.getConfigs());
     const phrases = i18nLib.getPhrases(adminLib.getLocales(), ['i18n/phrases']);
 
     return {
@@ -21,6 +22,7 @@ exports.get = function () {
             vhostEnabled: vhostLib.isEnabled(),
             xpVersion: adminLib.getVersion(),
             applications: applications.applications,
+            configs: configs.configs,
             sites: sites.sites,
             projects: projects.projects,
             urls: {

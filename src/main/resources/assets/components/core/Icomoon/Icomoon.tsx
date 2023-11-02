@@ -7,9 +7,10 @@ export interface Props {
     className?: string;
     icon: string;
     size?: string;
+    title?: string;
 }
 
-export default function Icomoon({className, icon, size = '1em'}: Props): JSX.Element {
+export default function Icomoon({className, icon, size = '1em', title}: Props): JSX.Element {
 
     const classNames = `Icomoon ${className ?? ''}`.trim();
 
@@ -19,6 +20,7 @@ export default function Icomoon({className, icon, size = '1em'}: Props): JSX.Ele
             iconSet={icomoonSet}
             size={size}
             icon={icon}
+            title={title}
             color='currentcolor'
         />
     );

@@ -14,6 +14,7 @@ const config = map<ConfigStore>({
     vhostEnabled: false,
     xpVersion: '0.0.0',
     applications: [],
+    configs: [],
     sites: [],
     projects: [],
     urls: {
