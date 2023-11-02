@@ -86,6 +86,18 @@ exports.createConfigFileAlreadyExists = function (key) {
     assert.assertEquals(null, bean.createConfigFile(key, "foo=bar\nbar=baz"));
 };
 
+exports.testGetConfigs = function (keys) {
+    const configs = __.toNativeObject(bean.getConfigs()).configs;
+
+    assert.assertEquals(keys.length, configs.length);
+
+    keys.forEach(function (key, index) {
+        assert.assertEquals(key.name, configs[index].name);
+        assert.assertEquals(key.folder, configs[index].folder);
+        assert.assertEquals(key.path, configs[index].path);
+    });
+}
+
 exports.deleteTemplateFile = function () {
     assert.assertEquals(true, bean.deleteTemplateFile());
 };

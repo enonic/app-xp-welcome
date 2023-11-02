@@ -4,6 +4,7 @@ declare interface XpBeans {
         getApplications: () => ({ applications: Application[] });
         getSites: () => ({ sites: Site[] });
         getProjects: () => ({ projects: Project[] });
+        getConfigs: () => (ConfigFile[]);
         getTemplateApplications: () => ({ applications: TemplateApplication[] });
         deleteTemplateFile: () => boolean;
         createConfigFile: (key: string, config: string) => string;

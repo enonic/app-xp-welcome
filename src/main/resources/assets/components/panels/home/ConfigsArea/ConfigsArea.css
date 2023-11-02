@@ -1,0 +1,110 @@
+.ConfigsArea {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    width: 100%;
+    padding: 24px;
+    border-radius: 2px;
+    background-color: var(--color-ui-fg);
+    box-shadow: var(--ui-box-shadow);
+    overflow: hidden;
+}
+
+.ConfigsArea_hidden {
+    display: none;
+}
+
+.ConfigsArea-Title {
+    grid-column: 1 / -1;
+    margin: 0 0 8px 0;
+    font-size: 1.5em;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 27px;
+}
+
+.ConfigsArea-Subtitle {
+    grid-column: 1 / -1;
+    font-weight: 600;
+    padding: 12px 0 12px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 18px;
+}
+
+.ConfigsArea-Subtitle .CopyIcon {
+    padding: 12px;
+    opacity: 0.5;
+}
+
+.ListItem .CopyIcon {
+    color: black;
+    visibility: hidden;
+}
+
+.ConfigsArea-Subtitle .CopyIcon:hover {
+    opacity: 1;
+}
+
+.ConfigsArea-List {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 6px;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #aaa;
+    margin: 0;
+}
+
+.ConfigsArea-List .ListItem {
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: stretch;
+    padding: 6px 12px;
+}
+
+.ListItem-Text {
+    flex: 1;
+}
+
+.ConfigsArea-List .ListItem:hover {
+    background-color: var(--color-ui-fg-hover);
+}
+
+.ConfigsArea-List .ListItem:hover .CopyIcon {
+    visibility: visible;
+}
+
+@media screen and (min-width: 840px) and (max-width: 960px) {
+    .ConfigsArea {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media screen and (min-width: 720px) and (max-width: 840px) {
+    .ConfigsArea {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (min-width: 560px) and (max-width: 720px) {
+    .ConfigsArea {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (min-width: 400px) and (max-width: 560px) {
+    .ConfigsArea {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .ConfigsArea {
+        grid-template-columns: 1fr;
+    }
+}

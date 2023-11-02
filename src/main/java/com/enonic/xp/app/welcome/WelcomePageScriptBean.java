@@ -41,12 +41,14 @@ import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.app.welcome.json.ApplicationInstallResultJson;
 import com.enonic.xp.app.welcome.json.ApplicationJson;
+import com.enonic.xp.app.welcome.json.ConfigFileJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
 import com.enonic.xp.app.welcome.json.TemplateApplicationJson;
 import com.enonic.xp.app.welcome.mapper.ApplicationInstallResultMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
+import com.enonic.xp.app.welcome.mapper.ConfigFilesMapper;
 import com.enonic.xp.app.welcome.mapper.ProjectsMapper;
 import com.enonic.xp.app.welcome.mapper.SitesMapper;
 import com.enonic.xp.app.welcome.mapper.TemplateApplicationsMapper;
@@ -93,6 +95,8 @@ public class WelcomePageScriptBean
     private static final Logger LOG = LoggerFactory.getLogger( WelcomePageScriptBean.class );
 
     private static final Set<String> ALLOWED_PROTOCOLS = Set.of( "http", "https" );
+
+    private static final Set<String> ALLOWED_CONFIG_EXTENSIONS = Set.of( ".cfg", ".properties", ".xml" );
 
     public static final String FILE_NAME = "enonic-xp.template";
 
@@ -232,6 +236,25 @@ public class WelcomePageScriptBean
                 Collectors.toList() ) );
 
         return new ProjectsMapper( projects );
+    }
+
+    public ConfigFilesMapper getConfigs()
+    {
+        List<ConfigFileJson> configs = new ArrayList<>();
+        Path configFolder = HomeDir.get().toPath().resolve( "config" );
+        try
+        {
+            Files.list( configFolder ).map( ConfigFileJson::new )
+                .filter( config -> ALLOWED_CONFIG_EXTENSIONS.stream().anyMatch( config.getName()::endsWith ) )
+                .sorted( Comparator.comparing( ConfigFileJson::getName ) ).collect(
+                Collectors.toCollection( () -> configs ) );
+        }
+        catch ( IOException e )
+        {
+            LOG.error( "Could not read config folder at " + configFolder, e );
+        }
+
+        return new ConfigFilesMapper( configs );
     }
 
     public TemplateApplicationsMapper getTemplateApplications()

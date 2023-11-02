@@ -14,6 +14,12 @@ declare interface TemplateApplication {
     config: string;
 }
 
+declare interface ConfigFile {
+    name: string;
+    folder: string;
+    path: string;
+}
+
 declare interface Site {
     id: string;
     name: string;
