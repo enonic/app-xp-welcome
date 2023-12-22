@@ -44,7 +44,7 @@ function ConfigItem({file, index}: { file: ConfigFile, index: number }): JSX.Ele
     }
 
     return (<li key={index} role="presentation" className='ListItem' onClick={clickHandler}>
-        <span className='ListItem-Text'>{file.name}</span>
+        <span className='ListItem-Text' title={useI18n('configs.copyHint')}>{file.name}</span>
         <CopyIcon text={file.path} ref={copyIconRef} />
     </li>);
 }
