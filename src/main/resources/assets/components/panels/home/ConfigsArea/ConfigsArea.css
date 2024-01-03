@@ -63,7 +63,7 @@
     cursor: pointer;
     display: flex;
     align-items: stretch;
-    padding: 3px 12px;
+    padding: 1px 12px;
 }
 
 .ListItem-Text {
