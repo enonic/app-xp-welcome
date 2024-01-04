@@ -1,6 +1,5 @@
 const webSocketLib = require('/lib/xp/websocket');
-const SOCKET_GROUP = require('../../main').SOCKET_GROUP;
-
+const SOCKET_GROUP = require('/lib/constants').SOCKET_GROUP;
 
 // Create a websocket if websocket request.
 exports.get = function (req) {

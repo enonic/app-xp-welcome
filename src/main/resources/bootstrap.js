@@ -3,9 +3,7 @@ const eventLib = require('/lib/xp/event');
 const webSocketLib = require('/lib/xp/websocket');
 const appLib = require('/lib/xp/app');
 const i18nLib = require('/lib/xp/i18n');
-
-const SOCKET_GROUP = 'welcome-app';
-exports.SOCKET_GROUP = SOCKET_GROUP;
+const SOCKET_GROUP = require('/lib/constants').SOCKET_GROUP;
 
 let listening = false;
 
