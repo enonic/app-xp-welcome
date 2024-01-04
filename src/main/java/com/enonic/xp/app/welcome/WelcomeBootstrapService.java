@@ -36,10 +36,12 @@ public class WelcomeBootstrapService
     public void activate()
     {
         final ApplicationKey appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+        LOG.debug( "Activating {} application", appKey );
         while ( applicationService.get( appKey ) == null )
         {
             try
             {
+                LOG.debug( "Waiting 100 ms for {} application to become available", appKey );
                 Thread.sleep( 100 );
             }
             catch ( InterruptedException e )
@@ -53,6 +55,10 @@ public class WelcomeBootstrapService
             if ( e != null )
             {
                 LOG.error( "Error while bootstrapping {} application ", key.getApplicationKey(), e );
+            }
+            else
+            {
+                LOG.debug( "Finished bootstrapping {} application", appKey );
             }
         } );
 

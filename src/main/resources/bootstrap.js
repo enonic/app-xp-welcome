@@ -45,6 +45,12 @@ function handleXPAppEvent(xpEvent) {
         case 'INSTALLED':
             result = handleAppInstalled(data);
             break;
+        case 'STARTED':
+            result = handleAppStarted(data);
+            break;
+        case 'STOPPED':
+            result = handleAppStopped(data);
+            break;
         case 'UNINSTALLED':
             result = handleAppUninstalled(data);
             break;
@@ -83,6 +89,7 @@ function handleAppProgress(data) {
                 version: 0,
                 progress: data.progress,
                 adminToolsUrls: [],
+                action: 'update'
             }
         }
     }
@@ -109,6 +116,40 @@ function handleAppInstalled(data) {
         version: app.version,
         progress: 100,
         adminToolsUrls: app.adminToolsUrls,
+        action: 'update'
+    }
+}
+
+function handleAppStarted(data) {
+    const key = data.applicationKey;
+    if (!key) {
+        return null;
+    }
+
+    const app = __.toNativeObject(bean.getInstalledApplication(key));
+    if (!app) {
+        return null;
+    }
+
+    return {
+        taskId: undefined,
+        key: app.applicationKey,
+        url: app.url,
+        adminToolsUrls: app.adminToolsUrls,
+        action: 'start'
+    }
+}
+
+function handleAppStopped(data) {
+    const key = data.applicationKey;
+    if (!key) {
+        return null;
+    }
+
+    return {
+        taskId: undefined,
+        key: data.applicationKey,
+        action: 'stop',
     }
 }
 
@@ -124,7 +165,6 @@ function handleAppUninstalled(data) {
         action: 'remove',
     }
 }
-
 
 const submitTask = (key) => {
     const taskConfig = {
