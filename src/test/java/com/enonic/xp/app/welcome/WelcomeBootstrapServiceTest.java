@@ -23,17 +23,15 @@ public class WelcomeBootstrapServiceTest
 
     private PortalScriptService scriptService;
 
-    private ApplicationService applicationService;
-
     private ApplicationKey appKey;
 
     @BeforeEach
     public void setup()
     {
         this.scriptService = mock( PortalScriptService.class );
-        this.applicationService = mock( ApplicationService.class );
+        ApplicationService applicationService = mock( ApplicationService.class );
 
-        this.service = new WelcomeBootstrapService( this.scriptService, this.applicationService );
+        this.service = new WelcomeBootstrapService( this.scriptService, applicationService );
 
         this.appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
         final Application app = mockApplication( appKey, "Welcome App" );
