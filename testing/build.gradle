@@ -1,0 +1,109 @@
+import com.enonic.uitest.server.ServerInstance
+import org.codehaus.groovy.runtime.GStringImpl
+
+plugins {
+    id 'java'
+    id 'com.enonic.defaults'
+    id 'com.enonic.xp.base'
+    id 'com.github.node-gradle.node'
+}
+group = 'com.enonic.app.xp.welcome.js_testing'
+
+repositories {
+    mavenCentral()
+    xp.enonicRepo('dev')
+}
+
+configurations {
+    distro
+}
+
+ext {
+    unpackDir = "$buildDir/install" as GStringImpl
+    distroDir = "$unpackDir/enonic-xp-generic-$version" as GStringImpl
+    xpHome = "$distroDir/home" as GStringImpl
+    deployDir = "$xpHome/deploy" as GStringImpl
+    configDir = "$xpHome/config" as GStringImpl
+    testDataDir = "$projectDir/test-data/common-config" as GStringImpl
+    xpServer = new ServerInstance()
+    appName = "app-xp-welcome"
+    deployDir = "$xpHome/deploy" as GStringImpl
+    appFile = "$distroDir/system/40/${appName}-${version}.jar" as GStringImpl
+    appUrl = project.hasProperty('appUrl') ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar" as GStringImpl
+
+}
+
+dependencies {
+    distro "com.enonic.xp:enonic-xp-generic:$version@zip"
+}
+
+task unpackDistro( type: Copy ) {
+    from {
+        configurations.distro.collect { zipTree( it ) }
+    }
+    into file( unpackDir )
+}
+
+tasks.register( 'copyConfig', Copy ) {
+    println "$testDataDir${File.separator}common-config"
+    from testDataDir
+    include '**.*.cfg'
+    include '*.properties'
+    into file( configDir )
+    mustRunAfter unpackDistro
+}
+
+
+tasks.register( 'deployApp', DefaultTask ) {
+
+    outputs.files( appFile )
+    outputs.upToDateWhen { false }
+    doLast {
+        def f = new File(appFile as String)
+        println "Deleting  ${appFile}. Exists ${f.exists()}"
+
+        f.delete()
+
+        println "Copying from ${appUrl} to ${appFile}"
+        new URL(appUrl as String).withInputStream { i -> f.withOutputStream { it << i } }
+    }
+    mustRunAfter unpackDistro
+}
+
+tasks.register( 'startServer' ) {
+    dependsOn ( unpackDistro )
+    doLast {
+        xpServer.installDir = file( distroDir )
+        xpServer.start()
+    }
+    mustRunAfter deployApp
+}
+
+tasks.register( 'stopServer' ) {
+    doLast {
+        xpServer.stop()
+    }
+}
+
+tasks.register( 'cleanup', Delete ) {
+    delete './build/reports/allure'
+}
+
+
+tasks.register( 'generateReportAndStopServer', NpmTask ) {
+    args = ['run-script', 'allure-report']
+    finalizedBy cleanup
+    finalizedBy stopServer
+}
+
+
+tasks.register( 'w_testAppXpWelcomeChrome', NpmTask ) {
+    dependsOn ( npmInstall, unpackDistro, copyConfig, deployApp, startServer )
+    args = ['run-script', 'test_xp_welcome:wdio_chrome']
+    finalizedBy generateReportAndStopServer
+}
+
+tasks.register( 'w_testAppXpWelcomeChromeLocal', NpmTask ) {
+    dependsOn ( npmInstall )
+    args = ['run-script', 'test_xp_welcome:wdio_chrome']
+}
