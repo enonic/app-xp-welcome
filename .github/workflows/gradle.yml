@@ -59,9 +59,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -Pcom.enonic.xp.app.production=true
       - uses: actions/upload-artifact@v4
-          with:
-            name: app-xp-welcome
-            path: build/libs/app-xp-welcome.jar
+        with:
+          name: app-xp-welcome
+          path: build/libs/app-xp-welcome.jar
 
       - uses: codecov/codecov-action@v3
 
