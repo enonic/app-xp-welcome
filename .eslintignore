@@ -7,3 +7,4 @@ bin/
 **/*.d.ts
 src/main/resources/**/*.js
 src/test
+testing
