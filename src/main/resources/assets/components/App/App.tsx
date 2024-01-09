@@ -23,7 +23,7 @@ interface WsAppData {
     taskId: string;
     progress: number;
     adminToolsUrls: string[];
-    action: 'remove' | undefined;
+    action: 'remove' | 'stop' | 'start' | 'update' | undefined;
 }
 
 export default function App(): JSX.Element {
@@ -59,19 +59,27 @@ function getWebSocketOptions(applications: Application[]): Options {
                         || (data.url && app.url === data.url);
                 });
                 if (existingApp) {
-                    if (data.action === 'remove') {
-                        applications.splice(applications.indexOf(existingApp), 1);
-                        return;
+                    switch (data.action) {
+                        case 'remove':
+                            applications.splice(applications.indexOf(existingApp), 1);
+                            return;
+                        case 'start':
+                            existingApp.adminToolsUrls = data.adminToolsUrls;
+                            break;
+                        case 'stop':
+                            existingApp.adminToolsUrls = [];
+                            break;
+                        case 'update':
+                        default:
+                            existingApp.progress = data.progress;
+                            if (data.adminToolsUrls.length > 0) {
+                                existingApp.adminToolsUrls = data.adminToolsUrls;
+                            }
+                            if (data.icon) {
+                                existingApp.icon = data.icon;
+                            }
+                            break;
                     }
-
-                    existingApp.progress = data.progress;
-                    if (data.adminToolsUrls.length > 0) {
-                        existingApp.adminToolsUrls = data.adminToolsUrls;
-                    }
-                    if (data.icon) {
-                        existingApp.icon = data.icon;
-                    }
-
                 } else {
                     applications.push({
                         applicationKey: data.key,
