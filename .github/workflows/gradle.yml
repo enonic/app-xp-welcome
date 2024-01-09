@@ -81,6 +81,7 @@ jobs:
           event-type: app-xp-welcome
           client-payload: >
             {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
+
   selenium-test:
     strategy:
       fail-fast: false
@@ -125,7 +126,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: notif-build-tests
           SLACK_USERNAME: GitHub Actions
-          SLACK_TITLE: GitHub Action Failure in Admin Home app
+          SLACK_TITLE: GitHub Action Failure in XP welcome app
           SLACK_MESSAGE: ${{job.container.id}}
           SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           SLACK_COLOR: ${{ job.status }}
