@@ -11,6 +11,7 @@ describe('Welcome Page specification', function () {
 
     it('WHEN Home Page is loaded THEN expected buttons should be present in toolbar', async function () {
         let welcomePage = new WelcomePage();
+        await welcomePage.getBrowser().url("http://127.0.0.1:8080/");
         await welcomePage.waitForLoaded();
         await welcomePage.saveScreenshot('welcome_page_test');
         let actualHeader = await welcomePage.getHeader();
