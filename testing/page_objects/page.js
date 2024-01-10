@@ -28,6 +28,7 @@ class Page {
     keys(value) {
         return this.browser.keys(value);
     }
+
     pause(ms) {
         return this.browser.pause(ms);
     }
@@ -45,9 +46,10 @@ class Page {
 
     async saveScreenshot(name) {
         try {
+            // The try block is necessary to catch and handle errors and save a screenshot
             let screenshotsDir = path.join(__dirname, '/../build/reports/screenshots/');
             if (!fs.existsSync(screenshotsDir)) {
-                fs.mkdirSync(screenshotsDir, { recursive: true });
+                fs.mkdirSync(screenshotsDir, {recursive: true});
             }
             await this.getBrowser().saveScreenshot(screenshotsDir + name + '.png');
             console.log('screenshot is saved ' + name);
@@ -55,6 +57,7 @@ class Page {
             console.log('screenshot was not saved ' + err);
         }
     }
+
     async saveScreenshotUniqueName(namePart) {
         let screenshotName = appConst.generateRandomName(namePart);
         await this.saveScreenshot(screenshotName);
@@ -80,9 +83,11 @@ class Page {
         await this.keys('Escape');
         return await this.pause(500);
     }
+
     getBrowser() {
         return this.browser;
     }
+
     async getAttribute(selector, attributeName) {
         let element = await this.findElement(selector);
         return await element.getAttribute(attributeName);

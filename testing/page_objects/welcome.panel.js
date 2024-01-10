@@ -12,6 +12,7 @@ class WelcomePanel extends Page {
 
     async waitForLoaded() {
         try {
+            // The try block is necessary to catch and handle errors and save a screenshot
             await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
             await this.pause(1000);
         } catch (err) {
