@@ -1,20 +1,16 @@
 package com.enonic.xp.app.welcome;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.osgi.framework.Version;
 
-import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationKey;
-import com.enonic.xp.app.ApplicationService;
+import com.enonic.xp.app.ApplicationNotFoundException;
 import com.enonic.xp.portal.script.PortalScriptService;
 import com.enonic.xp.resource.ResourceKey;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class WelcomeBootstrapServiceTest
@@ -29,44 +25,45 @@ public class WelcomeBootstrapServiceTest
     public void setup()
     {
         this.scriptService = mock( PortalScriptService.class );
-        ApplicationService applicationService = mock( ApplicationService.class );
 
-        this.service = new WelcomeBootstrapService( this.scriptService, applicationService );
+        this.service = new WelcomeBootstrapService( this.scriptService );
 
         this.appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
-        final Application app = mockApplication( appKey, "Welcome App" );
-
-        when( applicationService.get( any( ApplicationKey.class ) ) ).thenReturn( null ).thenReturn( null ).thenReturn( app );
     }
 
     @Test
     public void testActivateAppNotReady()
     {
         final ResourceKey resourceKey = ResourceKey.from( appKey, "/bootstrap.js" );
-        when( scriptService.executeAsync( resourceKey ) ).thenReturn( CompletableFuture.completedFuture( null ) );
 
-        this.service.activate();
+        when( scriptService.execute( resourceKey ) ).thenThrow( ApplicationNotFoundException.class ).thenReturn( mock() );
 
-        Mockito.verify( this.scriptService, Mockito.only() ).executeAsync( resourceKey );
+        service.activate();
+
+        verify( scriptService, timeout( 10000 ).times( 2 ) ).execute( resourceKey );
+    }
+
+    @Test
+    public void testActivateAppNeverReady()
+    {
+        final ResourceKey resourceKey = ResourceKey.from( appKey, "/bootstrap.js" );
+
+        when( scriptService.execute( resourceKey ) ).thenThrow( ApplicationNotFoundException.class );
+
+        service.activate();
+
+        verify( scriptService, timeout( 20000 ).times( 10 ) ).execute( resourceKey );
     }
 
     @Test
     public void testActivateAppFailure()
     {
         final ResourceKey resourceKey = ResourceKey.from( appKey, "/bootstrap.js" );
-        when( scriptService.executeAsync( resourceKey ) ).thenReturn( CompletableFuture.failedFuture( new Exception( "Test error" ) ) );
+        when( scriptService.execute( resourceKey ) ).thenThrow( new RuntimeException( "Something unexpected" ) );
 
         this.service.activate();
 
-        Mockito.verify( this.scriptService, Mockito.only() ).executeAsync( resourceKey );
+        verify( this.scriptService, timeout( 10000 ).only() ).execute( resourceKey );
     }
 
-    private Application mockApplication( ApplicationKey applicationKey, String displayName )
-    {
-        Application application = mock( Application.class );
-        when( application.getKey() ).thenReturn( applicationKey );
-        when( application.getVersion() ).thenReturn( Version.valueOf( "1.0.0" ) );
-        when( application.getDisplayName() ).thenReturn( displayName );
-        return application;
-    }
 }
