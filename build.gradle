@@ -106,7 +106,10 @@ javadoc.dependsOn( jar, vite )
 compileTestJava.dependsOn( jar, vite )
 
 jar {
-    exclude 'assets/common'
+    exclude 'assets/common/fonts'
+    exclude 'assets/common/styles'
+    exclude 'assets/common/themes'
+    exclude 'assets/common/utils'
     exclude 'assets/**/*.ts'
     exclude 'assets/**/*.tsx'
     exclude 'assets/*/**/*.css'
