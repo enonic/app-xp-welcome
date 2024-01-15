@@ -9,14 +9,11 @@ import org.osgi.service.condition.Condition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationKey;
-import com.enonic.xp.app.ApplicationListener;
 import com.enonic.xp.app.ApplicationNotFoundException;
 import com.enonic.xp.exception.InitializationException;
 import com.enonic.xp.portal.script.PortalScriptService;
 import com.enonic.xp.resource.ResourceKey;
-import com.enonic.xp.script.ScriptExports;
 
 @Component(immediate = true)
 public final class WelcomeBootstrapService
