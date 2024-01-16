@@ -11,6 +11,15 @@
     display: none;
 }
 
+.ApplicationView-Title {
+    margin: 0;
+    padding: 0 0 4px 0;
+    font-size: 1em;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .ApplicationView_clickable {
     text-decoration: none;
 }
@@ -27,6 +36,16 @@
     filter: grayscale(1);
 }
 
+.ApplicationView-Subtitle {
+    flex: 1 0 auto;
+    margin: 0;
+    font-size: 0.875em;
+    color: var(--color-font-sub);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .ApplicationView_installing .ApplicationView-Subtitle {
     display: none;
 }
@@ -41,23 +60,4 @@
     margin: 0 0 12px 0;
     object-fit: contain;
     color: var(--color-ui-icon);
-}
-
-.ApplicationView-Title {
-    margin: 0;
-    padding: 0 0 4px 0;
-    font-size: 1em;
-    font-weight: 400;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.ApplicationView-Subtitle {
-    flex: 1 0 auto;
-    margin: 0;
-    font-size: 0.875em;
-    color: var(--color-font-sub);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }

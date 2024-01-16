@@ -6,7 +6,6 @@
     /* Cards and Widgets */
     --color-ui-fg: hsl(0, 0%, 100%);
     --color-ui-fg-hover: hsl(0, 0%, 97%);
-
     --color-ui-icon: hsl(0, 0%, 20%);
     --color-ui-border: hsl(0, 10%, 80%);
     --color-ui-stamp: hsl(0, 8%, 85%);
@@ -19,9 +18,11 @@
     --color-font-disabled: hsl(0, 0%, 70%);
 
     /** BACKGROUND & FONT */
+
     /* Main action button and links */
     --color-accent: hsl(215, 80%, 55%);
     --color-accent-lighter: hsl(215, 80%, 60%);
+
     /* XP logo, other corporate links */
     --color-xp: hsl(10, 85%, 55%);
     --color-xp-lighter: hsl(10, 85%, 60%);

@@ -39,9 +39,9 @@ public final class WelcomeBootstrapService
 
         final int attempts = 10;
 
-        // Script Service needs Welcome app to be configured. Configuration event happens in OSGi Config Admin thread and may happen a bit later
-        // Thus we might need to do a few attempts.
-        // But we can't do it directly in Activate method, because OSGi Config Admin thread might not see the Welcome app until we return from Activate.
+        // Script Service needs Welcome app to be configured. Configuration event happens in OSGi Config Admin thread
+        // and may happen a bit later. Thus we might need to do a few attempts. But we can't do it directly in Activate
+        // method, because OSGi Config Admin thread might not see the Welcome app until we return from Activate.
         // It often does, but not always.
         CompletableFuture.runAsync( () -> {
             for (int attempt = 0; attempt < attempts; attempt++)

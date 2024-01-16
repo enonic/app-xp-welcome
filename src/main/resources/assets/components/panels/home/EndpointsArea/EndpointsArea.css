@@ -3,22 +3,23 @@
     width: 100%;
 }
 
-.EndpointsArea_collapsed .EndpointsArea-Card:nth-child(n+4) {
-    display: none;
+.EndpointsArea-Card {
+    grid-template-rows: auto 1fr minmax(40px, max-content);
 }
 
-.EndpointsArea_collapsed .EndpointsArea-ExpandButton {
-    grid-row: 2;
+.EndpointsArea_collapsed .EndpointsArea-Card:nth-child(n+4) {
+    display: none;
 }
 
 .EndpointsArea-ExpandButton {
     --Button-size: 40px;
     --Button-color-hover: var(--color-ui-bg-hover);
+
     grid-column: 1 / -1;
 }
 
-.EndpointsArea-Card {
-    grid-template-rows: auto 1fr minmax(40px, max-content);
+.EndpointsArea_collapsed .EndpointsArea-ExpandButton {
+    grid-row: 2;
 }
 
 @media screen and (min-width: 560px) and (max-width: 800px) {
