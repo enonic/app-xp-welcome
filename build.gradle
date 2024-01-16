@@ -29,16 +29,7 @@ configurations {
     distro
 }
 
-ext {
-    unpackDir = "$buildDir/install"
-    distroDir = "$unpackDir/enonic-xp-generic-$xpVersion"
-    deployDir = "$distroDir/home/deploy"
-    xpHome = "$distroDir/home"
-    configDir = "$xpHome/config"
-    appName = "app-xp-welcome"
-    appFile = "$distroDir/system/40/${appName}-${xpVersion}.jar"
-    appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
-}
+
 
 dependencies {
     implementation "com.enonic.xp:jaxrs-api:${xpVersion}"
