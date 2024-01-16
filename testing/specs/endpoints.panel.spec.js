@@ -31,6 +31,7 @@ describe('Endpoints panel specification', function () {
             assert.equal(cards.length, 3, "3 cards should be displayed by default");
             // Click on 'Show All Endpoints' button:
             await endpointsAreaPanel.clickOnShowAllEndpointsButton();
+            await testUtils.saveScreenshot('endpoints_expanded');
             // Verify that 7 cards are visible in the expanded mode:
             cards = await endpointsAreaPanel.getCardTitles();
             assert.equal(cards.length, 7, "7 cards gets visible after clicking on 'Show All Endpoints' button");

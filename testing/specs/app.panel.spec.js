@@ -51,7 +51,7 @@ describe('Application Page specification', function () {
             await welcomePage.waitForLoaded();
             // 5. Verify that 'Open' button gets visible in Endpoints panel in Admin card
             await testUtils.refresh();
-            await welcomePage.saveScreenshot('admin_card_open_btn');
+            await testUtils.saveScreenshot('admin_card_open_btn');
             await adminCard.waitForOpenButtonDisplayed();
         });
 

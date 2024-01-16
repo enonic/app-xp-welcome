@@ -16,7 +16,6 @@ describe('Configuration files panel specification', function () {
             let welcomePage = new WelcomePage();
             let configsAreaPanel = new ConfigsAreaPanel();
             await welcomePage.waitForLoaded();
-            await welcomePage.saveScreenshot('config_files');
             let items = await configsAreaPanel.getConfigFiles();
             assert.equal(items.length, 33, "Expected config items should be displayed in the panel");
             assert.ok(items.includes('com.enonic.xp.app.cfg'), "Config for 'xp app' should be displayed");
