@@ -92,6 +92,30 @@ class Page {
         let element = await this.findElement(selector);
         return await element.getAttribute(attributeName);
     }
+
+    async getTextInDisplayedElements(selector) {
+        let results = [];
+        let elements = await this.getDisplayedElements(selector);
+        if (elements.length === 0) {
+            return [];
+        }
+        for (const item of elements) {
+            results.push(await item.getText());
+        }
+        return results;
+    }
+
+    async getDisplayedElements(selector) {
+        let elements = await this.findElements(selector);
+        if (elements.length === 0) {
+            return [];
+        }
+        let pr = await elements.map(async (el) => await el.isDisplayed());
+        return Promise.all(pr).then(result => {
+            return elements.filter((el, i) => result[i]);
+        });
+    }
+
 }
 
 module.exports = Page;

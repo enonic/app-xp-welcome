@@ -8,7 +8,7 @@ const XPATH = {
     container: "//div[contains(@class,'App')]",
 };
 
-class WelcomePanel extends Page {
+class AppPanel extends Page {
 
     async waitForLoaded() {
         try {
@@ -27,4 +27,4 @@ class WelcomePanel extends Page {
     }
 }
 
-module.exports = WelcomePanel;
+module.exports = AppPanel;
