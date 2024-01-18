@@ -4,6 +4,7 @@
 module.exports = Object.freeze({
     WELCOME_PAGE_TITLE: "Welcome - Enonic XP",
     LOGIN_PAGE_TITLE: "Enonic XP - Login",
+    WELCOME_PAGE_HEADER: "Welcome to the Enonic SDK",
     //waitForTimeout
     mediumTimeout: 3000,
     longTimeout: 7000,
@@ -17,6 +18,7 @@ module.exports = Object.freeze({
         WEBAPPS: "http://localhost:8080/#webapps",
         PROJECTS: "http://localhost:8080/#projects",
         SITES: "http://localhost:8080/#sites",
+        WELCOME_PAGE: "http://127.0.0.1:8080/",
     },
 
     generateRandomName(part) {

@@ -13,7 +13,8 @@ class AppPanel extends Page {
     async waitForLoaded() {
         try {
             // The try block is necessary to catch and handle errors and save a screenshot
-            await this.waitForElementDisplayed(XPATH.container, appConst.mediumTimeout);
+            let locator = XPATH.container + "//h1[text()='Welcome to the Enonic SDK']";
+            await this.waitForElementDisplayed(locator, appConst.mediumTimeout);
             await this.pause(1000);
         } catch (err) {
             let screenshot = await this.saveScreenshotUniqueName('err_welcome_page');
