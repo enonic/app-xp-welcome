@@ -25,6 +25,7 @@ ext {
     deployDir = "$xpHome/deploy" as GStringImpl
     configDir = "$xpHome/config" as GStringImpl
     testDataDir = "$projectDir/test-data/common-config" as GStringImpl
+    appDir = "$projectDir/test-data/test-applications" as GStringImpl
     xpServer = new ServerInstance()
     appName = "app-xp-welcome"
     deployDir = "$xpHome/deploy" as GStringImpl
@@ -53,6 +54,17 @@ tasks.register( 'copyConfig', Copy ) {
     mustRunAfter unpackDistro
 }
 
+tasks.register( 'deployTestApps', Copy ) {
+    println '*********************************************************'
+    println '* task started:deployTestApps  *'
+    println '*********************************************************'
+    println appDir
+    println deployDir
+    from file( appDir )
+    include '*.jar'
+    into file( deployDir )
+    mustRunAfter unpackDistro
+}
 
 tasks.register( 'deployApp', DefaultTask ) {
 
@@ -98,7 +110,7 @@ tasks.register( 'generateReportAndStopServer', NpmTask ) {
 
 
 tasks.register( 'w_testAppXpWelcomeChrome', NpmTask ) {
-    dependsOn ( npmInstall, unpackDistro, copyConfig, deployApp, startServer )
+    dependsOn( npmInstall, unpackDistro, copyConfig, deployApp, deployTestApps, startServer )
     args = ['run-script', 'test_xp_welcome:wdio_chrome']
     finalizedBy generateReportAndStopServer
 }

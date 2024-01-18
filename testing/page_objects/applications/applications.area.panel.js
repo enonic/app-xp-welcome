@@ -28,7 +28,7 @@ class ApplicationsAreaPanel extends Page {
         return this.getText(locator);
     }
 
-    async getInstalledApp() {
+    async getInstalledApps() {
         try {
             let locator = XPATH.container + XPATH.installedAppName;
             await this.waitForElementDisplayed(locator, appConst.mediumTimeout);
