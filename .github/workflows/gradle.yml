@@ -63,7 +63,7 @@ jobs:
           name: app-xp-welcome
           path: build/libs/app-xp-welcome.jar
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
 
       - name: Publish
         if: needs.publish_vars.outputs.publish == 'true'
