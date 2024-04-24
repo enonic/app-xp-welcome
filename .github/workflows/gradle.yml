@@ -80,6 +80,7 @@ jobs:
             {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
 
   selenium-test:
+    if: github.event.head_commit.message != 'Updated to next SNAPSHOT version'
     strategy:
       fail-fast: false
       matrix:
@@ -106,7 +107,6 @@ jobs:
 
       - name: Run Selenium Tests
         id: selenium
-        if: github.event.head_commit.message != 'Updated to next SNAPSHOT version'
         run: ./gradlew --refresh-dependencies :testing:${{ matrix.suite }}
 
       - name: Slack Notification
