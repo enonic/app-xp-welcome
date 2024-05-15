@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.publish_vars.outputs.publish == 'true'
     steps:
-      - name: Repository Dispatch
+      - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
