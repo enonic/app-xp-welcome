@@ -4,6 +4,7 @@ on:
   push:
   repository_dispatch:
     types: [ xp ]
+  workflow_dispatch:
 
 concurrency: build-${{ github.event.client_payload.ref || github.ref }}
 
