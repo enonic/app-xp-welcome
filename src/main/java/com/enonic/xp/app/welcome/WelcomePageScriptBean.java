@@ -230,7 +230,7 @@ public class WelcomePageScriptBean
     {
         List<ProjectJson> projects = new ArrayList<>();
         projects.addAll(
-            createAdminContext( ContentConstants.CONTENT_REPO_ID ).callWith( () -> projectServiceSupplier.get().list() ).stream().sorted(
+            createAdminContext().callWith( () -> projectServiceSupplier.get().list() ).stream().sorted(
                 Comparator.comparing( project -> project.getName().getRepoId().toString() ) ).map(
                 project -> ProjectJson.create().project( project ).iconAsBase64( getProjectIconAsBase64( project ) ).build() ).collect(
                 Collectors.toList() ) );
@@ -441,11 +441,12 @@ public class WelcomePageScriptBean
     private List<RepositoryId> getProjectIds()
     {
         List<RepositoryId> repositoryIds = new ArrayList<>();
-        repositoryIds.add( ContentConstants.CONTENT_REPO_ID );
-        repositoryIds.addAll( createAdminContext( ContentConstants.CONTENT_REPO_ID, ContentConstants.BRANCH_MASTER ).callWith(
-            () -> projectServiceSupplier.get().list() ).stream().map( Project::getName ).map( ProjectName::getRepoId ).filter(
-            repoId -> !repoId.equals( ContentConstants.CONTENT_REPO_ID ) ).sorted( Comparator.comparing( RepositoryId::toString ) ).collect(
-            Collectors.toList() ) );
+        repositoryIds.addAll( createAdminContext().callWith( () -> projectServiceSupplier.get().list() )
+                                  .stream()
+                                  .map( Project::getName )
+                                  .map( ProjectName::getRepoId )
+                                  .sorted( Comparator.comparing( RepositoryId::toString ) )
+                                  .collect( Collectors.toList() ) );
         return repositoryIds;
     }
 
@@ -521,7 +522,7 @@ public class WelcomePageScriptBean
 
     private Context createAdminContext( final RepositoryId repositoryId, final Branch branch )
     {
-        return ContextBuilder.create().branch( branch ).repositoryId( repositoryId ).authInfo( this.createAdminAuthInfo() ).build();
+        return ContextBuilder.create().branch( branch ).authInfo( this.createAdminAuthInfo() ).build();
     }
 
     private AuthenticationInfo createAdminAuthInfo()

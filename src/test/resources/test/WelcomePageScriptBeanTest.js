@@ -171,27 +171,28 @@ exports.getSites = function () {
 
     assert.assertEquals(2, sites.length);
 
-    const site1 = sites[0];
-    assert.assertEquals('siteId1', site1.id);
-    assert.assertEquals('test-site1', site1.name);
-    assert.assertEquals('displayName1', site1.displayName);
+    const site0 = sites[0];
+    const site1 = sites[1];
+
+    assert.assertEquals('siteId1', site0.id);
+    assert.assertEquals('test-site1', site0.name);
+    assert.assertEquals('displayName1', site0.displayName);
+    assert.assertEquals('custom', site0.projectName);
+    assert.assertEquals('com.enonic.cms.custom', site0.repositoryName);
+    assert.assertEquals('en', site0.language);
+    assert.assertEquals('/parent/test-site1', site0.path);
+    assert.assertTrue(site0.hasDraft);
+    assert.assertFalse(site0.hasMaster);
+
+    assert.assertEquals('siteId2', site1.id);
+    assert.assertEquals('test-site2', site1.name);
+    assert.assertEquals('displayName2', site1.displayName);
     assert.assertEquals('default', site1.projectName);
     assert.assertEquals('com.enonic.cms.default', site1.repositoryName);
-    assert.assertEquals('en', site1.language);
-    assert.assertEquals('/parent/test-site1', site1.path);
+    assert.assertNull(site1.language);
+    assert.assertEquals('/parent/test-site2', site1.path);
     assert.assertTrue(site1.hasDraft);
-    assert.assertFalse(site1.hasMaster);
-
-    const site2 = sites[1];
-    assert.assertEquals('siteId2', site2.id);
-    assert.assertEquals('test-site2', site2.name);
-    assert.assertEquals('displayName2', site2.displayName);
-    assert.assertEquals('custom', site2.projectName);
-    assert.assertEquals('com.enonic.cms.custom', site2.repositoryName);
-    assert.assertNull(site2.language);
-    assert.assertEquals('/parent/test-site2', site2.path);
-    assert.assertTrue(site2.hasDraft);
-    assert.assertTrue(site2.hasMaster);
+    assert.assertTrue(site1.hasMaster);
 };
 
 exports.getProjects = function () {
