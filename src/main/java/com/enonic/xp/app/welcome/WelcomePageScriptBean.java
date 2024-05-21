@@ -522,7 +522,7 @@ public class WelcomePageScriptBean
 
     private Context createAdminContext( final RepositoryId repositoryId, final Branch branch )
     {
-        return ContextBuilder.create().branch( branch ).authInfo( this.createAdminAuthInfo() ).build();
+        return ContextBuilder.create().repositoryId( repositoryId ).branch( branch ).authInfo( this.createAdminAuthInfo() ).build();
     }
 
     private AuthenticationInfo createAdminAuthInfo()
