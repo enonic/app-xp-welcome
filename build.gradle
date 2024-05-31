@@ -20,16 +20,20 @@ app {
     systemVersion = "${xpVersion}"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
     mavenCentral()
-    xp.enonicRepo( 'dev' )
+    xp.enonicRepo('dev')
 }
-
-configurations {
-    distro
-}
-
-
 
 dependencies {
     implementation "com.enonic.xp:jaxrs-api:${xpVersion}"
@@ -49,9 +53,9 @@ dependencies {
 
     testImplementation( testFixtures( "com.enonic.xp:core-api" ) )
     testImplementation "com.enonic.xp:testing:${xpVersion}"
-    testImplementation "org.mockito:mockito-core:5.12.0"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.2"
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
 node {
@@ -82,7 +86,7 @@ tasks.register('vite', NpmTask) {
 test {
     useJUnitPlatform()
     systemProperty 'java.awt.headless', 'true'
-    jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
+    jvmArgs '-XX:TieredStopAtLevel=1'
 }
 
 jacocoTestReport {
