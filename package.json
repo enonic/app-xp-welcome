@@ -48,7 +48,7 @@
     "eslint-plugin-jsx-a11y": "^6.9.0",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "postcss": "^8.4.39",
-    "vite": "^5.3.1"
+    "vite": "^5.3.3"
   },
   "pnpm": {
     "peerDependencyRules": {
