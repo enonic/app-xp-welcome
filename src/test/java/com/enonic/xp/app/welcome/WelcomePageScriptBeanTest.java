@@ -469,7 +469,7 @@ public class WelcomePageScriptBeanTest
         Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn(
             AdminToolDescriptors.from( adminToolDescriptor ) );
 
-        String adminToolUri = "admin/tool/" + applicationKey.toString() + "/" + descriptorName;
+        String adminToolUri = "admin/" + applicationKey + "/" + descriptorName;
         Mockito.when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn(
             adminToolUri );
     }
