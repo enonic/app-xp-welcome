@@ -9,7 +9,7 @@ const testData = {
     icon: 'data:icon',
     version: '1.0.0',
     progress: 17,
-    adminToolsUrls: ['admin/tool/test/main'],
+    adminToolsUrls: ['admin/test/main'],
 }
 
 exports.testPutGet = function () {

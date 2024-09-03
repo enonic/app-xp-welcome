@@ -143,7 +143,7 @@ public class WelcomePageScriptBean
             if ( application.getKey().equals( ApplicationKey.from( "com.enonic.app.contentstudio" ) ) )
             {
                 return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(),
-                                                          "/admin/tool/" + application.getKey() + "/main" );
+                                                          "/admin/" + application.getKey() + "/main" );
             }
         }
         return null;
@@ -163,7 +163,7 @@ public class WelcomePageScriptBean
         final PropertyTree config = idProvider.getIdProviderConfig().getConfig();
         final Boolean adminUserCreationEnabled = config.getBoolean( "adminUserCreationEnabled" );
 
-        return adminUserCreationEnabled != null && adminUserCreationEnabled == true;
+        return adminUserCreationEnabled != null && adminUserCreationEnabled;
     }
 
     public Object getApplications()
