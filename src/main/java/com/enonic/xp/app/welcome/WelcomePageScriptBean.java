@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteSource;
@@ -266,7 +265,7 @@ public class WelcomePageScriptBean
         {
             try
             {
-                templateApps.addAll( mustParseJsonFile( filePath.toString() ) );
+                templateApps.addAll( parseJsonFile( filePath.toString() ) );
             }
             catch ( Exception e )
             {
@@ -420,7 +419,7 @@ public class WelcomePageScriptBean
         return builder.build();
     }
 
-    private List<TemplateApplicationJson> mustParseJsonFile( String filePath )
+    private List<TemplateApplicationJson> parseJsonFile( String filePath )
     {
         try (FileInputStream in = new FileInputStream( filePath ))
         {
@@ -428,14 +427,11 @@ public class WelcomePageScriptBean
             {
             } );
         }
-        catch ( JsonProcessingException e )
-        {
-            throw new UncheckedIOException( "Failed to parse template applications file at " + filePath, e );
-        }
         catch ( IOException e )
         {
-            throw new UncheckedIOException( "Failed to read template applications file at " + filePath, e );
+            LOG.warn( "Failed to parse template applications file at " + filePath, e );
         }
+        return new ArrayList<>();
     }
 
     private List<RepositoryId> getProjectIds()
