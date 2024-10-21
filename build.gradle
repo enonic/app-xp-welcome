@@ -53,7 +53,7 @@ dependencies {
 
     testImplementation( testFixtures( "com.enonic.xp:core-api" ) )
     testImplementation "com.enonic.xp:testing:${xpVersion}"
-    testImplementation 'org.mockito:mockito-core:5.14.1'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.14.1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.2'
 }
