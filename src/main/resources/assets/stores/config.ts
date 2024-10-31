@@ -17,6 +17,8 @@ const config = map<ConfigStore>({
     configs: [],
     sites: [],
     projects: [],
+    apis: [],
+    apiBaseUrl: '/api',
     urls: {
         xp: '0.0.0',
         managementApi: '',

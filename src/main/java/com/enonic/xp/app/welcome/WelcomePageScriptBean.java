@@ -33,6 +33,8 @@ import com.google.common.net.MediaType;
 
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.admin.tool.AdminToolDescriptors;
+import com.enonic.xp.api.ApiDescriptor;
+import com.enonic.xp.api.ApiDescriptorService;
 import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
@@ -44,6 +46,7 @@ import com.enonic.xp.app.welcome.json.ConfigFileJson;
 import com.enonic.xp.app.welcome.json.ProjectJson;
 import com.enonic.xp.app.welcome.json.SiteJson;
 import com.enonic.xp.app.welcome.json.TemplateApplicationJson;
+import com.enonic.xp.app.welcome.mapper.ApiDescriptorMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationInstallResultMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationMapper;
 import com.enonic.xp.app.welcome.mapper.ApplicationsMapper;
@@ -118,6 +121,10 @@ public class WelcomePageScriptBean
 
     private Supplier<AdminToolDescriptorService> adminToolDescriptorServiceSupplier;
 
+    private Supplier<DynamicUniversalApiHandlerRegistry> universalApiHandlerRegistrySupplier;
+
+    private Supplier<ApiDescriptorService> apiDescriptorServiceSupplier;
+
     private ObjectMapper objectMapper;
 
     @Override
@@ -133,26 +140,30 @@ public class WelcomePageScriptBean
         this.securityServiceSupplier = beanContext.getService( SecurityService.class );
         this.applicationDescriptorServiceSupplier = beanContext.getService( ApplicationDescriptorService.class );
         this.adminToolDescriptorServiceSupplier = beanContext.getService( AdminToolDescriptorService.class );
+        this.universalApiHandlerRegistrySupplier = beanContext.getService( DynamicUniversalApiHandlerRegistry.class );
+        this.apiDescriptorServiceSupplier = beanContext.getService( ApiDescriptorService.class );
     }
 
     public String getContentStudioUrl()
     {
-        for ( Application application : applicationServiceSupplier.get().getInstalledApplications() )
+        Application application =
+            applicationServiceSupplier.get().getInstalledApplication( ApplicationKey.from( "com.enonic.app.contentstudio" ) );
+        if ( application != null )
         {
-            if ( application.getKey().equals( ApplicationKey.from( "com.enonic.app.contentstudio" ) ) )
-            {
-                return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(),
-                                                          "/admin/" + application.getKey() + "/main" );
-            }
+            return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/admin/" + application.getKey() + "/main" );
         }
         return null;
     }
 
+    public String getApiBaseUrl()
+    {
+        return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/api" );
+    }
+
     public Boolean canLoginAsSu()
     {
-        final IdProvider idProvider = createAdminContext().callWith( () -> {
-            return securityServiceSupplier.get().getIdProvider( IdProviderKey.from( "system" ) );
-        } );
+        final IdProvider idProvider =
+            createAdminContext().callWith( () -> securityServiceSupplier.get().getIdProvider( IdProviderKey.from( "system" ) ) );
 
         if ( idProvider == null )
         {
@@ -340,6 +351,17 @@ public class WelcomePageScriptBean
 
             return new ApplicationInstallResultMapper( result );
         }
+    }
+
+    public Object getApis()
+    {
+        final List<ApiDescriptor> apiDescriptors = new ArrayList<>( universalApiHandlerRegistrySupplier.get().getAllApiDescriptors() );
+
+        applicationServiceSupplier.get().getInstalledApplications().forEach(
+            application -> apiDescriptors.addAll( apiDescriptorServiceSupplier.get().getByApplication( application.getKey() ).getList() ) );
+
+        return apiDescriptors.stream().sorted( Comparator.comparing( k -> k.getKey().toString() ) ).map( ApiDescriptorMapper::new ).collect(
+            Collectors.toList() );
     }
 
     public String getXpUrl()

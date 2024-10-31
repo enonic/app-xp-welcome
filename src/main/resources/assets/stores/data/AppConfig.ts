@@ -1,3 +1,4 @@
+import {ApiDescriptor} from './ApiDescriptor';
 import {Application} from './Application';
 import {ConfigFile} from './ConfigFile';
 import {Project} from './Project';
@@ -12,6 +13,8 @@ export interface AppConfig {
     configs: ConfigFile[];
     sites: Site[];
     projects: Project[];
+    apis: ApiDescriptor[];
+    apiBaseUrl: string;
     urls: {
         xp: string;
         managementApi: string;

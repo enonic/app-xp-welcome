@@ -39,3 +39,14 @@ declare interface Project {
     parent?: string;
     icon: string;
 }
+
+declare interface ApiDescriptor {
+    descriptor: string;
+    application: string;
+    name: string;
+    displayName?: string;
+    description?: string;
+    documentationUrl?: string;
+    slashApi: boolean;
+    allowedPrincipals?: string[];
+}
