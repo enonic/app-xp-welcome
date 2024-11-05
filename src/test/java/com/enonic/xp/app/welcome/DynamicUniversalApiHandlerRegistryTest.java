@@ -24,7 +24,7 @@ public class DynamicUniversalApiHandlerRegistryTest
 
         instance.addApiHandler( universalApiHandler,
                                 Map.of( "applicationKey", "admin", "apiKey", "widget", "displayName", "Display Name", "description",
-                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "slashApi", "true" ) );
+                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "mount", "true" ) );
 
         final List<ApiDescriptor> apiDescriptors = instance.getAllApiDescriptors();
 
@@ -38,7 +38,7 @@ public class DynamicUniversalApiHandlerRegistryTest
         assertEquals( "Display Name", apiDescriptor.getDisplayName() );
         assertEquals( "Brief description", apiDescriptor.getDescription() );
         assertEquals( "https://docs.enonic.com", apiDescriptor.getDocumentationUrl() );
-        assertTrue( apiDescriptor.isSlashApi() );
+        assertTrue( apiDescriptor.isMount() );
 
         instance.removeApiHandler( universalApiHandler );
 
@@ -58,7 +58,7 @@ public class DynamicUniversalApiHandlerRegistryTest
                                                                                                  "widget", "displayName", "Display Name",
                                                                                                  "description", "Brief description",
                                                                                                  "documentationUrl",
-                                                                                                 "https://docs.enonic.com", "slashApi",
+                                                                                                 "https://docs.enonic.com", "mount",
                                                                                                  "true", "allowedPrincipals", -1 ) ) );
 
         assertEquals( "Invalid allowedPrincipals. Value must be string or string array.", exception.getMessage() );

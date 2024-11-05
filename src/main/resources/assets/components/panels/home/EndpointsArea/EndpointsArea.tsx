@@ -38,7 +38,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.apis.title')}
-                subtitle=':8080/api'
+                subtitle='/api'
                 description={useI18n('home.card.apis.description')}
                 action={{label: useI18n('home.card.apis.action'), handler: () => goToScreen(ScreenType.APIS)}}
             />
@@ -65,7 +65,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.webapps.title')}
-                subtitle=':8080/webapp'
+                subtitle='/webapp'
                 description={useI18n('home.card.webapps.description')}
                 action={{label: useI18n('home.card.webapps.action'), handler: () => goToScreen(ScreenType.WEBAPPS)}}
             />
@@ -73,7 +73,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.site.title')}
-                subtitle=':8080/site'
+                subtitle='/site'
                 description={useI18n('home.card.site.description')}
                 action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
             />

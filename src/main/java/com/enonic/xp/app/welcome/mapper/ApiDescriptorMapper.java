@@ -27,7 +27,7 @@ public class ApiDescriptorMapper
         gen.value( "displayName", apiDescriptor.getDisplayName() );
         gen.value( "description", apiDescriptor.getDescription() );
         gen.value( "documentationUrl", apiDescriptor.getDocumentationUrl() );
-        gen.value( "slashApi", apiDescriptor.isSlashApi() );
+        gen.value( "mount", apiDescriptor.isMount() );
 
         if ( apiDescriptor.getAllowedPrincipals() != null )
         {

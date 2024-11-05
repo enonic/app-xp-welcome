@@ -2,7 +2,7 @@ export interface ApiDescriptor {
     descriptor: string;
     application: string;
     name: string;
-    slashApi: boolean;
+    mount: boolean;
     displayName?: string;
     description?: string;
     documentationUrl?: string;

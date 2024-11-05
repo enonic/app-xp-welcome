@@ -438,7 +438,7 @@ public class WelcomePageScriptBeanTest
         List<ApiDescriptor> dynamicApiDescriptors = new ArrayList<>();
         dynamicApiDescriptors.add(
             ApiDescriptor.create().key( DescriptorKey.from( "cde:api" ) ).displayName( "My API" ).documentationUrl( "docUrl" ).description(
-                "description" ).slashApi( true ).allowedPrincipals( PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
+                "description" ).mount( true ).allowedPrincipals( PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
         when( dynamicUniversalApiHandlerRegistry.getAllApiDescriptors() ).thenReturn( dynamicApiDescriptors );
 
         Application application = mockApplication( ApplicationKey.from( "abc" ), "app2" );
@@ -449,7 +449,7 @@ public class WelcomePageScriptBeanTest
 
         final ApiDescriptors apiDescriptors = ApiDescriptors.from(
             ApiDescriptor.create().key( DescriptorKey.from( "abc:api" ) ).displayName( "My API 2" ).documentationUrl(
-                "docUrl2" ).description( "description2" ).slashApi( false ).allowedPrincipals(
+                "docUrl2" ).description( "description2" ).mount( false ).allowedPrincipals(
                 PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
 
         when( apiDescriptorService.getByApplication( any(ApplicationKey.class) ) ).thenReturn( apiDescriptors );
