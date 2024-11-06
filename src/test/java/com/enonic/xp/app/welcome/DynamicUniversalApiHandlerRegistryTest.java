@@ -24,7 +24,8 @@ public class DynamicUniversalApiHandlerRegistryTest
 
         instance.addApiHandler( universalApiHandler,
                                 Map.of( "applicationKey", "admin", "apiKey", "widget", "displayName", "Display Name", "description",
-                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "mount", "true" ) );
+                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "mount", "true",
+                                        "allowedPrincipals", "role:system.everyone" ) );
 
         final List<ApiDescriptor> apiDescriptors = instance.getAllApiDescriptors();
 
@@ -59,7 +60,7 @@ public class DynamicUniversalApiHandlerRegistryTest
                                                                                                  "description", "Brief description",
                                                                                                  "documentationUrl",
                                                                                                  "https://docs.enonic.com", "mount",
-                                                                                                 "true", "allowedPrincipals", -1 ) ) );
+                                                                                                 "true", "allowedPrincipals", -1) ) );
 
         assertEquals( "Invalid allowedPrincipals. Value must be string or string array.", exception.getMessage() );
     }
