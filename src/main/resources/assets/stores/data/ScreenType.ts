@@ -3,4 +3,5 @@ export enum ScreenType {
     PROJECTS = 'projects',
     WEBAPPS = 'webapps',
     SITES = 'sites',
+    APIS = 'apis',
 }

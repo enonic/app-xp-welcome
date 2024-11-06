@@ -8,6 +8,7 @@ const testUtils = require('../libs/test.utils');
 const WelcomePage = require('../page_objects/app.panel');
 const ContentCard = require('../page_objects/endpoints/content.card');
 const ProjectsPanel = require('../page_objects/projects.panel');
+const EndpointsAreaPanel = require('../page_objects/endpoints/endpoints.area.panel');
 
 describe('Projects panel specification', function () {
     this.timeout(appConst.TIMEOUT_SUITE);
@@ -21,7 +22,9 @@ describe('Projects panel specification', function () {
             let welcomePage = new WelcomePage();
             let contentCard = new ContentCard();
             let projectsPanel = new ProjectsPanel();
+            let endpointsAreaPanel = new EndpointsAreaPanel();
             await welcomePage.waitForLoaded();
+            await endpointsAreaPanel.clickOnShowAllEndpointsButton();
             // 1. Content Card should be displayed in Endpoints Panel:
             await contentCard.waitForDisplayed();
             // 3. Click on 'Browse projects' button:

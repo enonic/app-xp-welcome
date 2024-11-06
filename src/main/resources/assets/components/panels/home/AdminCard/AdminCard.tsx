@@ -23,7 +23,7 @@ export default function AdminCard({className}: Props): JSX.Element {
         <Card
             className={classNames}
             title={useI18n('home.card.admin.title')}
-            subtitle={':8080/admin'}
+            subtitle={'/admin'}
             description={useI18n('home.card.admin.description')}
         >
             <LoginButton className='AdminCard-ActionLogin' />

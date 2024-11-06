@@ -48,5 +48,9 @@ export const segments = computed(navigation, ({screen}) => {
         navSegments.push({name: 'sites'});
     }
 
+    if (screen === ScreenType.APIS) {
+        navSegments.push({name: 'apis'});
+    }
+
     return navSegments;
 });

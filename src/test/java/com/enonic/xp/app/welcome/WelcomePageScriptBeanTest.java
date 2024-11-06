@@ -24,6 +24,9 @@ import com.google.common.net.MediaType;
 import com.enonic.xp.admin.tool.AdminToolDescriptor;
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.admin.tool.AdminToolDescriptors;
+import com.enonic.xp.api.ApiDescriptor;
+import com.enonic.xp.api.ApiDescriptorService;
+import com.enonic.xp.api.ApiDescriptors;
 import com.enonic.xp.app.Application;
 import com.enonic.xp.app.ApplicationDescriptor;
 import com.enonic.xp.app.ApplicationDescriptorService;
@@ -54,10 +57,15 @@ import com.enonic.xp.resource.ResourceService;
 import com.enonic.xp.security.IdProvider;
 import com.enonic.xp.security.IdProviderConfig;
 import com.enonic.xp.security.IdProviderKey;
+import com.enonic.xp.security.PrincipalKeys;
+import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.testing.ScriptTestSupport;
 
 import static com.enonic.xp.app.welcome.WelcomePageScriptBean.FILE_NAME;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class WelcomePageScriptBeanTest
     extends ScriptTestSupport
@@ -76,6 +84,10 @@ public class WelcomePageScriptBeanTest
 
     private AdminToolDescriptorService adminToolDescriptorService;
 
+    private DynamicUniversalApiHandlerRegistry dynamicUniversalApiHandlerRegistry;
+
+    private ApiDescriptorService apiDescriptorService;
+
     @TempDir
     public Path temporaryFolder;
 
@@ -85,14 +97,16 @@ public class WelcomePageScriptBeanTest
     {
         super.initialize();
 
-        this.applicationService = Mockito.mock( ApplicationService.class );
-        this.projectService = Mockito.mock( ProjectService.class );
-        this.resourceService = Mockito.mock( ResourceService.class );
-        this.securityService = Mockito.mock( SecurityService.class );
-        this.applicationDescriptorService = Mockito.mock( ApplicationDescriptorService.class );
-        this.adminToolDescriptorService = Mockito.mock( AdminToolDescriptorService.class );
+        this.applicationService = mock( ApplicationService.class );
+        this.projectService = mock( ProjectService.class );
+        this.resourceService = mock( ResourceService.class );
+        this.securityService = mock( SecurityService.class );
+        this.applicationDescriptorService = mock( ApplicationDescriptorService.class );
+        this.adminToolDescriptorService = mock( AdminToolDescriptorService.class );
+        this.dynamicUniversalApiHandlerRegistry = mock( DynamicUniversalApiHandlerRegistry.class );
+        this.apiDescriptorService = mock( ApiDescriptorService.class );
 
-        JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
+        JettyConfig jettyConfig = mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
         this.jettyConfigService = new JettyConfigService( jettyConfig );
 
         addService( ApplicationService.class, this.applicationService );
@@ -102,6 +116,8 @@ public class WelcomePageScriptBeanTest
         addService( SecurityService.class, this.securityService );
         addService( ApplicationDescriptorService.class, this.applicationDescriptorService );
         addService( AdminToolDescriptorService.class, this.adminToolDescriptorService );
+        addService( DynamicUniversalApiHandlerRegistry.class, this.dynamicUniversalApiHandlerRegistry );
+        addService( ApiDescriptorService.class, this.apiDescriptorService );
     }
 
     @Test
@@ -118,7 +134,7 @@ public class WelcomePageScriptBeanTest
 
         Applications applications = Applications.from( application, regularApplication, webApplication );
 
-        Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
+        when( applicationService.getInstalledApplications() ).thenReturn( applications );
 
         mockApplication( applicationKey, false, "main" );
         mockApplication( regularApplicationKey, false );
@@ -147,7 +163,7 @@ public class WelcomePageScriptBeanTest
         Application application = mockApplication( applicationKey, "Application" );
         mockApplication( applicationKey, true, "main" );
 
-        Mockito.when( applicationService.getInstalledApplication( Mockito.any( ApplicationKey.class ) ) ).thenReturn( application );
+        when( applicationService.getInstalledApplication( Mockito.any( ApplicationKey.class ) ) ).thenReturn( application );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetInstalledApplication", applicationKey.toString() );
     }
@@ -255,7 +271,7 @@ public class WelcomePageScriptBeanTest
 
         mockApplication( key, true, "Descriptor1" );
 
-        Mockito.when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenReturn( app );
+        when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenReturn( app );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplication", app );
     }
@@ -267,8 +283,7 @@ public class WelcomePageScriptBeanTest
 
         mockApplication( key, true, "Descriptor1" );
 
-        Mockito.when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenThrow(
-            RuntimeException.class );
+        when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenThrow( RuntimeException.class );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationException" );
     }
@@ -309,9 +324,7 @@ public class WelcomePageScriptBeanTest
         ApplicationKey csKey = ApplicationKey.from( "com.enonic.app.contentstudio" );
         Application cs = mockApplication( csKey, "Content Studio" );
 
-        Applications applications = Applications.from( cs );
-
-        Mockito.when( applicationService.getInstalledApplications() ).thenReturn( applications );
+        when( applicationService.getInstalledApplication( csKey ) ).thenReturn( cs );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getContentStudioUrl" );
     }
@@ -319,8 +332,8 @@ public class WelcomePageScriptBeanTest
     @Test
     public void testHost()
     {
-        JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
-        Mockito.when( jettyConfig.host() ).thenReturn( "192.168.1.1" );
+        JettyConfig jettyConfig = mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
+        when( jettyConfig.host() ).thenReturn( "192.168.1.1" );
 
         this.jettyConfigService = new JettyConfigService( jettyConfig );
         addService( JettyConfigService.class, this.jettyConfigService );
@@ -331,8 +344,8 @@ public class WelcomePageScriptBeanTest
     @Test
     public void testHost_Empty()
     {
-        JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
-        Mockito.when( jettyConfig.host() ).thenReturn( "" );
+        JettyConfig jettyConfig = mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
+        when( jettyConfig.host() ).thenReturn( "" );
 
         this.jettyConfigService = new JettyConfigService( jettyConfig );
         addService( JettyConfigService.class, this.jettyConfigService );
@@ -343,8 +356,8 @@ public class WelcomePageScriptBeanTest
     @Test
     public void testHost_Zero()
     {
-        JettyConfig jettyConfig = Mockito.mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
-        Mockito.when( jettyConfig.host() ).thenReturn( "0.0.0.0" );
+        JettyConfig jettyConfig = mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
+        when( jettyConfig.host() ).thenReturn( "0.0.0.0" );
 
         this.jettyConfigService = new JettyConfigService( jettyConfig );
         addService( JettyConfigService.class, this.jettyConfigService );
@@ -361,10 +374,10 @@ public class WelcomePageScriptBeanTest
             IdProviderConfig.create().applicationKey( ApplicationKey.from( "com.enonic.xp.app.standardidprovider" ) ).config(
                 config ).build();
 
-        IdProvider idProvider = Mockito.mock( IdProvider.class );
+        IdProvider idProvider = mock( IdProvider.class );
 
-        Mockito.when( idProvider.getIdProviderConfig() ).thenReturn( idProviderConfig );
-        Mockito.when( securityService.getIdProvider( Mockito.any( IdProviderKey.class ) ) ).thenReturn( idProvider );
+        when( idProvider.getIdProviderConfig() ).thenReturn( idProviderConfig );
+        when( securityService.getIdProvider( Mockito.any( IdProviderKey.class ) ) ).thenReturn( idProvider );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "canLoginAsSu" );
     }
@@ -390,9 +403,9 @@ public class WelcomePageScriptBeanTest
         FindContentIdsByQueryResult findContentIdsByQueryResult = FindContentIdsByQueryResult.create().contents(
             ContentIds.create().add( content1.getId() ).add( content2.getId() ).build() ).build();
 
-        Mockito.when( projectService.list() ).thenReturn( projects );
-        Mockito.when( contentService.find( Mockito.any( ContentQuery.class ) ) ).thenReturn( findContentIdsByQueryResult );
-        Mockito.when( contentService.getByIds( Mockito.any( GetContentByIdsParams.class ) ) ).thenReturn(
+        when( projectService.list() ).thenReturn( projects );
+        when( contentService.find( Mockito.any( ContentQuery.class ) ) ).thenReturn( findContentIdsByQueryResult );
+        when( contentService.getByIds( Mockito.any( GetContentByIdsParams.class ) ) ).thenReturn(
             Contents.create().add( content1 ).build() ).thenReturn( Contents.create().add( content2 ).build() );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getSites" );
@@ -411,53 +424,84 @@ public class WelcomePageScriptBeanTest
         projects.add( project1 );
         projects.add( project2 );
 
-        Mockito.when( projectService.list() ).thenReturn( Projects.from( projects ) );
+        when( projectService.list() ).thenReturn( Projects.from( projects ) );
 
         ByteSource icon = ByteSource.wrap( new byte[]{123} );
-        Mockito.when( projectService.getIcon( Mockito.mock( ProjectName.class ) ) ).thenReturn( icon );
+        when( projectService.getIcon( mock( ProjectName.class ) ) ).thenReturn( icon );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getProjects" );
     }
 
+    @Test
+    void testGetApis()
+    {
+        List<ApiDescriptor> dynamicApiDescriptors = new ArrayList<>();
+        dynamicApiDescriptors.add(
+            ApiDescriptor.create().key( DescriptorKey.from( "cde:api" ) ).displayName( "My API" ).documentationUrl( "docUrl" ).description(
+                "description" ).mount( true ).allowedPrincipals( PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
+        when( dynamicUniversalApiHandlerRegistry.getAllApiDescriptors() ).thenReturn( dynamicApiDescriptors );
+
+        Application application = mockApplication( ApplicationKey.from( "abc" ), "app2" );
+
+        Applications applications = Applications.from( application );
+
+        when( applicationService.getInstalledApplications() ).thenReturn( applications );
+
+        final ApiDescriptors apiDescriptors = ApiDescriptors.from(
+            ApiDescriptor.create().key( DescriptorKey.from( "abc:api" ) ).displayName( "My API 2" ).documentationUrl(
+                "docUrl2" ).description( "description2" ).mount( false ).allowedPrincipals(
+                PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
+
+        when( apiDescriptorService.getByApplication( any(ApplicationKey.class) ) ).thenReturn( apiDescriptors );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getApis" );
+    }
+
+    @Test
+    void testGetApiBaseUrl()
+    {
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "getApiBaseUrl" );
+    }
+
     private Application mockApplication( ApplicationKey applicationKey, String displayName )
     {
-        Application application = Mockito.mock( Application.class );
-        Mockito.when( application.getKey() ).thenReturn( applicationKey );
-        Mockito.when( application.getVersion() ).thenReturn( Version.valueOf( "1.0.0" ) );
-        Mockito.when( application.getDisplayName() ).thenReturn( displayName );
+        Application application = mock( Application.class );
+        when( application.getKey() ).thenReturn( applicationKey );
+        when( application.getVersion() ).thenReturn( Version.valueOf( "1.0.0" ) );
+        when( application.getDisplayName() ).thenReturn( displayName );
         return application;
     }
 
     private Project mockProject( ProjectName name )
     {
-        Project project = Mockito.mock( Project.class );
-        Mockito.when( project.getName() ).thenReturn( name );
-        Mockito.when( project.getDisplayName() ).thenReturn( "displayName" );
-        Mockito.when( project.getDescription() ).thenReturn( "description" );
-        Attachment attachment = Mockito.mock( Attachment.class );
-        Mockito.when( attachment.getMimeType() ).thenReturn( MediaType.SVG_UTF_8.toString() );
-        Mockito.when( project.getIcon() ).thenReturn( attachment );
+        Project project = mock( Project.class );
+        when( project.getName() ).thenReturn( name );
+        when( project.getDisplayName() ).thenReturn( "displayName" );
+        when( project.getDescription() ).thenReturn( "description" );
+        Attachment attachment = mock( Attachment.class );
+        when( attachment.getMimeType() ).thenReturn( MediaType.SVG_UTF_8.toString() );
+        when( project.getIcon() ).thenReturn( attachment );
         return project;
     }
 
     private Project mockProject( ProjectName name, ProjectName parent )
     {
         Project project = this.mockProject( name );
-        Mockito.when( project.getParent() ).thenReturn( parent );
+        when( project.getParent() ).thenReturn( parent );
         return project;
     }
 
     private void mockApplication( ApplicationKey applicationKey, boolean isWebapp )
     {
-        Resource resource = Mockito.mock( Resource.class );
-        Mockito.when( resource.exists() ).thenReturn( isWebapp );
-        Mockito.when( resourceService.getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) ) ).thenReturn( resource );
+        Resource resource = mock( Resource.class );
+        when( resource.exists() ).thenReturn( isWebapp );
+        when( resourceService.getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) ) ).thenReturn( resource );
 
         Icon icon = Icon.from( new byte[]{123}, MediaType.JPEG.toString(), Instant.now() );
         ApplicationDescriptor applicationDescriptor = ApplicationDescriptor.create().key( applicationKey ).icon( icon ).build();
-        Mockito.when( applicationDescriptorService.get( applicationKey ) ).thenReturn( applicationDescriptor );
+        when( applicationDescriptorService.get( applicationKey ) ).thenReturn( applicationDescriptor );
 
-        Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn( AdminToolDescriptors.empty() );
+        when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn( AdminToolDescriptors.empty() );
     }
 
     private void mockApplication( ApplicationKey applicationKey, boolean isWebapp, String descriptorName )
@@ -466,11 +510,10 @@ public class WelcomePageScriptBeanTest
 
         DescriptorKey descriptorKey = DescriptorKey.from( applicationKey, descriptorName );
         AdminToolDescriptor adminToolDescriptor = AdminToolDescriptor.create().key( descriptorKey ).build();
-        Mockito.when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn(
+        when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn(
             AdminToolDescriptors.from( adminToolDescriptor ) );
 
         String adminToolUri = "admin/" + applicationKey + "/" + descriptorName;
-        Mockito.when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn(
-            adminToolUri );
+        when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn( adminToolUri );
     }
 }
