@@ -34,7 +34,7 @@ describe('Endpoints panel specification', function () {
             await testUtils.saveScreenshot('endpoints_expanded');
             // Verify that 7 cards are visible in the expanded mode:
             cards = await endpointsAreaPanel.getCardTitles();
-            assert.equal(cards.length, 7, "7 cards gets visible after clicking on 'Show All Endpoints' button");
+            assert.equal(cards.length, 8, "8 cards gets visible after clicking on 'Show All Endpoints' button");
         });
 
     beforeEach(() => testUtils.url("http://127.0.0.1:8080/"));
