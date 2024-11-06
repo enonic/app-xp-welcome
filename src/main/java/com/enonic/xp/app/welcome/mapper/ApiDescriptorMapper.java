@@ -29,11 +29,8 @@ public class ApiDescriptorMapper
         gen.value( "documentationUrl", apiDescriptor.getDocumentationUrl() );
         gen.value( "mount", apiDescriptor.isMount() );
 
-        if ( apiDescriptor.getAllowedPrincipals() != null )
-        {
-            gen.array( "allowedPrincipals" );
-            apiDescriptor.getAllowedPrincipals().forEach( gen::value );
-            gen.end();
-        }
+        gen.array( "allowedPrincipals" );
+        apiDescriptor.getAllowedPrincipals().forEach( gen::value );
+        gen.end();
     }
 }

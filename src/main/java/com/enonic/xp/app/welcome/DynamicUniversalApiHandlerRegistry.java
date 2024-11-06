@@ -81,7 +81,6 @@ public class DynamicUniversalApiHandlerRegistry
     {
         return switch ( allowedPrincipals )
         {
-            case null -> null;
             case String s -> PrincipalKeys.from( s );
             case String[] strings ->
                 PrincipalKeys.from( Arrays.stream( strings ).map( PrincipalKey::from ).collect( Collectors.toList() ) );
