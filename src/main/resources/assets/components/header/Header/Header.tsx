@@ -22,6 +22,8 @@ function createHeaderTitlePhrase(screen: ScreenType): string {
             return 'header.webapps.title';
         case ScreenType.SITES:
             return 'header.sites.title';
+        case ScreenType.APIS:
+            return 'header.apis.title';
     }
 }
 

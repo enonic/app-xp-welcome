@@ -3,6 +3,7 @@ import React from 'react';
 
 import {ScreenType} from '../../../stores/data/ScreenType';
 import navigation from '../../../stores/navigation';
+import ApisPanel from '../apis/ApisPanel/ApisPanel';
 import HomePanel from '../home/HomePanel/HomePanel';
 import ProjectsPanel from '../projects/ProjectsPanel/ProjectsPanel';
 import SitesPanel from '../sites/SitesPanel/SitesPanel';
@@ -20,5 +21,7 @@ export default function AppPanels(): JSX.Element {
       return <WebappsPanel />;
     case ScreenType.SITES:
       return <SitesPanel />;
+    case ScreenType.APIS:
+      return <ApisPanel />;
   }
 }

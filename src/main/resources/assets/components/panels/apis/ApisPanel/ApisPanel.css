@@ -1,0 +1,16 @@
+.ApiPanel-Row {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 10px;
+  max-width: var(--size-ui-width);
+  margin: 0 auto;
+}
+
+.ApiPanel-Row__Col {
+  margin-right: 8px;
+}
+
+.ApiPanel-Row__Col.RightAligned {
+  justify-self: end;
+  margin-right: 0;
+}

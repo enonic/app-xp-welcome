@@ -37,10 +37,10 @@ export default function EndpointsArea({className}: Props): JSX.Element {
 
             <CardWithButton
                 className='EndpointsArea-Card'
-                title={useI18n('home.card.content.title')}
-                subtitle={useI18n('home.card.content.subtitle')}
-                description={useI18n('home.card.content.description')}
-                action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.PROJECTS)}}
+                title={useI18n('home.card.apis.title')}
+                subtitle='/api'
+                description={useI18n('home.card.apis.description')}
+                action={{label: useI18n('home.card.apis.action'), handler: () => goToScreen(ScreenType.APIS)}}
             />
 
             <CardWithLink
@@ -56,8 +56,16 @@ export default function EndpointsArea({className}: Props): JSX.Element {
 
             <CardWithButton
                 className='EndpointsArea-Card'
+                title={useI18n('home.card.content.title')}
+                subtitle={useI18n('home.card.content.subtitle')}
+                description={useI18n('home.card.content.description')}
+                action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.PROJECTS)}}
+            />
+
+            <CardWithButton
+                className='EndpointsArea-Card'
                 title={useI18n('home.card.webapps.title')}
-                subtitle=':8080/webapp'
+                subtitle='/webapp'
                 description={useI18n('home.card.webapps.description')}
                 action={{label: useI18n('home.card.webapps.action'), handler: () => goToScreen(ScreenType.WEBAPPS)}}
             />
@@ -65,7 +73,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.site.title')}
-                subtitle=':8080/site'
+                subtitle='/site'
                 description={useI18n('home.card.site.description')}
                 action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
             />

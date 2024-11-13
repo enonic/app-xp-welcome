@@ -216,3 +216,29 @@ exports.getProjects = function () {
     assert.assertNotNull(project2.icon);
     assert.assertTrue(project2.icon.startsWith('data:image/svg+xml; charset=utf-8;base64,'));
 };
+
+exports.getApis = function () {
+    const apiDescriptors = __.toNativeObject(bean.getApis());
+
+    assert.assertEquals(2, apiDescriptors.length);
+
+    const apiDescriptor1 = apiDescriptors[0];
+    assert.assertEquals('abc:api', apiDescriptor1.descriptor);
+    assert.assertEquals('My API 2', apiDescriptor1.displayName);
+    assert.assertEquals('description2', apiDescriptor1.description);
+    assert.assertEquals('docUrl2', apiDescriptor1.documentationUrl);
+    assert.assertFalse(apiDescriptor1.mount);
+    assert.assertEquals(1, apiDescriptor1.allowedPrincipals.length);
+
+    const apiDescriptor2 = apiDescriptors[1];
+    assert.assertEquals('cde:api', apiDescriptor2.descriptor);
+    assert.assertEquals('My API', apiDescriptor2.displayName);
+    assert.assertEquals('description', apiDescriptor2.description);
+    assert.assertEquals('docUrl', apiDescriptor2.documentationUrl);
+    assert.assertTrue(apiDescriptor2.mount);
+    assert.assertEquals(1, apiDescriptor2.allowedPrincipals.length);
+};
+
+exports.getApiBaseUrl = function () {
+    assert.assertEquals('/api', bean.getApiBaseUrl());
+}
