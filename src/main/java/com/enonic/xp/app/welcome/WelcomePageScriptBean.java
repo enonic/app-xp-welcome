@@ -150,14 +150,14 @@ public class WelcomePageScriptBean
             applicationServiceSupplier.get().getInstalledApplication( ApplicationKey.from( "com.enonic.app.contentstudio" ) );
         if ( application != null )
         {
-            return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/admin/" + application.getKey() + "/main" );
+            return "/admin/" + application.getKey() + "/main";
         }
         return null;
     }
 
     public String getApiBaseUrl()
     {
-        return ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/api" );
+        return "/api";
     }
 
     public Boolean canLoginAsSu()
@@ -431,7 +431,7 @@ public class WelcomePageScriptBean
         Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
         if ( resource.exists() )
         {
-            String webappUrl = ServletRequestUrlHelper.createUri( ServletRequestHolder.getRequest(), "/webapp/" + application.getKey() );
+            String webappUrl = "/webapp/" + application.getKey();
             builder.webappUrl( webappUrl );
         }
 
