@@ -55,7 +55,7 @@ describe('Application Page specification', function () {
             await adminCard.waitForOpenButtonDisplayed();
         });
 
-    beforeEach(() => testUtils.url("http://127.0.0.1:8080/"));
+    beforeEach(() => testUtils.url(appConst.APP_URLS.WELCOME_PAGE));
     afterEach(() => testUtils.refresh());
     before(async () => {
         return console.log('specification starting: ' + this.title);

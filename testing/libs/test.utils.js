@@ -56,16 +56,25 @@ module.exports = {
 
         return await this.doSwitchToWelcomePage();
     },
+    async switchToTabContains(text) {
+        let handles = await this.getBrowser().getWindowHandles();
+        for (const handle of handles) {
+            await this.getBrowser().switchToWindow(handle);
+            let currentTitle = await this.getBrowser().getTitle();
+            if (currentTitle.includes(text)) {
+                return handle;
+            }
+        }
+        throw new Error('Browser tab with title ' + text + ' was not found');
+    },
     async doSwitchToWelcomePage() {
         console.log('testUtils:switching to Welcome page...');
-        await this.getBrowser().switchWindow(appConst.WELCOME_PAGE_TITLE);
+        await this.switchToTabContains(appConst.WELCOME_PAGE_TITLE);
 
     },
     async doSwitchToLoginPage() {
         console.log('testUtils:switching to Login page...');
-        await this.getBrowser().switchWindow(appConst.LOGIN_PAGE_TITLE);
-
-
+        await this.switchToTabContains(appConst.LOGIN_PAGE_TITLE);
     },
     async switchAndCheckTitle(handle, reqTitle) {
         try {
