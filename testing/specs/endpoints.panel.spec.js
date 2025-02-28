@@ -37,7 +37,7 @@ describe('Endpoints panel specification', function () {
             assert.equal(cards.length, 8, "8 cards gets visible after clicking on 'Show All Endpoints' button");
         });
 
-    beforeEach(() => testUtils.url("http://127.0.0.1:8080/"));
+    beforeEach(() => testUtils.url(appConst.APP_URLS.WELCOME_PAGE));
     afterEach(() => testUtils.refresh());
     before(async () => {
         return console.log('specification starting: ' + this.title);

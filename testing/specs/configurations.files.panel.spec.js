@@ -17,7 +17,7 @@ describe('Configuration files panel specification', function () {
             let configsAreaPanel = new ConfigsAreaPanel();
             await welcomePage.waitForLoaded();
             let items = await configsAreaPanel.getConfigFiles();
-            assert.equal(items.length, 33, "Expected config items should be displayed in the panel");
+            await testUtils.saveScreenshot('configs_panel_cfg_files');
             assert.ok(items.includes('com.enonic.xp.app.cfg'), "Config for 'xp app' should be displayed");
             assert.ok(items.includes('com.enonic.xp.web.vhost.cfg'), "Config for 'web.vhost' should be displayed");
             assert.ok(items.includes('com.enonic.xp.app.main.cfg'), "Config for 'app.main' should be displayed");
@@ -53,11 +53,10 @@ describe('Configuration files panel specification', function () {
             assert.ok(items.includes('com.enonic.xp.web.sessionstore.cfg'),
                 "Config for 'com.enonic.xp.web.sessionstore.cfg' should be displayed");
             assert.ok(items.includes('system.properties'), "Config for 'system.properties' should be displayed");
-
+            assert.equal(items.length, 33, 'Expected config items should be displayed in the panel');
         });
 
-
-    beforeEach(() => testUtils.url("http://127.0.0.1:8080/"));
+    beforeEach(() => testUtils.url(appConst.APP_URLS.WELCOME_PAGE));
     afterEach(() => testUtils.refresh());
     before(async () => {
         return console.log('specification starting: ' + this.title);
