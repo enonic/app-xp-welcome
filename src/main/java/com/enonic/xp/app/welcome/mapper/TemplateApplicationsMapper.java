@@ -22,8 +22,8 @@ public class TemplateApplicationsMapper
         gen.array( "applications" );
         applications.forEach( application -> {
             gen.map();
-            gen.value( "key", application.getKey() );
-            gen.value( "config", application.getConfig() );
+            gen.value( "key", application.key );
+            gen.value( "config", application.config );
             gen.end();
         } );
         gen.end();

@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jr.ob.JSON;
 import com.google.common.io.ByteSource;
 import com.google.common.net.MediaType;
 
@@ -88,8 +87,6 @@ import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
 import com.enonic.xp.util.HexEncoder;
-import com.enonic.xp.web.servlet.ServletRequestHolder;
-import com.enonic.xp.web.servlet.ServletRequestUrlHelper;
 
 public class WelcomePageScriptBean
     implements ScriptBean
@@ -125,13 +122,9 @@ public class WelcomePageScriptBean
 
     private Supplier<ApiDescriptorService> apiDescriptorServiceSupplier;
 
-    private ObjectMapper objectMapper;
-
     @Override
     public void initialize( final BeanContext beanContext )
     {
-        this.objectMapper = new ObjectMapper();
-
         this.applicationServiceSupplier = beanContext.getService( ApplicationService.class );
         this.resourceServiceSupplier = beanContext.getService( ResourceService.class );
         this.jettyConfigServiceSupplier = beanContext.getService( JettyConfigService.class );
@@ -445,9 +438,7 @@ public class WelcomePageScriptBean
     {
         try (FileInputStream in = new FileInputStream( filePath ))
         {
-            return objectMapper.readValue( in, new TypeReference<>()
-            {
-            } );
+            return JSON.std.listOfFrom(TemplateApplicationJson.class, in);
         }
         catch ( IOException e )
         {
