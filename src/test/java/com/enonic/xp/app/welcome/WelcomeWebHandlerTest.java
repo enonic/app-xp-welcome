@@ -1,7 +1,5 @@
 package com.enonic.xp.app.welcome;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +38,6 @@ public class WelcomeWebHandlerTest
         this.handler = new WelcomeWebHandler( this.controllerScriptFactory );
         this.request = new PortalRequest();
 
-        this.request.setRawRequest( mock( HttpServletRequest.class ) );
         this.chain = mock( WebHandlerChain.class );
     }
 
