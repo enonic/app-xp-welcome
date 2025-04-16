@@ -12,7 +12,7 @@ exports.getApplications = function () {
     assert.assertEquals('1.0.0', application1.version);
     assert.assertEquals('applicationKey', application1.applicationKey);
     assert.assertEquals(1, application1.adminToolsUrls.length);
-    assert.assertEquals('admin/applicationKey/main', application1.adminToolsUrls[0]);
+    assert.assertEquals('/admin/applicationKey/main', application1.adminToolsUrls[0]);
     assert.assertNotNull(application1.icon);
 
     const application2 = applications.applications[1];

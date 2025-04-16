@@ -30,6 +30,7 @@ import com.fasterxml.jackson.jr.ob.JSON;
 import com.google.common.io.ByteSource;
 import com.google.common.net.MediaType;
 
+import com.enonic.xp.admin.tool.AdminToolDescriptor;
 import com.enonic.xp.admin.tool.AdminToolDescriptorService;
 import com.enonic.xp.admin.tool.AdminToolDescriptors;
 import com.enonic.xp.api.ApiDescriptor;
@@ -465,7 +466,12 @@ public class WelcomePageScriptBean
         AdminToolDescriptors descriptors = service.getByApplication( applicationKey );
 
         return descriptors.getList().stream().map(
-            descriptor -> service.generateAdminToolUri( applicationKey.toString(), descriptor.getName() ) ).collect( Collectors.toList() );
+            descriptor -> makeAdminToolUri( applicationKey, descriptor ) ).collect( Collectors.toList() );
+    }
+
+    private String makeAdminToolUri( final ApplicationKey applicationKey, final AdminToolDescriptor descriptor )
+    {
+        return "/admin/" + applicationKey + "/" + descriptor.getName();
     }
 
     private String getApplicationDescription( final ApplicationKey applicationKey )
