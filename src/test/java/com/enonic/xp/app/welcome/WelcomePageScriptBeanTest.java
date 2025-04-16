@@ -512,8 +512,5 @@ public class WelcomePageScriptBeanTest
         AdminToolDescriptor adminToolDescriptor = AdminToolDescriptor.create().key( descriptorKey ).build();
         when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn(
             AdminToolDescriptors.from( adminToolDescriptor ) );
-
-        String adminToolUri = "admin/" + applicationKey + "/" + descriptorName;
-        when( adminToolDescriptorService.generateAdminToolUri( applicationKey.toString(), descriptorName ) ).thenReturn( adminToolUri );
     }
 }
