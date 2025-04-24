@@ -6,13 +6,13 @@ const vhostLib = require('/lib/xp/vhost');
 
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
 
-exports.get = function () {
+exports.get = function (req) {
     const applications = __.toNativeObject(bean.getApplications());
     const sites = __.toNativeObject(bean.getSites());
     const projects = __.toNativeObject(bean.getProjects());
     const configs = __.toNativeObject(bean.getConfigs());
     const apiDescriptors = __.toNativeObject(bean.getApis());
-    const phrases = i18nLib.getPhrases(adminLib.getLocales(), ['i18n/phrases']);
+    const phrases = i18nLib.getPhrases(req.locales, ['i18n/phrases']);
 
     return {
         status: 200,

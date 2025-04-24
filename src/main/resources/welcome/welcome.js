@@ -1,4 +1,3 @@
-const admin = require('/lib/xp/admin');
 const portal = require('/lib/xp/portal');
 const i18nLib = require('/lib/xp/i18n');
 const mustache = require('/lib/mustache');
@@ -6,11 +5,11 @@ const assetLib = require('/lib/enonic/asset');
 
 const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
 
-exports.get = function () {
+exports.get = function (req) {
 
     const view = resolve('./welcome.html');
 
-    const phrases = i18nLib.getPhrases(admin.getLocales(), ['i18n/phrases']);
+    const phrases = i18nLib.getPhrases(req.locales, ['i18n/phrases']);
 
     const params = {
         assetsUri: assetLib.assetUrl({
