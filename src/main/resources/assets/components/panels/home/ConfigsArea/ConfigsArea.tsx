@@ -37,7 +37,7 @@ export default function ConfigsArea({className}: Props): JSX.Element {
 }
 
 function ConfigItem({file, index}: { file: ConfigFile, index: number }): JSX.Element {
-    const copyIconRef = useRef<any>(null);
+    const copyIconRef = useRef<HTMLDivElement>(null);
 
     function clickHandler(): void {
         copyIconRef.current?.click();
@@ -49,8 +49,8 @@ function ConfigItem({file, index}: { file: ConfigFile, index: number }): JSX.Ele
     </li>);
 }
 
-function aggregateByPath(configs: ConfigFile[]): { [key: string]: ConfigFile[] } {
-    return configs.reduce<{ [key: string]: ConfigFile[] }>((acc, config) => {
+function aggregateByPath(configs: ConfigFile[]): Record<string, ConfigFile[]> {
+    return configs.reduce<Record<string, ConfigFile[]>>((acc, config) => {
         if (!acc[config.folder]) {
             acc[config.folder] = [];
         }

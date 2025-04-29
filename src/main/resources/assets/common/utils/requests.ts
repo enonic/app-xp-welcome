@@ -36,7 +36,7 @@ export function getWebSocketUrl(): string {
     return currentScript.getAttribute('data-ws-service-url') || '';
 }
 
-export async function fetchAppConfig(): Promise<AppConfig | never> {
+export async function fetchAppConfig(): Promise<AppConfig> {
     const {currentScript} = document;
     if (currentScript == null) {
         throw new Error('Legacy browsers are not supported');
@@ -50,6 +50,6 @@ export async function fetchAppConfig(): Promise<AppConfig | never> {
     return await get(configServiceUrl);
 }
 
-export async function loginAsSu(idProviderUrl: string): Promise<boolean | never> {
+export async function loginAsSu(idProviderUrl: string): Promise<boolean> {
     return await post<boolean>(idProviderUrl, {action: 'loginAsSu'});
 }
