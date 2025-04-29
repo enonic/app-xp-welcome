@@ -30,19 +30,18 @@
     "@enonic-types/lib-i18n": "^7",
     "@enonic-types/lib-portal": "^7",
     "@enonic-types/lib-vhost": "^7",
-    "@enonic/eslint-config": "^1.2.1",
+    "@enonic/eslint-config": "^2.0.1",
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^22.15.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@typescript-eslint/parser": "^7.18.0",
+    "typescript-eslint": "^8.31.1",
     "@vitejs/plugin-react": "^4.4.1",
     "autoprefixer": "^10.4.21",
     "browserslist-config-enonic": "^1.0.8",
-    "eslint": "^8.57.1",
-    "eslint-config-react-app": "^7.0.1",
+    "eslint": "^9.25.1",
     "eslint-import-resolver-typescript": "^4.3.4",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -62,7 +61,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 20.2.0",
-    "pnpm": ">= 8.0.0"
+    "node": ">= 20.18.0",
+    "pnpm": ">= 9.1.1"
   }
 }
