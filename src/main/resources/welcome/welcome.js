@@ -16,8 +16,8 @@ exports.get = function (req) {
             path: '',
             application: app.name,
         }),
-        configServiceUrl: portal.serviceUrl({service: 'config'}),
-        wsServiceUrl: portal.serviceUrl({service: 'ws', type: 'websocket'}),
+        configServiceUrl: portal.apiUrl({api: 'config'}),
+        wsServiceUrl: portal.apiUrl({api: 'ws', type: 'websocket'}),
         phrases,
     };
 
