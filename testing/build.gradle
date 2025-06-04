@@ -15,11 +15,13 @@ repositories {
 
 configurations {
     distro
+    apps {
+        transitive false
+    }
 }
 
 def unpackDir = layout.buildDirectory.dir("install").get()
 def distroDir = unpackDir.dir("enonic-xp-generic-$version")
-def appDir = "$projectDir/test-data/test-applications"
 def testDataDir = "$projectDir/test-data/common-config"
 
 def xpHome = distroDir.dir( "home" )
@@ -31,6 +33,7 @@ def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../
 
 dependencies {
     distro "com.enonic.xp:enonic-xp-generic:$version@zip"
+    apps "com.enonic.uitest:contenttypes:1.0.0-SNAPSHOT"
 }
 
 tasks.register( 'unpackDistro', Copy ) {
@@ -49,14 +52,10 @@ tasks.register( 'copyConfig', Copy ) {
     mustRunAfter unpackDistro
 }
 
-tasks.register( 'deployTestApps', Copy ) {
-    println '*********************************************************'
-    println '* task started:deployTestApps  *'
-    println '*********************************************************'
-    println appDir
-    println deployDir
-    from file( appDir )
-    include '*.jar'
+tasks.register( 'downloadApps', Copy ) {
+    from {
+        configurations.apps
+    }
     into deployDir
     mustRunAfter unpackDistro
 }
@@ -123,7 +122,7 @@ tasks.register( 'generateReportAndStopServer', NpmTask ) {
 
 
 tasks.register( 'w_testAppXpWelcomeChrome', NpmTask ) {
-    dependsOn( npmInstall, unpackDistro, copyConfig, deployApp, deployTestApps, startServer )
+    dependsOn( npmInstall, unpackDistro, copyConfig, deployApp, downloadApps, startServer )
     args = ['run-script', 'test_xp_welcome:wdio_chrome']
     finalizedBy generateReportAndStopServer
 }
