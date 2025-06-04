@@ -8,17 +8,17 @@
     "allure-report": "allure generate ./build/reports/allure --output ./build/reports/allure-report --clean --single-file"
   },
   "devDependencies": {
-    "properties-reader": "2.3.0",
-    "webdriverio": "9.0.7",
-    "@wdio/local-runner": "9.0.4",
-    "@wdio/concise-reporter": "^9.0.4",
-    "@wdio/cli": "^9.0.7",
-    "@wdio/mocha-framework": "^9.0.6",
     "@wdio/allure-reporter": "9.0.4",
-    "allure-commandline": "^2.30.0"
+    "@wdio/cli": "^9.0.7",
+    "@wdio/concise-reporter": "^9.0.4",
+    "@wdio/local-runner": "9.0.4",
+    "@wdio/mocha-framework": "^9.0.6",
+    "allure-commandline": "^2.30.0",
+    "properties-reader": "2.3.0",
+    "webdriverio": "9.0.7"
   },
   "engines": {
-    "node": ">= 18.12.1",
-    "npm": ">= 8.19.2"
+    "node": ">= 22.16.0",
+    "npm": ">= 10.9.2"
   }
 }
