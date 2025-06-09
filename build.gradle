@@ -57,7 +57,7 @@ dependencies {
 
     testImplementation( testFixtures( "com.enonic.xp:core-api" ) )
     testImplementation "com.enonic.xp:testing:${xpVersion}"
-    testImplementation(platform("org.junit:junit-bom:5.13.0"))
+    testImplementation(platform("org.junit:junit-bom:5.13.1"))
     testImplementation(platform("org.mockito:mockito-bom:5.18.0"))
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
