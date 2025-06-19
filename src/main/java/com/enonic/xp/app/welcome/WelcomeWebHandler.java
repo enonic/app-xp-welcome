@@ -22,18 +22,13 @@ public class WelcomeWebHandler
 {
     private final ControllerScriptFactory controllerScriptFactory;
 
-    private ApplicationKey applicationKey;
+    private final ApplicationKey applicationKey;
 
     @Activate
-    public WelcomeWebHandler( final @Reference ControllerScriptFactory controllerScriptFactory )
+    public WelcomeWebHandler( final @Reference ControllerScriptFactory controllerScriptFactory, final BundleContext context )
     {
         super( 99 );
         this.controllerScriptFactory = controllerScriptFactory;
-    }
-
-    @Activate
-    public void activate( final BundleContext context )
-    {
         this.applicationKey = ApplicationKey.from( context.getBundle() );
     }
 

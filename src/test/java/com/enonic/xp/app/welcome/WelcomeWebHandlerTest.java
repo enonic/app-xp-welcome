@@ -41,8 +41,7 @@ public class WelcomeWebHandlerTest
         when( bundleContext.getBundle() ).thenReturn( mock( Bundle.class ) );
         when( bundleContext.getBundle().getSymbolicName() ).thenReturn( "com.enonic.xp.app.welcome" );
 
-        this.handler = new WelcomeWebHandler( this.controllerScriptFactory );
-        this.handler.activate( bundleContext );
+        this.handler = new WelcomeWebHandler( this.controllerScriptFactory, bundleContext );
 
         this.request = new PortalRequest();
 
