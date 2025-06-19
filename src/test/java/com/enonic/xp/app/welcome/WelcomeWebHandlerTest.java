@@ -2,6 +2,8 @@ package com.enonic.xp.app.welcome;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import com.enonic.xp.portal.PortalRequest;
 import com.enonic.xp.portal.PortalResponse;
@@ -35,7 +37,12 @@ public class WelcomeWebHandlerTest
     {
         this.controllerScriptFactory = mock( ControllerScriptFactory.class );
 
-        this.handler = new WelcomeWebHandler( this.controllerScriptFactory );
+        final BundleContext bundleContext = mock( BundleContext.class );
+        when( bundleContext.getBundle() ).thenReturn( mock( Bundle.class ) );
+        when( bundleContext.getBundle().getSymbolicName() ).thenReturn( "com.enonic.xp.app.welcome" );
+
+        this.handler = new WelcomeWebHandler( this.controllerScriptFactory, bundleContext );
+
         this.request = new PortalRequest();
 
         this.chain = mock( WebHandlerChain.class );
@@ -54,10 +61,7 @@ public class WelcomeWebHandlerTest
     @Test
     public void testDoHandle()
     {
-        PortalResponse portalResponse = PortalResponse.create().
-            status( HttpStatus.OK ).
-            body( "html" ).
-            build();
+        PortalResponse portalResponse = PortalResponse.create().status( HttpStatus.OK ).body( "html" ).build();
 
         ControllerScript controllerScript = mock( ControllerScript.class );
         when( controllerScript.execute( any( PortalRequest.class ) ) ).thenReturn( portalResponse );
