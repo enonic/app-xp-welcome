@@ -1,5 +1,6 @@
 package com.enonic.xp.app.welcome;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -21,11 +22,7 @@ public class WelcomeWebHandler
 {
     private final ControllerScriptFactory controllerScriptFactory;
 
-    private static final ApplicationKey APPLICATION_KEY = ApplicationKey.from( "com.enonic.xp.app.welcome" );
-
-    private static final String STATIC_CONTEXT_PATH = "/" + APPLICATION_KEY.getName();
-
-    private static final String RAW_PATH_PREFIX_STATIC_RESOURCES = "/" + APPLICATION_KEY.getName() + "/_static/";
+    private ApplicationKey applicationKey;
 
     @Activate
     public WelcomeWebHandler( final @Reference ControllerScriptFactory controllerScriptFactory )
@@ -34,20 +31,26 @@ public class WelcomeWebHandler
         this.controllerScriptFactory = controllerScriptFactory;
     }
 
+    @Activate
+    public void activate( final BundleContext context )
+    {
+        this.applicationKey = ApplicationKey.from( context.getBundle() );
+    }
+
     @Override
     protected boolean canHandle( final WebRequest webRequest )
     {
-        return webRequest.getRawPath().equals( "/" ) || webRequest.getRawPath().startsWith( RAW_PATH_PREFIX_STATIC_RESOURCES );
+        return webRequest.getRawPath().equals( "/" ) || webRequest.getRawPath().startsWith( "/" + applicationKey + "/_static/" );
     }
 
     @Override
     protected WebResponse doHandle( final WebRequest webRequest, final WebResponse webResponse, final WebHandlerChain webHandlerChain )
     {
         final PortalRequest portalRequest = new PortalRequest( webRequest );
-        portalRequest.setContextPath( webRequest.getRawPath().equals( "/" ) ? "" : STATIC_CONTEXT_PATH );
-        portalRequest.setApplicationKey( APPLICATION_KEY );
+        portalRequest.setContextPath( webRequest.getRawPath().equals( "/" ) ? "" : "/" + applicationKey );
+        portalRequest.setApplicationKey( applicationKey );
 
-        final ResourceKey scriptDir = ResourceKey.from( APPLICATION_KEY, "welcome" );
+        final ResourceKey scriptDir = ResourceKey.from( applicationKey, "welcome" );
         final ControllerScript controllerScript = controllerScriptFactory.fromScript( scriptDir.resolve( scriptDir.getName() + ".js" ) );
         return controllerScript.execute( portalRequest );
     }
