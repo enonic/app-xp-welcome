@@ -21,6 +21,12 @@ public class WelcomeWebHandler
 {
     private final ControllerScriptFactory controllerScriptFactory;
 
+    private static final ApplicationKey APPLICATION_KEY = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+
+    private static final String STATIC_CONTEXT_PATH = "/" + APPLICATION_KEY.getName();
+
+    private static final String RAW_PATH_PREFIX_STATIC_RESOURCES = "/" + APPLICATION_KEY.getName() + "/_static/";
+
     @Activate
     public WelcomeWebHandler( final @Reference ControllerScriptFactory controllerScriptFactory )
     {
@@ -31,19 +37,18 @@ public class WelcomeWebHandler
     @Override
     protected boolean canHandle( final WebRequest webRequest )
     {
-        return webRequest.getRawPath().equals( "/" );
+        return webRequest.getRawPath().equals( "/" ) || webRequest.getRawPath().startsWith( RAW_PATH_PREFIX_STATIC_RESOURCES );
     }
 
     @Override
     protected WebResponse doHandle( final WebRequest webRequest, final WebResponse webResponse, final WebHandlerChain webHandlerChain )
     {
-        PortalRequest portalRequest = new PortalRequest( webRequest );
-        portalRequest.setContextPath( portalRequest.getBaseUri() );
-        final ApplicationKey applicationKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
-        portalRequest.setApplicationKey( applicationKey );
+        final PortalRequest portalRequest = new PortalRequest( webRequest );
+        portalRequest.setContextPath( webRequest.getRawPath().equals( "/" ) ? "" : STATIC_CONTEXT_PATH );
+        portalRequest.setApplicationKey( APPLICATION_KEY );
 
-        ResourceKey scriptDir = ResourceKey.from( applicationKey, "welcome" );
-        ControllerScript controllerScript = controllerScriptFactory.fromScript( scriptDir.resolve( scriptDir.getName() + ".js" ) );
+        final ResourceKey scriptDir = ResourceKey.from( APPLICATION_KEY, "welcome" );
+        final ControllerScript controllerScript = controllerScriptFactory.fromScript( scriptDir.resolve( scriptDir.getName() + ".js" ) );
         return controllerScript.execute( portalRequest );
     }
 }
