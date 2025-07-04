@@ -3,7 +3,7 @@ const i18nLib = require('/lib/xp/i18n');
 const mustache = require('/lib/mustache');
 const configLib = require('/lib/config');
 
-const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
+const marketBean = __.newBean('com.enonic.xp.sdk.market.GetMarketConfigBean');
 
 exports.get = function (req) {
     const view = resolve('./welcome.html');

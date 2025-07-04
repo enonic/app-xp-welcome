@@ -1,5 +1,5 @@
 declare interface XpBeans {
-    'com.enonic.xp.app.welcome.WelcomePageScriptBean': {
+    'com.enonic.xp.sdk.WelcomePageScriptBean': {
         canLoginAsSu: () => boolean;
         getApplications: () => ({ applications: Application[] });
         getSites: () => ({ sites: Site[] });

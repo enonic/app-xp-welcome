@@ -7,8 +7,8 @@ const SOCKET_GROUP = require('/lib/constants').SOCKET_GROUP;
 
 let listening = false;
 
-const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
-const store = __.newBean('com.enonic.xp.app.welcome.StoreBean');
+const bean = __.newBean('com.enonic.xp.sdk.WelcomePageScriptBean');
+const store = __.newBean('com.enonic.xp.sdk.StoreBean');
 
 function handleXPTaskEvent(xpEvent) {
     const task = xpEvent.data;

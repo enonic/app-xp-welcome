@@ -1,5 +1,5 @@
 const assert = require('/lib/xp/testing');
-const bean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
+const bean = __.newBean('com.enonic.xp.sdk.market.GetMarketConfigBean');
 
 
 exports.testGetGraphqlUrl = function (expected) {
