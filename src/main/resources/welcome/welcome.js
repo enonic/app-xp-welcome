@@ -1,36 +1,20 @@
 const portal = require('/lib/xp/portal');
 const i18nLib = require('/lib/xp/i18n');
 const mustache = require('/lib/mustache');
-const staticLib = require('/lib/enonic/static');
-const router = require('/lib/router')();
+const configLib = require('/lib/config');
 
 const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
 
-exports.all = function (req) {
-    return router.dispatch(req);
-};
-
-router.get(`/_static/{path:.*}`, (req) => {
-    return staticLib.requestHandler(
-        req,
-        {
-            cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.SAFE,
-            index: false,
-            root: '/assets',
-            relativePath: staticLib.mappedRelativePath('/_static'),
-        }
-    );
-});
-
-router.get('/', (req) => {
+exports.get = function (req) {
     const view = resolve('./welcome.html');
 
     const phrases = i18nLib.getPhrases(req.locales, ['i18n/phrases']);
 
     const params = {
-        assetsUri: `/${app.name}/_static`,
-        configServiceUrl: portal.apiUrl({api: 'config'}),
-        wsServiceUrl: portal.apiUrl({api: 'ws', type: 'websocket'}),
+        assetsUri: `${portal.apiUrl({api: 'api'})}/_static`,
+        configScriptId: configLib.generateScriptConfigId(),
+        configAsJson: JSON.stringify(configLib.getConfig(req), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
+        wsServiceUrl: `${portal.apiUrl({api: 'api', type: 'websocket'})}/ws`,
         phrases,
     };
 
@@ -44,4 +28,4 @@ router.get('/', (req) => {
         contentType: 'text/html',
         body: mustache.render(view, params),
     };
-});
+};
