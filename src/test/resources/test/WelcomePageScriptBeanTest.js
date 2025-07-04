@@ -1,5 +1,5 @@
 const assert = require('/lib/xp/testing');
-const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
+const bean = __.newBean('com.enonic.xp.sdk.WelcomePageScriptBean');
 
 exports.getApplications = function () {
     const applications = __.toNativeObject(bean.getApplications());

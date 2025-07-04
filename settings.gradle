@@ -1,3 +1,3 @@
-rootProject.name = 'app-xp-welcome'
+rootProject.name = 'app-sdk'
 
 include 'testing'

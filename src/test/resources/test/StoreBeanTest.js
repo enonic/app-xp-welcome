@@ -1,5 +1,5 @@
 const assert = require('/lib/xp/testing');
-const bean = __.newBean('com.enonic.xp.app.welcome.StoreBean');
+const bean = __.newBean('com.enonic.xp.sdk.StoreBean');
 
 const testData = {
     taskId: '123',

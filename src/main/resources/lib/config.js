@@ -4,7 +4,7 @@ const i18nLib = require('/lib/xp/i18n');
 const portalLib = require('/lib/xp/portal');
 const vhostLib = require('/lib/xp/vhost');
 
-const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
+const bean = __.newBean('com.enonic.xp.sdk.WelcomePageScriptBean');
 
 exports.getConfig = function (req) {
     const applications = __.toNativeObject(bean.getApplications());

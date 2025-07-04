@@ -2,9 +2,9 @@ const taskLib = require('/lib/xp/task');
 const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
 
-const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
-const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
-const store = __.newBean('com.enonic.xp.app.welcome.StoreBean');
+const marketBean = __.newBean('com.enonic.xp.sdk.market.GetMarketConfigBean');
+const bean = __.newBean('com.enonic.xp.sdk.WelcomePageScriptBean');
+const store = __.newBean('com.enonic.xp.sdk.StoreBean');
 
 const marketUrl = __.toNativeObject(marketBean.getGraphqlUrl());
 const xpMajorVersion = adminLib.getVersion().split('.')[0];
@@ -126,13 +126,13 @@ function supportsXpMajorVersion(versions, xpMajorVersion) {
 }
 
 function createMarketQuery(key, xpMajorVersion) {
-    return `{ 
-        market { 
+    return `{
+        market {
             queryDsl(
               first: 1,
               sort: {
                 field: "data.version.versionNumber",
-                direction: DESC     
+                direction: DESC
               },
               query: {boolean: {must: [
                 {term: {field: "type", value: { string:"com.enonic.app.market:application" }}}
@@ -141,9 +141,9 @@ function createMarketQuery(key, xpMajorVersion) {
               ]}}
             ) {
             ... on com_enonic_app_market_Application {
-                displayName 
-                data { 
-                    identifier 
+                displayName
+                data {
+                    identifier
                     repoUrl
                     artifactId
                     icon {
@@ -151,9 +151,9 @@ function createMarketQuery(key, xpMajorVersion) {
                     }
                     version {
                         downloadUrl
-                        sha512 
-                        versionNumber 
-                        supportedVersions 
+                        sha512
+                        versionNumber
+                        supportedVersions
                     }
                 }
             }
