@@ -32,6 +32,8 @@
 <body>
     <noscript>You need to enable JavaScript to run this application.</noscript>
     <div id="root"></div>
-    <script src="{{assetsUri}}/main.js" data-config-service-url="{{configServiceUrl}}" data-ws-service-url="{{wsServiceUrl}}"></script>
+
+    <script type="application/json" id="{{configScriptId}}">{{{configAsJson}}}</script>
+    <script src="{{assetsUri}}/main.js" data-config-script-id="{{configScriptId}}" data-ws-service-url="{{wsServiceUrl}}"></script>
 </body>
 </html>

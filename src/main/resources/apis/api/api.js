@@ -1,9 +1,25 @@
 const webSocketLib = require('/lib/xp/websocket');
 const SOCKET_GROUP = require('/lib/constants').SOCKET_GROUP;
+const staticLib = require('/lib/enonic/static');
+const router = require('/lib/router')();
 
-// Create a websocket if websocket request.
-exports.get = function (req) {
+exports.all = function (req) {
+    return router.dispatch(req);
+};
 
+router.get(`/_static/{path:.*}`, (req) => {
+    return staticLib.requestHandler(
+        req,
+        {
+            cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.SAFE,
+            index: false,
+            root: '/assets',
+            relativePath: staticLib.mappedRelativePath('/_static'),
+        }
+    );
+});
+
+router.get('/ws', (req) => {
     if (!req.webSocket) {
         return {
             status: 404
@@ -18,10 +34,9 @@ exports.get = function (req) {
             subProtocols: ["text"]
         }
     };
-};
+});
 
 exports.webSocketEvent = function (socketEvent) {
-
     if (socketEvent.type === 'open' && socketEvent.data.user === 'app-welcome') {
         webSocketLib.addToGroup(SOCKET_GROUP, socketEvent.session.id);
     }

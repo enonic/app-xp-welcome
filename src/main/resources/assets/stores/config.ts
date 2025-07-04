@@ -1,7 +1,7 @@
 import merge from 'lodash.merge';
 import {computed, map} from 'nanostores';
 
-import {fetchAppConfig, getWebSocketUrl} from '../common/utils/requests';
+import {getWebSocketUrl} from '../common/utils/requests';
 import {AppConfig} from './data/AppConfig';
 import {Application} from './data/Application';
 import {WebApplication} from './data/WebApplication';
@@ -30,16 +30,29 @@ const config = map<ConfigStore>({
 });
 
 (function init(): void {
-    fetchAppConfig().then(data => {
-        const existingConfig = config.get();
-        const existingApps = new Array(existingConfig.applications);
-        if (existingApps.length > 0) {
-            // applications has probably been added by websocket
-            existingConfig.applications.length = 0;
-            data.applications = data.applications.concat(...existingApps);
-        }
-        config.set(merge({}, existingConfig, data));
-    }).catch(console.error);
+    if (!document.currentScript) {
+        throw Error('Legacy browsers are not supported');
+    }
+
+    const configScriptId = document.currentScript.getAttribute('data-config-script-id');
+    if (!configScriptId) {
+        throw Error('Unable to extract app config');
+    }
+
+    const configAsJson = document.getElementById(configScriptId)?.innerText;
+    if (!configAsJson) {
+        throw new Error(`Missing config in element with id '${configScriptId}'`);
+    }
+
+    const extractedConfig: AppConfig = JSON.parse(configAsJson) as AppConfig;
+    const existingConfig: AppConfig = config.get();
+    const existingApps = new Array(existingConfig.applications);
+    if (existingApps.length > 0) {
+        // applications has probably been added by websocket
+        existingConfig.applications.length = 0;
+        extractedConfig.applications = extractedConfig.applications.concat(...existingApps);
+    }
+    config.set(merge({}, existingConfig, extractedConfig));
 })();
 
 export default config;
