@@ -1,2 +1,2 @@
-# app-xp-welcome
-Welcome application for Enonic XP
+# app-sdk
+SDK application for Enonic XP

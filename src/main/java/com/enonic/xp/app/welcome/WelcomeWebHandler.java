@@ -29,7 +29,7 @@ public class WelcomeWebHandler
     {
         super( 99 );
         this.controllerScriptFactory = controllerScriptFactory;
-        this.applicationKey = ApplicationKey.from( context.getBundle() );
+        this.applicationKey = ApplicationKey.from( context.getBundle().getSymbolicName() );
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.enonic.xp.app.welcome;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,9 +33,9 @@ public final class WelcomeBootstrapService
     }
 
     @Activate
-    public void activate()
+    public void activate( BundleContext context )
     {
-        final ApplicationKey appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+        final ApplicationKey appKey = ApplicationKey.from( context.getBundle().getSymbolicName() );
         final ResourceKey key = ResourceKey.from( appKey, "/bootstrap.js" );
 
         final int attempts = 10;
