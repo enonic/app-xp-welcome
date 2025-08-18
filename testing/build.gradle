@@ -27,7 +27,7 @@ def testDataDir = "$projectDir/test-data/common-config"
 def xpHome = distroDir.dir( "home" )
 def deployDir = xpHome.dir( "deploy" )
 def configDir = xpHome.dir( "config" )
-def appName = "app-xp-welcome"
+def appName = "app-sdk"
 def appFile = "$distroDir/system/40/${appName}-${version}.jar"
 def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
 

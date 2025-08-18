@@ -13,7 +13,7 @@ apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
 
 app {
-    name = 'com.enonic.xp.app.welcome'
+    name = 'com.enonic.xp.sdk'
     group = 'com.enonic.xp'
     displayName = 'XP Welcome App'
     systemApp = true

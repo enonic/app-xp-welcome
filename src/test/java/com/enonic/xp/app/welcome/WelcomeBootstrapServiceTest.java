@@ -28,7 +28,7 @@ public class WelcomeBootstrapServiceTest
 
         this.service = new WelcomeBootstrapService( this.scriptService );
 
-        this.appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+        this.appKey = ApplicationKey.from( "com.enonic.xp.sdk" );
     }
 
     @Test
