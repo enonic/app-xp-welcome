@@ -34,7 +34,7 @@ public final class WelcomeBootstrapService
     @Activate
     public void activate()
     {
-        final ApplicationKey appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+        final ApplicationKey appKey = ApplicationKey.from( "com.enonic.xp.sdk" );
         final ResourceKey key = ResourceKey.from( appKey, "/bootstrap.js" );
 
         final int attempts = 10;
