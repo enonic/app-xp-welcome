@@ -1,42 +1,40 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
-    id 'java'
-    id 'com.enonic.defaults'
+    id 'base'
     id 'com.enonic.xp.base'
     id 'com.github.node-gradle.node'
 }
-group = 'com.enonic.app.xp.welcome.js_testing'
+
+group = 'com.enonic.xp.js_testing'
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    xp.enonicRepo('dev')
+    xp.enonicRepo( 'dev' )
 }
 
 configurations {
     distro
     apps {
-        transitive false
+        transitive = false
     }
 }
 
-def unpackDir = layout.buildDirectory.dir("install").get()
-def distroDir = unpackDir.dir("enonic-xp-generic-$version")
-def testDataDir = "$projectDir/test-data/common-config"
-
-def xpHome = distroDir.dir( "home" )
-def deployDir = xpHome.dir( "deploy" )
-def configDir = xpHome.dir( "config" )
-def appName = "app-xp-welcome"
-def appFile = "$distroDir/system/40/${appName}-${version}.jar"
-def appUrl = project.hasProperty( 'appUrl' ) ? appUrl : "file:///$projectDir/../build/libs/${appName}.jar"
+def unpackDir = layout.buildDirectory.dir( 'install' ).get()
+def distroDir = unpackDir.dir( "enonic-xp-generic-$version" )
+def xpHome = distroDir.dir('home')
 
 dependencies {
-    distro "com.enonic.xp:enonic-xp-generic:$version@tgz"
+    distro "com.enonic.xp:enonic-xp-generic:${version}@tgz"
     apps "com.enonic.uitest:contenttypes:1.0.0-SNAPSHOT"
 }
 
+// Setup tasks
 tasks.register( 'unpackDistro', Copy ) {
+    description = 'Unpacks the XP distribution for testing'
+    group = 'Test Setup'
+
     from {
         configurations.distro.collect { tarTree( it ) }
     }
@@ -44,87 +42,176 @@ tasks.register( 'unpackDistro', Copy ) {
 }
 
 tasks.register( 'copyConfig', Copy ) {
-    println "$testDataDir${File.separator}common-config"
-    from testDataDir
+    description = 'Copy common configuration files'
+    group = 'Test Setup'
+
+    from layout.projectDirectory.dir('test-config/common-config')
     include '**.*.cfg'
     include '*.properties'
-    into configDir
-    mustRunAfter unpackDistro
+    into xpHome.dir('config')
+    mustRunAfter tasks.named( 'unpackDistro' )
 }
 
 tasks.register( 'downloadApps', Copy ) {
+    description = 'Download test applications'
+    group = 'Test Setup'
+
     from {
         configurations.apps
     }
-    into deployDir
-    mustRunAfter unpackDistro
+    into xpHome.dir( 'deploy' )
+    mustRunAfter tasks.named( 'unpackDistro' )
 }
 
 tasks.register( 'deployApp', DefaultTask ) {
+    description = 'Deploy the main application'
+    group = 'Test Setup'
+
+    def appName = rootProject.tasks.named("jar", Jar).get().archiveBaseName.get()
+    def appFile = distroDir.file("system/40/${appName}-${version}.jar").asFile
 
     outputs.files( appFile )
     outputs.upToDateWhen { false }
     doLast {
-        def f = new File(appFile as String)
-        println "Deleting  ${appFile}. Exists ${f.exists()}"
+        def appUrl = (findProperty('appUrl') ?: "file:///$rootDir/build/libs/${appName}.jar") as String
 
-        f.delete()
+        println "Deleting ${appFile}. Exists ${appFile.exists()}"
+        appFile.delete()
 
         println "Copying from ${appUrl} to ${appFile}"
-        new URL(appUrl as String).withInputStream { i -> f.withOutputStream { it << i } }
+        uri( appUrl ).toURL().withInputStream { i -> appFile.withOutputStream { it << i } }
     }
-    mustRunAfter unpackDistro
+    mustRunAfter tasks.named( 'unpackDistro' )
 }
 
+// Server management tasks
 def process
 tasks.register( 'startServer' ) {
-    dependsOn unpackDistro
+    description = 'Starts the XP server for testing'
+    group = 'Test Setup'
+
+    dependsOn tasks.named( 'unpackDistro' )
     doLast {
+        logger.lifecycle( 'Starting XP Server at: {}', xpHome )
+        logger.lifecycle( 'Server logs will be written to: build/reports/logs/xp.log' )
         def pb
-        if (DefaultNativePlatform.getCurrentOperatingSystem().windows) {
-            pb = new ProcessBuilder('cmd', '/c', "${distroDir}\\bin\\server.bat")
+        if ( DefaultNativePlatform.getCurrentOperatingSystem().windows ) {
+            pb = new ProcessBuilder( 'cmd', '/c', "${distroDir}\\bin\\server.bat" )
         }
         else {
-            pb = new ProcessBuilder("${distroDir}/bin/server.sh")
+            pb = new ProcessBuilder( "${distroDir}/bin/server.sh" )
         }
         Map<String, String> env = pb.environment()
-        env.put("XP_HOME", "${xpHome}".toString())
+        env.put( 'XP_HOME', "${xpHome}".toString() )
 
-        def logsPath = layout.buildDirectory.dir("reports/logs").get()
+        def logsPath = layout.buildDirectory.dir( 'reports/logs' ).get()
         mkdir logsPath.asFile
-        pb.redirectOutput(logsPath.file("xp.log").asFile)
-        pb.redirectErrorStream(true)
+        pb.redirectOutput( logsPath.file( 'xp.log' ).asFile )
+        pb.redirectErrorStream( true )
         process = pb.start()
-        sleep(60 * 1000)
+    }
+}
+
+tasks.register( 'waitForServer') {
+    description = 'Waits for the XP server'
+    group = 'Test Setup'
+
+    doLast {
+        long maxWaitMs = 60000
+        long deadline = System.nanoTime() + maxWaitMs * 1_000_000L
+
+        boolean ready = false
+        while (!ready && System.nanoTime() < deadline) {
+            logger.lifecycle("Waiting for server server...")
+
+            try {
+                HttpURLConnection conn = (HttpURLConnection) uri("http://localhost:2609/ready").toURL().openConnection()
+                conn.setConnectTimeout(1000)
+                conn.setReadTimeout(1000)
+                conn.connect()
+                int code = conn.getResponseCode()
+                if (code == 200) {
+                    ready = true
+                    break
+                }
+            } catch (IOException ignored) {
+                // Not up yet; retry
+            }
+            sleep(1000)
+
+        }
+        if (ready) {
+            logger.lifecycle('Server is ready.')
+        } else {
+            throw new GradleException("Server not ready after ${maxWaitMs} ms.")
+        }
+
+        sleep(1000)
     }
 }
 
 tasks.register( 'stopServer' ) {
+    description = 'Stops the XP server'
+    group = 'Test Setup'
+
     doLast {
-        if (DefaultNativePlatform.getCurrentOperatingSystem().windows) {
-            Runtime.getRuntime().exec("taskkill /F /T /PID " + process.pid());
-        } else {
-            process.destroy()
+        if ( !project.hasProperty( 'process' ) ) {
+            logger.warn( 'Server process not found - it might already be stopped' )
+            return
         }
+
+        def os = DefaultNativePlatform.currentOperatingSystem
+        def pid = process.pid()
+
+        if ( os.isWindows() ) {
+            logger.lifecycle( "Stopping server process (PID: ${pid})..." )
+            exec {
+                commandLine 'taskkill', '/F', '/T', '/PID', pid.toString()
+                ignoreExitValue = true // Don't fail if the process is already gone
+            }
+        } else { // For macOS, Linux, and other Unix-like systems
+            logger.lifecycle( "Stopping server process (PID: ${pid})..." )
+            exec {
+                commandLine 'kill', '-9', pid.toString()
+                ignoreExitValue = true // Don't fail if the process is already gone
+            }
+        }
+
+        // Clean up the process property
+        project.ext.process = null
     }
 }
 
 tasks.register( 'cleanup', Delete ) {
-    delete './build/reports/allure'
+    description = 'Clean up test reports'
+    group = 'Test Reporting'
+
+    delete layout.buildDirectory.dir('reports/allure')
 }
 
+tasks.register( 'generateReport', NpmTask ) {
+    description = 'Generates test report and stops server'
+    group = 'Test Reporting'
 
-tasks.register( 'generateReportAndStopServer', NpmTask ) {
     args = ['run-script', 'allure-report']
-    finalizedBy cleanup
-    finalizedBy stopServer
+    finalizedBy tasks.named( 'cleanup' )
 }
 
-
+// Test execution tasks
 tasks.register( 'w_testAppXpWelcomeChrome', NpmTask ) {
-    dependsOn( npmInstall, unpackDistro, copyConfig, deployApp, downloadApps, startServer )
+    description = 'Run application tests in Chrome'
+    group = 'verification'
+
+    dependsOn tasks.named( 'npmInstall' )
+    dependsOn tasks.named( 'unpackDistro' )
+    dependsOn tasks.named( 'copyConfig' )
+    dependsOn tasks.named( 'downloadApps' )
+    dependsOn tasks.named( 'deployApp' )
+    dependsOn tasks.named( 'startServer' )
+    dependsOn tasks.named( 'waitForServer' )
     args = ['run-script', 'test_xp_welcome:wdio_chrome']
-    finalizedBy generateReportAndStopServer
+    finalizedBy tasks.named( 'generateReport' )
+    finalizedBy tasks.named( 'stopServer' )
 }
 
 tasks.register( 'w_testAppXpWelcomeChromeLocal', NpmTask ) {
