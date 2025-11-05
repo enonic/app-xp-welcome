@@ -20,6 +20,12 @@ app {
     systemVersion = "${xpVersion}"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 repositories {
     mavenCentral()
     xp.enonicRepo( 'dev' )
