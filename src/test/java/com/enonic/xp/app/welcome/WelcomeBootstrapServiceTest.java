@@ -2,6 +2,7 @@ package com.enonic.xp.app.welcome;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.osgi.framework.BundleContext;
 
 import com.enonic.xp.app.ApplicationKey;
@@ -39,7 +40,7 @@ public class WelcomeBootstrapServiceTest
 
         when( scriptService.execute( resourceKey ) ).thenThrow( ApplicationNotFoundException.class ).thenReturn( mock() );
 
-        final BundleContext bundleContext = mock();
+        final BundleContext bundleContext = mock( Answers.RETURNS_DEEP_STUBS );
         when( bundleContext.getBundle().getSymbolicName() ).thenReturn( appKey.toString() );
         service.activate( bundleContext );
 
@@ -53,7 +54,7 @@ public class WelcomeBootstrapServiceTest
 
         when( scriptService.execute( resourceKey ) ).thenThrow( ApplicationNotFoundException.class );
 
-        final BundleContext bundleContext = mock();
+        final BundleContext bundleContext = mock( Answers.RETURNS_DEEP_STUBS );
         when( bundleContext.getBundle().getSymbolicName() ).thenReturn( appKey.toString() );
         service.activate( bundleContext );
 
@@ -66,7 +67,7 @@ public class WelcomeBootstrapServiceTest
         final ResourceKey resourceKey = ResourceKey.from( appKey, "/bootstrap.js" );
         when( scriptService.execute( resourceKey ) ).thenThrow( new RuntimeException( "Something unexpected" ) );
 
-        final BundleContext bundleContext = mock();
+        final BundleContext bundleContext = mock( Answers.RETURNS_DEEP_STUBS );
         when( bundleContext.getBundle().getSymbolicName() ).thenReturn( appKey.toString() );
         service.activate( bundleContext );
 
