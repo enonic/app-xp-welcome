@@ -16,7 +16,6 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
-import org.osgi.framework.Version;
 
 import com.google.common.io.ByteSource;
 import com.google.common.net.MediaType;
@@ -61,6 +60,7 @@ import com.enonic.xp.security.PrincipalKeys;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.testing.ScriptTestSupport;
+import com.enonic.xp.util.Version;
 
 import static com.enonic.xp.app.welcome.WelcomePageScriptBean.FILE_NAME;
 import static org.mockito.ArgumentMatchers.any;

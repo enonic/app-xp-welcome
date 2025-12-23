@@ -2,6 +2,7 @@ package com.enonic.xp.app.welcome;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.BundleContext;
 
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.app.ApplicationNotFoundException;
@@ -28,7 +29,7 @@ public class WelcomeBootstrapServiceTest
 
         this.service = new WelcomeBootstrapService( this.scriptService );
 
-        this.appKey = ApplicationKey.from( "com.enonic.xp.app.welcome" );
+        this.appKey = ApplicationKey.from( "com.enonic.xp.sdk" );
     }
 
     @Test
@@ -38,7 +39,9 @@ public class WelcomeBootstrapServiceTest
 
         when( scriptService.execute( resourceKey ) ).thenThrow( ApplicationNotFoundException.class ).thenReturn( mock() );
 
-        service.activate();
+        final BundleContext bundleContext = mock();
+        when( bundleContext.getBundle().getSymbolicName() ).thenReturn( appKey.toString() );
+        service.activate( bundleContext );
 
         verify( scriptService, timeout( 10000 ).times( 2 ) ).execute( resourceKey );
     }
@@ -50,7 +53,9 @@ public class WelcomeBootstrapServiceTest
 
         when( scriptService.execute( resourceKey ) ).thenThrow( ApplicationNotFoundException.class );
 
-        service.activate();
+        final BundleContext bundleContext = mock();
+        when( bundleContext.getBundle().getSymbolicName() ).thenReturn( appKey.toString() );
+        service.activate( bundleContext );
 
         verify( scriptService, timeout( 20000 ).times( 10 ) ).execute( resourceKey );
     }
@@ -61,7 +66,9 @@ public class WelcomeBootstrapServiceTest
         final ResourceKey resourceKey = ResourceKey.from( appKey, "/bootstrap.js" );
         when( scriptService.execute( resourceKey ) ).thenThrow( new RuntimeException( "Something unexpected" ) );
 
-        this.service.activate();
+        final BundleContext bundleContext = mock();
+        when( bundleContext.getBundle().getSymbolicName() ).thenReturn( appKey.toString() );
+        service.activate( bundleContext );
 
         verify( this.scriptService, timeout( 10000 ).only() ).execute( resourceKey );
     }
