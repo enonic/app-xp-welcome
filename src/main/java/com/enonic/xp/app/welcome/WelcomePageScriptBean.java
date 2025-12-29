@@ -198,12 +198,12 @@ public class WelcomePageScriptBean
         getProjectIds().forEach( repositoryId -> {
             Map<ContentId, Content> draftSitesAsMap = createAdminContext( repositoryId, ContentConstants.BRANCH_DRAFT ).callWith( () -> {
                 FindContentIdsByQueryResult queryResult = contentService.find( contentQuery );
-                return contentService.getByIds( new GetContentByIdsParams( queryResult.getContentIds() ) );
+                return contentService.getByIds( GetContentByIdsParams.create().contentIds( queryResult.getContentIds() ).build() );
             } ).stream().collect( Collectors.toMap( Content::getId, Function.identity() ) );
 
             Map<ContentId, Content> masterSitesAsMap = createAdminContext( repositoryId, ContentConstants.BRANCH_MASTER ).callWith( () -> {
                 FindContentIdsByQueryResult queryResult = contentService.find( contentQuery );
-                return contentService.getByIds( new GetContentByIdsParams( queryResult.getContentIds() ) );
+                return contentService.getByIds( GetContentByIdsParams.create().contentIds( queryResult.getContentIds() ).build() );
             } ).stream().collect( Collectors.toMap( Content::getId, Function.identity() ) );
 
             draftSitesAsMap.keySet().forEach( siteId -> {
