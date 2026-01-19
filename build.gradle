@@ -41,7 +41,7 @@ dependencies {
     implementation "com.enonic.xp:admin-api:${xpVersion}"
     implementation "com.enonic.xp:portal-api:${xpVersion}"
 
-    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.20.1"
+    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0"
     include "com.enonic.xp:lib-app:${xpVersion}"
     include "com.enonic.xp:lib-admin:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
