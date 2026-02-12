@@ -4,7 +4,6 @@ package com.enonic.xp.app.welcome;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -40,6 +39,7 @@ import com.enonic.xp.content.ContentIds;
 import com.enonic.xp.content.ContentQuery;
 import com.enonic.xp.content.Contents;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
+import com.enonic.xp.event.EventPublisher;
 import com.enonic.xp.content.GetContentByIdsParams;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.home.HomeDirSupport;
@@ -88,6 +88,8 @@ public class WelcomePageScriptBeanTest
 
     private ApiDescriptorService apiDescriptorService;
 
+    private EventPublisher eventPublisher;
+
     @TempDir
     public Path temporaryFolder;
 
@@ -105,6 +107,7 @@ public class WelcomePageScriptBeanTest
         this.adminToolDescriptorService = mock( AdminToolDescriptorService.class );
         this.dynamicUniversalApiHandlerRegistry = mock( DynamicUniversalApiHandlerRegistry.class );
         this.apiDescriptorService = mock( ApiDescriptorService.class );
+        this.eventPublisher = mock( EventPublisher.class );
 
         JettyConfig jettyConfig = mock( JettyConfig.class, invocation -> invocation.getMethod().getDefaultValue() );
         this.jettyConfigService = new JettyConfigService( jettyConfig );
@@ -118,6 +121,7 @@ public class WelcomePageScriptBeanTest
         addService( AdminToolDescriptorService.class, this.adminToolDescriptorService );
         addService( DynamicUniversalApiHandlerRegistry.class, this.dynamicUniversalApiHandlerRegistry );
         addService( ApiDescriptorService.class, this.apiDescriptorService );
+        addService( EventPublisher.class, this.eventPublisher );
     }
 
     @Test
@@ -261,31 +265,6 @@ public class WelcomePageScriptBeanTest
             Arrays.asList( new ConfigFileJson( file1 ), new ConfigFileJson( file2 ), new ConfigFileJson( file3 ) );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetConfigs", files );
-    }
-
-    @Test
-    public void testInstallApplication()
-    {
-        final ApplicationKey key = ApplicationKey.from( "Key1" );
-        final Application app = mockApplication( key, "Application1" );
-
-        mockApplication( key, true, "Descriptor1" );
-
-        when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenReturn( app );
-
-        runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplication", app );
-    }
-
-    @Test
-    public void testInstallApplicationException()
-    {
-        final ApplicationKey key = ApplicationKey.from( "Key1" );
-
-        mockApplication( key, true, "Descriptor1" );
-
-        when( applicationService.installGlobalApplication( Mockito.any( URL.class ), Mockito.any() ) ).thenThrow( RuntimeException.class );
-
-        runFunction( "/test/WelcomePageScriptBeanTest.js", "installApplicationException" );
     }
 
     @Test

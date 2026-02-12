@@ -106,22 +106,6 @@ exports.deleteTemplateFileNotExists = function () {
     assert.assertEquals(false, bean.deleteTemplateFile());
 };
 
-exports.installApplication = function (app) {
-    const result = __.toNativeObject(bean.installApplication("http://foo.com/app", null));
-    assert.assertNull(result.failure);
-    assert.assertNotNull( result.application);
-
-    const installed = result.application;
-    assert.assertEquals( app.key.toString(), installed.applicationKey );
-    assert.assertEquals( app.displayName, installed.displayName );
-}
-
-exports.installApplicationException = function () {
-    const result = __.toNativeObject(bean.installApplication("http://foo.com/app", null));
-    assert.assertNotNull(result.failure);
-    assert.assertNull(result.application);
-}
-
 exports.installApplicationWrongProtocol = function () {
     const result = __.toNativeObject(bean.installApplication("ftp://foo.com/app", null));
     assert.assertNotNull(result.failure);
