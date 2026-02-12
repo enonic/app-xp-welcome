@@ -4,9 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -64,6 +61,7 @@ import com.enonic.xp.content.ContentService;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.content.GetContentByIdsParams;
 import com.enonic.xp.context.Context;
+import com.enonic.xp.event.EventPublisher;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.context.ContextBuilder;
 import com.enonic.xp.data.PropertyTree;
@@ -87,14 +85,11 @@ import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
-import com.enonic.xp.util.HexEncoder;
 
 public class WelcomePageScriptBean
     implements ScriptBean
 {
     private static final Logger LOG = LoggerFactory.getLogger( WelcomePageScriptBean.class );
-
-    private static final Set<String> ALLOWED_PROTOCOLS = Set.of( "http", "https" );
 
     private static final Set<String> ALLOWED_CONFIG_EXTENSIONS = Set.of( ".cfg", ".properties", ".xml" );
 
@@ -123,6 +118,8 @@ public class WelcomePageScriptBean
 
     private Supplier<ApiDescriptorService> apiDescriptorServiceSupplier;
 
+    private Supplier<EventPublisher> eventPublisherSupplier;
+
     @Override
     public void initialize( final BeanContext beanContext )
     {
@@ -136,6 +133,7 @@ public class WelcomePageScriptBean
         this.adminToolDescriptorServiceSupplier = beanContext.getService( AdminToolDescriptorService.class );
         this.universalApiHandlerRegistrySupplier = beanContext.getService( DynamicUniversalApiHandlerRegistry.class );
         this.apiDescriptorServiceSupplier = beanContext.getService( ApiDescriptorService.class );
+        this.eventPublisherSupplier = beanContext.getService( EventPublisher.class );
     }
 
     public String getContentStudioUrl()
@@ -319,32 +317,28 @@ public class WelcomePageScriptBean
 
     public ApplicationInstallResultMapper installApplication( final String urlString, final String shaString )
     {
-        final byte[] sha512 = Optional.ofNullable( shaString ).map( HexEncoder::fromHex ).orElse( null );
         final ApplicationInstallResultJson result = new ApplicationInstallResultJson();
-        String failure;
         try
         {
-            final URL url = URI.create( urlString ).toURL();
-            if ( ALLOWED_PROTOCOLS.contains( url.getProtocol() ) )
-            {
-                return new ApplicationInstallResultMapper( installApplication( url, sha512 ) );
-            }
-            else
-            {
-                LOG.error( failure = "Illegal protocol: " + url.getProtocol() );
-                result.setFailure( failure );
+            final ByteSource byteSource = new ApplicationLoader().load( urlString, shaString, eventPublisherSupplier.get()::publish );
 
-                return new ApplicationInstallResultMapper( result );
-            }
+            ContextBuilder.from( ContextAccessor.current() ).authInfo(
+                AuthenticationInfo.create().principals( RoleKeys.ADMIN ).user( SUPER_USER ).build() ).build().runWith( () -> {
 
+                final Application application = this.applicationServiceSupplier.get().installGlobalApplication( byteSource );
+
+                result.setApplication( toApplicationJson( application ) );
+
+            } );
         }
-        catch ( MalformedURLException | IllegalArgumentException e )
+        catch ( Exception e )
         {
-            LOG.error( failure = "Failed to upload application from " + urlString, e );
-            result.setFailure( failure );
+            final String failure = "Failed to process application from " + urlString;
+            LOG.error( failure, e );
 
-            return new ApplicationInstallResultMapper( result );
+            result.setFailure( failure );
         }
+        return new ApplicationInstallResultMapper( result );
     }
 
     public Object getApis()
@@ -387,32 +381,6 @@ public class WelcomePageScriptBean
         }
         final Application application = this.applicationServiceSupplier.get().getInstalledApplication( ApplicationKey.from( key ) );
         return Optional.ofNullable( application ).map( app -> new ApplicationMapper( toApplicationJson( app ) ) ).orElse( null );
-    }
-
-    private ApplicationInstallResultJson installApplication( final URL url, final byte[] sha512 )
-    {
-        final ApplicationInstallResultJson result = new ApplicationInstallResultJson();
-
-        try
-        {
-            ContextBuilder.from( ContextAccessor.current() ).authInfo(
-                AuthenticationInfo.create().principals( RoleKeys.ADMIN ).user( SUPER_USER ).build() ).build().runWith( () -> {
-
-                final Application application = this.applicationServiceSupplier.get().installGlobalApplication( url, sha512 );
-
-                result.setApplication( toApplicationJson( application ) );
-
-            } );
-
-        }
-        catch ( Exception e )
-        {
-            final String failure = "Failed to process application from " + url;
-            LOG.error( failure, e );
-
-            result.setFailure( failure );
-        }
-        return result;
     }
 
     private ApplicationJson toApplicationJson( final Application application )
