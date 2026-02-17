@@ -1,0 +1,8 @@
+description: "Task to fetch and install app by app id."
+form:
+- type: "TextLine"
+  name: "key"
+  label: "Application key"
+  occurrences:
+    min: 1
+    max: 1
