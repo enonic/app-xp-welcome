@@ -71,10 +71,20 @@ public class DynamicUniversalApiHandlerRegistry
         }
         if ( properties.get( "mount" ) != null )
         {
-            builder.mount( Boolean.valueOf( properties.get( "mount" ).toString() ) );
+            builder.mount( resolveDynamicMount( properties.get( "mount" ) ) );
         }
 
         return builder.build();
+    }
+
+    private String[] resolveDynamicMount( final Object mount )
+    {
+        return switch ( mount )
+        {
+            case String s -> new String[]{s};
+            case String[] strings -> strings;
+            default -> throw new IllegalArgumentException( "Invalid mount. Value must be string or string array." );
+        };
     }
 
     private PrincipalKeys resolveDynamicPrincipalKeys( final Object allowedPrincipals )

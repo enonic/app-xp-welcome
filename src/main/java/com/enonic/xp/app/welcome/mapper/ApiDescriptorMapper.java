@@ -27,7 +27,9 @@ public class ApiDescriptorMapper
         gen.value( "displayName", apiDescriptor.getDisplayName() );
         gen.value( "description", apiDescriptor.getDescription() );
         gen.value( "documentationUrl", apiDescriptor.getDocumentationUrl() );
-        gen.value( "mount", apiDescriptor.isMount() );
+        gen.array( "mount" );
+        apiDescriptor.getMount().forEach( gen::value );
+        gen.end();
 
         gen.array( "allowedPrincipals" );
         apiDescriptor.getAllowedPrincipals().forEach( gen::value );

@@ -33,7 +33,7 @@ export default function ApiCardDescription({className, apiDescriptor, apiBaseUrl
     return (
         <div className={className}>
             {description && ApiCardDescriptionRow({label: descriptionLabel, value: description})}
-            {mount && ApiCardDescriptionRow({label: endpointLabel, value: <Link className='ApiCard-Link' url={apiUrl}>{apiUrl}</Link>})}
+            {mount.includes('xp') && ApiCardDescriptionRow({label: endpointLabel, value: <Link className='ApiCard-Link' url={apiUrl}>{apiUrl}</Link>})}
             {application && ApiCardDescriptionRow({label: applicationLabel, value: application})}
             {name && ApiCardDescriptionRow({label: nameLabel, value: name})}
             {documentationUrl &&

@@ -30,7 +30,7 @@ public class DynamicUniversalApiHandlerRegistryTest
         properties.put( "displayName", "Display Name" );
         properties.put( "description", "Brief description" );
         properties.put( "documentationUrl", "https://docs.enonic.com" );
-        properties.put( "mount", "true" );
+        properties.put( "mount", new String[]{"xp"} );
         properties.put( "allowedPrincipals", new String[]{"role:system.everyone", "role:custom.role"} );
 
         instance.addApiHandler( universalApiHandler, properties );
@@ -47,7 +47,7 @@ public class DynamicUniversalApiHandlerRegistryTest
         assertEquals( "Display Name", apiDescriptor.getDisplayName() );
         assertEquals( "Brief description", apiDescriptor.getDescription() );
         assertEquals( "https://docs.enonic.com", apiDescriptor.getDocumentationUrl() );
-        assertTrue( apiDescriptor.isMount() );
+        assertTrue( apiDescriptor.getMount().contains( "xp" ) );
         assertEquals( 2, apiDescriptor.getAllowedPrincipals().getSize() );
 
         instance.removeApiHandler( universalApiHandler );
@@ -68,7 +68,7 @@ public class DynamicUniversalApiHandlerRegistryTest
                                                                                                  "widget", "displayName", "Display Name",
                                                                                                  "description", "Brief description",
                                                                                                  "documentationUrl",
-                                                                                                 "https://docs.enonic.com", "mount", "true",
+                                                                                                 "https://docs.enonic.com", "mount", "xp",
                                                                                                  "allowedPrincipals", -1 ) ) );
 
         assertEquals( "Invalid allowedPrincipals. Value must be string or string array.", exception.getMessage() );
@@ -83,7 +83,7 @@ public class DynamicUniversalApiHandlerRegistryTest
 
         instance.addApiHandler( universalApiHandler,
                                 Map.of( "applicationKey", "admin", "apiKey", "widget", "displayName", "Display Name", "description",
-                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "mount", "true",
+                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "mount", "xp",
                                         "allowedPrincipals", "role:system.everyone" ) );
 
         final List<ApiDescriptor> apiDescriptors = instance.getAllApiDescriptors();
@@ -98,7 +98,7 @@ public class DynamicUniversalApiHandlerRegistryTest
         assertEquals( "Display Name", apiDescriptor.getDisplayName() );
         assertEquals( "Brief description", apiDescriptor.getDescription() );
         assertEquals( "https://docs.enonic.com", apiDescriptor.getDocumentationUrl() );
-        assertTrue( apiDescriptor.isMount() );
+        assertTrue( apiDescriptor.getMount().contains( "xp" ) );
         assertEquals( 1, apiDescriptor.getAllowedPrincipals().getSize() );
     }
 }

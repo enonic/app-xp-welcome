@@ -44,7 +44,7 @@ declare interface ApiDescriptor {
     descriptor: string;
     application: string;
     name: string;
-    mount: boolean;
+    mount: string[];
     allowedPrincipals: string[];
     displayName?: string;
     description?: string;

@@ -27,7 +27,7 @@ export default function ApisPanel({className}: Props): JSX.Element {
         setShowAll(!isShowAll);
     };
 
-    const cards = apis.filter(apiDescriptor => isShowAll ? true : apiDescriptor.mount).map((apiDescriptor, index) => {
+    const cards = apis.filter(apiDescriptor => isShowAll ? true : apiDescriptor.mount.length > 0).map((apiDescriptor, index) => {
         return <ApiCard key={index} apiDescriptor={apiDescriptor} apiBaseUrl={apiBaseUrl} />;
     });
 

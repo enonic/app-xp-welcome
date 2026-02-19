@@ -37,7 +37,7 @@ export default function ApiCard({className, apiDescriptor, apiBaseUrl}: Props): 
                 <div className='ApiCard-HeaderRow'>
                     <div className='ApiCard-HeaderRow-LeftCol'><h2 className='ApiCard-Title'>{displayName || name}</h2></div>
                     <div className='ApiCard-HeaderRow-RightCol'>
-                        {mount &&
+                        {mount.includes('xp') &&
                          <Link className='ApiCard-Link' url={url}>
                              <Icomoon className='ApiCard-LinkIcon' icon='newtab' />
                          </Link>
