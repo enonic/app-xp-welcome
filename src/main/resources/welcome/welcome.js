@@ -11,10 +11,10 @@ exports.get = function (req) {
     const phrases = i18nLib.getPhrases(req.locales, ['i18n/phrases']);
 
     const params = {
-        assetsUri: `${portal.apiUrl({api: 'api'})}/_static`,
+        assetsUri: `${portal.apiUrl({api: `${app.name}:api`})}/_static`,
         configScriptId: configLib.generateScriptConfigId(),
         configAsJson: JSON.stringify(configLib.getConfig(req), null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1"),
-        wsServiceUrl: `${portal.apiUrl({api: 'api', type: 'websocket'})}/ws`,
+        wsServiceUrl: `${portal.apiUrl({api: `${app.name}:api`, type: 'websocket'})}/ws`,
         phrases,
     };
 
