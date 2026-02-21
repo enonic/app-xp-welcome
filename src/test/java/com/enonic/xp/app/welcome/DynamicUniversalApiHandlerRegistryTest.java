@@ -25,8 +25,7 @@ public class DynamicUniversalApiHandlerRegistryTest
 
         final Map<String, Object> properties = new HashMap<>();
 
-        properties.put( "applicationKey", "admin" );
-        properties.put( "apiKey", "widget" );
+        properties.put( "key", "admin:widget" );
         properties.put( "displayName", "Display Name" );
         properties.put( "description", "Brief description" );
         properties.put( "documentationUrl", "https://docs.enonic.com" );
@@ -64,10 +63,9 @@ public class DynamicUniversalApiHandlerRegistryTest
 
         IllegalArgumentException exception = assertThrows( IllegalArgumentException.class,
                                                            () -> instance.addApiHandler( universalApiHandler,
-                                                                                         Map.of( "applicationKey", "admin", "apiKey",
-                                                                                                 "widget", "displayName", "Display Name",
-                                                                                                 "description", "Brief description",
-                                                                                                 "documentationUrl",
+                                                                                         Map.of( "key", "admin:widget", "displayName",
+                                                                                                 "Display Name", "description",
+                                                                                                 "Brief description", "documentationUrl",
                                                                                                  "https://docs.enonic.com", "mount", "xp",
                                                                                                  "allowedPrincipals", -1 ) ) );
 
@@ -82,9 +80,9 @@ public class DynamicUniversalApiHandlerRegistryTest
         final UniversalApiHandler universalApiHandler = webRequest -> WebResponse.create().build();
 
         instance.addApiHandler( universalApiHandler,
-                                Map.of( "applicationKey", "admin", "apiKey", "widget", "displayName", "Display Name", "description",
-                                        "Brief description", "documentationUrl", "https://docs.enonic.com", "mount", "xp",
-                                        "allowedPrincipals", "role:system.everyone" ) );
+                                Map.of( "key", "admin:widget", "displayName", "Display Name", "description", "Brief description",
+                                        "documentationUrl", "https://docs.enonic.com", "mount", "xp", "allowedPrincipals",
+                                        "role:system.everyone" ) );
 
         final List<ApiDescriptor> apiDescriptors = instance.getAllApiDescriptors();
 
