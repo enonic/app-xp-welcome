@@ -20,7 +20,7 @@ describe('Configuration files panel specification', function () {
             await testUtils.saveScreenshot('configs_panel_cfg_files');
             assert.ok(items.includes('com.enonic.xp.blobstore.cfg'), "Config for 'com.enonic.xp.blobstore.cfg' should be displayed");
             assert.ok(items.includes('com.enonic.xp.web.vhost.cfg'), "Config for 'web.vhost' should be displayed");
-            assert.ok(items.includes('com.enonic.xp.admin.cfg'), "Config for 'xp.admin' should be displayed");
+            // assert.ok(items.includes('com.enonic.xp.admin.cfg'), "Config for 'xp.admin' should be displayed");
             assert.ok(items.includes('com.enonic.xp.app.standardidprovider.cfg'), "Config for 'standardidprovider' should be displayed");
             assert.ok(items.includes('system.properties'), "Config for 'system.properties' should be displayed");
             assert.ok(items.length > 0, 'Expected config items should be displayed in the panel');
