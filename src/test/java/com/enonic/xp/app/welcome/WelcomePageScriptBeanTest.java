@@ -365,11 +365,11 @@ public class WelcomePageScriptBeanTest
     public void testGetSites()
     {
         Content content1 =
-            Content.create().id( ContentId.from( "siteId1" ) ).displayName( "displayName1" ).path( "/parent/test-site1" ).language(
+            Content.create().id( ContentId.from( "siteid1" ) ).displayName( "displayName1" ).path( "/parent/test-site1" ).language(
                 Locale.ENGLISH ).build();
 
         Content content2 =
-            Content.create().id( ContentId.from( "siteId2" ) ).displayName( "displayName2" ).path( "/parent/test-site2" ).build();
+            Content.create().id( ContentId.from( "siteid2" ) ).displayName( "displayName2" ).path( "/parent/test-site2" ).build();
 
         Project defaultProject =
             Project.create().name( ProjectName.from( RepositoryId.from( "com.enonic.cms.default" ) ) ).displayName( "default" ).build();
@@ -416,7 +416,7 @@ public class WelcomePageScriptBeanTest
     {
         List<ApiDescriptor> dynamicApiDescriptors = new ArrayList<>();
         dynamicApiDescriptors.add(
-            ApiDescriptor.create().key( DescriptorKey.from( "cde:api" ) ).displayName( "My API" ).documentationUrl( "docUrl" ).description(
+            ApiDescriptor.create().key( DescriptorKey.from( "cde:api" ) ).title( "My API" ).documentationUrl( "docUrl" ).description(
                 "description" ).mount( "xp" ).allowedPrincipals( PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
         when( dynamicUniversalApiHandlerRegistry.getAllApiDescriptors() ).thenReturn( dynamicApiDescriptors );
 
@@ -427,7 +427,7 @@ public class WelcomePageScriptBeanTest
         when( applicationService.getInstalledApplications() ).thenReturn( applications );
 
         final ApiDescriptors apiDescriptors = ApiDescriptors.from(
-            ApiDescriptor.create().key( DescriptorKey.from( "abc:api" ) ).displayName( "My API 2" ).documentationUrl(
+            ApiDescriptor.create().key( DescriptorKey.from( "abc:api" ) ).title( "My API 2" ).documentationUrl(
                 "docUrl2" ).description( "description2" ).allowedPrincipals(
                 PrincipalKeys.from( RoleKeys.EVERYONE ) ).build() );
 
