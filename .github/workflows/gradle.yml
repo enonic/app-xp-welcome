@@ -63,7 +63,7 @@ jobs:
           name: app-sdk
           path: build/libs/app-sdk.jar
 
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v6
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
