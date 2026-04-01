@@ -158,7 +158,7 @@ exports.getSites = function () {
     const site0 = sites[0];
     const site1 = sites[1];
 
-    assert.assertEquals('siteId1', site0.id);
+    assert.assertEquals('siteid1', site0.id);
     assert.assertEquals('test-site1', site0.name);
     assert.assertEquals('displayName1', site0.displayName);
     assert.assertEquals('custom', site0.projectName);
@@ -168,7 +168,7 @@ exports.getSites = function () {
     assert.assertTrue(site0.hasDraft);
     assert.assertFalse(site0.hasMaster);
 
-    assert.assertEquals('siteId2', site1.id);
+    assert.assertEquals('siteid2', site1.id);
     assert.assertEquals('test-site2', site1.name);
     assert.assertEquals('displayName2', site1.displayName);
     assert.assertEquals('default', site1.projectName);
@@ -208,7 +208,7 @@ exports.getApis = function () {
 
     const apiDescriptor1 = apiDescriptors[0];
     assert.assertEquals('abc:api', apiDescriptor1.descriptor);
-    assert.assertEquals('My API 2', apiDescriptor1.displayName);
+    assert.assertEquals('My API 2', apiDescriptor1.title);
     assert.assertEquals('description2', apiDescriptor1.description);
     assert.assertEquals('docUrl2', apiDescriptor1.documentationUrl);
     assert.assertEquals(0, apiDescriptor1.mount.length);
@@ -216,7 +216,7 @@ exports.getApis = function () {
 
     const apiDescriptor2 = apiDescriptors[1];
     assert.assertEquals('cde:api', apiDescriptor2.descriptor);
-    assert.assertEquals('My API', apiDescriptor2.displayName);
+    assert.assertEquals('My API', apiDescriptor2.title);
     assert.assertEquals('description', apiDescriptor2.description);
     assert.assertEquals('docUrl', apiDescriptor2.documentationUrl);
     assert.assertEquals(1, apiDescriptor2.mount.length);

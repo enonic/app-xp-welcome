@@ -1,3 +1,4 @@
+kind: "Task"
 description: "Task to fetch and install app by app id."
 form:
 - type: "TextLine"

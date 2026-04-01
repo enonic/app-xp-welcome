@@ -26,10 +26,10 @@ public class DynamicUniversalApiHandlerRegistryTest
         final Map<String, Object> properties = new HashMap<>();
 
         properties.put( "key", "admin:widget" );
-        properties.put( "displayName", "Display Name" );
+        properties.put( "title", "Display Name" );
         properties.put( "description", "Brief description" );
         properties.put( "documentationUrl", "https://docs.enonic.com" );
-        properties.put( "mount", new String[]{"xp"} );
+        properties.put( "mount", new String[]{"web"} );
         properties.put( "allowedPrincipals", new String[]{"role:system.everyone", "role:custom.role"} );
 
         instance.addApiHandler( universalApiHandler, properties );
@@ -43,10 +43,10 @@ public class DynamicUniversalApiHandlerRegistryTest
         assertEquals( "admin:widget", apiDescriptor.getKey().toString() );
         assertEquals( "admin", apiDescriptor.getKey().getApplicationKey().toString() );
         assertEquals( "widget", apiDescriptor.getKey().getName() );
-        assertEquals( "Display Name", apiDescriptor.getDisplayName() );
+        assertEquals( "Display Name", apiDescriptor.getTitle() );
         assertEquals( "Brief description", apiDescriptor.getDescription() );
         assertEquals( "https://docs.enonic.com", apiDescriptor.getDocumentationUrl() );
-        assertTrue( apiDescriptor.getMount().contains( "xp" ) );
+        assertTrue( apiDescriptor.getMount().contains( "web" ) );
         assertEquals( 2, apiDescriptor.getAllowedPrincipals().getSize() );
 
         instance.removeApiHandler( universalApiHandler );
@@ -63,10 +63,10 @@ public class DynamicUniversalApiHandlerRegistryTest
 
         IllegalArgumentException exception = assertThrows( IllegalArgumentException.class,
                                                            () -> instance.addApiHandler( universalApiHandler,
-                                                                                         Map.of( "key", "admin:widget", "displayName",
+                                                                                         Map.of( "key", "admin:widget", "title",
                                                                                                  "Display Name", "description",
                                                                                                  "Brief description", "documentationUrl",
-                                                                                                 "https://docs.enonic.com", "mount", "xp",
+                                                                                                 "https://docs.enonic.com", "mount", "web",
                                                                                                  "allowedPrincipals", -1 ) ) );
 
         assertEquals( "Invalid allowedPrincipals. Value must be string or string array.", exception.getMessage() );
@@ -80,8 +80,8 @@ public class DynamicUniversalApiHandlerRegistryTest
         final UniversalApiHandler universalApiHandler = webRequest -> WebResponse.create().build();
 
         instance.addApiHandler( universalApiHandler,
-                                Map.of( "key", "admin:widget", "displayName", "Display Name", "description", "Brief description",
-                                        "documentationUrl", "https://docs.enonic.com", "mount", "xp", "allowedPrincipals",
+                                Map.of( "key", "admin:widget", "title", "Display Name", "description", "Brief description",
+                                        "documentationUrl", "https://docs.enonic.com", "mount", "web", "allowedPrincipals",
                                         "role:system.everyone" ) );
 
         final List<ApiDescriptor> apiDescriptors = instance.getAllApiDescriptors();
@@ -93,10 +93,10 @@ public class DynamicUniversalApiHandlerRegistryTest
         assertEquals( "admin:widget", apiDescriptor.getKey().toString() );
         assertEquals( "admin", apiDescriptor.getKey().getApplicationKey().toString() );
         assertEquals( "widget", apiDescriptor.getKey().getName() );
-        assertEquals( "Display Name", apiDescriptor.getDisplayName() );
+        assertEquals( "Display Name", apiDescriptor.getTitle() );
         assertEquals( "Brief description", apiDescriptor.getDescription() );
         assertEquals( "https://docs.enonic.com", apiDescriptor.getDocumentationUrl() );
-        assertTrue( apiDescriptor.getMount().contains( "xp" ) );
+        assertTrue( apiDescriptor.getMount().contains( "web" ) );
         assertEquals( 1, apiDescriptor.getAllowedPrincipals().getSize() );
     }
 }
