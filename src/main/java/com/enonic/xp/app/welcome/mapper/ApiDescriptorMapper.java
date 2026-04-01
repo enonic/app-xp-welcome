@@ -24,7 +24,7 @@ public class ApiDescriptorMapper
         gen.value( "descriptor", descriptorKey.toString() );
         gen.value( "application", descriptorKey.getApplicationKey().getName() );
         gen.value( "name", descriptorKey.getName() );
-        gen.value( "displayName", apiDescriptor.getDisplayName() );
+        gen.value( "title", apiDescriptor.getTitle() );
         gen.value( "description", apiDescriptor.getDescription() );
         gen.value( "documentationUrl", apiDescriptor.getDocumentationUrl() );
         gen.array( "mount" );

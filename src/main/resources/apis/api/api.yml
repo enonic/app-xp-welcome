@@ -1,4 +1,0 @@
-allow:
-- "role:system.everyone"
-mount:
-- xp
