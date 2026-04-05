@@ -27,7 +27,7 @@ exports.run = function (params, taskId) {
     const cachedTask = __.toNativeObject(store.get(taskId));
     if (cachedTask) {
         // save the url to match the events later
-        cachedTask.displayName = appInfoJson.displayName;
+        cachedTask.title = appInfoJson.displayName;
         cachedTask.url = latestVersionJson.downloadUrl;
         cachedTask.icon = appInfoData.icon.attachmentUrl;
         cachedTask.version = latestVersionJson.versionNumber;

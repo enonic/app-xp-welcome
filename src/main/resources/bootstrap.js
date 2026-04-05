@@ -82,7 +82,7 @@ function handleAppProgress(data) {
         } else {
             cachedTask = {
                 taskId: undefined,    // not task as it was started by someone else
-                displayName: i18nLib.localize({key: 'webapps.card.installing'}),
+                title: i18nLib.localize({key: 'webapps.card.installing'}),
                 key: undefined,
                 url: data.applicationUrl,
                 icon: bean.getDefaultApplicationIconAsBase64(),
@@ -109,7 +109,7 @@ function handleAppInstalled(data) {
 
     return {
         taskId: undefined,
-        displayName: app.displayName,
+        title: app.title,
         key: app.applicationKey,
         url: app.url,
         icon: app.icon,
@@ -174,7 +174,7 @@ const submitTask = (key) => {
     const taskId = taskLib.submitTask(taskConfig);
     return {
         taskId,
-        displayName: '',
+        title: '',
         key,
         url: '',
         icon: '',

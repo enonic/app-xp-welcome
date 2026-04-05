@@ -22,7 +22,7 @@ function getAppUrl({adminToolsUrls}: Application): string | undefined {
 const mod = (modifier: string, on = true): string => on ? `ApplicationView_${modifier}` : '';
 
 export default function ApplicationView({className, application}: Props): JSX.Element {
-    const {icon, displayName, version, progress} = application;
+    const {icon, title, applicationKey, version, progress} = application;
 
     const url = getAppUrl(application);
     const isClickable = url != null;
@@ -33,7 +33,7 @@ export default function ApplicationView({className, application}: Props): JSX.El
     const children = (
         <>
             <Img className='ApplicationView-Icon' src={icon} alt='icon' />
-            <h4 className='ApplicationView-Title'>{displayName}</h4>
+            <h4 className='ApplicationView-Title'>{title || applicationKey}</h4>
             <p className='ApplicationView-Subtitle'>{version}</p>
             <Progress className='ApplicationView-Progress' value={progress} />
         </>
