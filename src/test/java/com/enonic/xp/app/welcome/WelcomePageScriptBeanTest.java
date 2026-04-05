@@ -447,7 +447,6 @@ public class WelcomePageScriptBeanTest
         Application application = mock( Application.class );
         when( application.getKey() ).thenReturn( applicationKey );
         when( application.getVersion() ).thenReturn( Version.valueOf( "1.0.0" ) );
-        when( application.getDisplayName() ).thenReturn( displayName );
         return application;
     }
 
@@ -477,7 +476,8 @@ public class WelcomePageScriptBeanTest
         when( resourceService.getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) ) ).thenReturn( resource );
 
         Icon icon = Icon.from( new byte[]{123}, MediaType.JPEG.toString(), Instant.now() );
-        ApplicationDescriptor applicationDescriptor = ApplicationDescriptor.create().key( applicationKey ).icon( icon ).build();
+        ApplicationDescriptor applicationDescriptor =
+            ApplicationDescriptor.create().key( applicationKey ).title( applicationKey.toString() ).icon( icon ).build();
         when( applicationDescriptorService.get( applicationKey ) ).thenReturn( applicationDescriptor );
 
         when( adminToolDescriptorService.getByApplication( applicationKey ) ).thenReturn( AdminToolDescriptors.empty() );

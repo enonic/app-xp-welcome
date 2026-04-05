@@ -3,15 +3,13 @@ package com.enonic.xp.app.welcome.json;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.enonic.xp.app.Application;
-
 public class ApplicationJson
 {
     private final String key;
 
     private final String version;
 
-    private final String displayName;
+    private final String title;
 
     private final String description;
 
@@ -25,11 +23,11 @@ public class ApplicationJson
 
     private ApplicationJson( final Builder builder )
     {
-        this.key = builder.application.getKey().toString();
-        this.version = builder.application.getVersion().toString();
-        this.displayName = builder.application.getDisplayName();
+        this.key = builder.key;
+        this.version = builder.version;
+        this.title = builder.title;
         this.description = builder.description;
-        this.url = builder.application.getUrl();
+        this.url = builder.url;
         this.webappUrl = builder.webappUrl;
         this.adminToolsUrls = builder.adminToolsUrls;
         this.iconAsBase64 = builder.iconAsBase64;
@@ -45,9 +43,9 @@ public class ApplicationJson
         return version;
     }
 
-    public String getDisplayName()
+    public String getTitle()
     {
-        return displayName;
+        return title;
     }
 
     public String getDescription()
@@ -82,7 +80,13 @@ public class ApplicationJson
 
     public static class Builder
     {
-        Application application;
+        String key;
+
+        String version;
+
+        String title;
+
+        String url;
 
         String webappUrl;
 
@@ -97,9 +101,27 @@ public class ApplicationJson
             this.adminToolsUrls = new ArrayList<String>();
         }
 
-        public Builder application( final Application application )
+        public Builder key( final String key )
         {
-            this.application = application;
+            this.key = key;
+            return this;
+        }
+
+        public Builder version( final String version )
+        {
+            this.version = version;
+            return this;
+        }
+
+        public Builder title( final String title )
+        {
+            this.title = title;
+            return this;
+        }
+
+        public Builder url( final String url )
+        {
+            this.url = url;
             return this;
         }
 

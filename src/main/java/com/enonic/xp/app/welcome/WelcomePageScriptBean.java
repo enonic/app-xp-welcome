@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -85,6 +86,8 @@ import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
+
+import static java.util.Objects.requireNonNullElseGet;
 
 public class WelcomePageScriptBean
     implements ScriptBean
@@ -180,7 +183,8 @@ public class WelcomePageScriptBean
 
             applications.add( toApplicationJson( application ) );
         }
-        applications.sort( Comparator.comparing( ApplicationJson::getDisplayName ) );
+        applications.sort(
+            Comparator.comparing( app -> requireNonNullElseGet( app.getTitle(), app::getKey ), String.CASE_INSENSITIVE_ORDER ) );
 
         return new ApplicationsMapper( applications );
     }
@@ -386,9 +390,14 @@ public class WelcomePageScriptBean
     private ApplicationJson toApplicationJson( final Application application )
     {
         ApplicationKey applicationKey = application.getKey();
+        ApplicationDescriptor applicationDescriptor = applicationDescriptorServiceSupplier.get().get( applicationKey );
+
         ApplicationJson.Builder builder =
-            ApplicationJson.create().application( application ).description( getApplicationDescription( applicationKey ) ).iconAsBase64(
-                getApplicationIconAsBase64( applicationKey ) );
+            ApplicationJson.create().key( applicationKey.toString() ).version( application.getVersion().toString() ).title(
+                applicationDescriptor != null ? applicationDescriptor.getTitle() : null ).url(
+                applicationDescriptor != null ? applicationDescriptor.getUrl() : null ).description(
+                applicationDescriptor != null ? applicationDescriptor.getDescription() : null ).iconAsBase64(
+                getApplicationIconAsBase64( applicationDescriptor ) );
 
         Resource resource = resourceServiceSupplier.get().getResource( ResourceKey.from( applicationKey, "/webapp/webapp.js" ) );
         if ( resource.exists() )
@@ -442,15 +451,8 @@ public class WelcomePageScriptBean
         return "/admin/" + applicationKey + "/" + descriptor.getName();
     }
 
-    private String getApplicationDescription( final ApplicationKey applicationKey )
+    private String getApplicationIconAsBase64( final ApplicationDescriptor applicationDescriptor )
     {
-        ApplicationDescriptor applicationDescriptor = applicationDescriptorServiceSupplier.get().get( applicationKey );
-        return applicationDescriptor != null ? applicationDescriptor.getDescription() : null;
-    }
-
-    private String getApplicationIconAsBase64( final ApplicationKey applicationKey )
-    {
-        ApplicationDescriptor applicationDescriptor = applicationDescriptorServiceSupplier.get().get( applicationKey );
         if ( applicationDescriptor == null || applicationDescriptor.getIcon() == null )
         {
             return getDefaultApplicationIconAsBase64();

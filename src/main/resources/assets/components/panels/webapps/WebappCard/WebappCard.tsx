@@ -21,7 +21,7 @@ export default function WebappCard({className, application, xpUrl}: Props): JSX.
 
     return (
         <Card className={classNames}
-            title={application.displayName}
+            title={application.title || application.applicationKey}
             subtitle={application.applicationKey}
             icon={application.icon}
             description={application.description}

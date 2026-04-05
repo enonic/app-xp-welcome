@@ -1,7 +1,7 @@
 export interface Application {
     applicationKey: string;
     version: string;
-    displayName: string;
+    title?: string;
     description: string;
     url: string;
     deploymentUrl?: string;

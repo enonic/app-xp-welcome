@@ -17,7 +17,7 @@ interface WsAppData {
     key: string;
     url: string;
     icon: string;
-    displayName: string;
+    title: string;
     description: string;
     version: string;
     taskId: string;
@@ -84,14 +84,14 @@ function getWebSocketOptions(applications: Application[]): Options {
                     applications.push({
                         applicationKey: data.key,
                         version: data.version,
-                        displayName: data.displayName,
+                        title: data.title,
                         description: data.description,
                         url: data.url,
                         icon: data.icon,
                         adminToolsUrls: data.adminToolsUrls || [],
                     });
                     applications.sort(function (a, b) {
-                        return a.displayName.localeCompare(b.displayName);
+                        return (a.title || a.applicationKey).localeCompare(b.title || b.applicationKey);
                     });
                 }
             }
