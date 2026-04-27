@@ -46,7 +46,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-simple-import-sort": "^13.0.0",
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.12",
     "vite": "^7.3.2"
   },
   "pnpm": {
