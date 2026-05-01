@@ -219,6 +219,16 @@ public class WelcomePageScriptBeanTest
     }
 
     @Test
+    public void testCreateConfigFileNoConfigFolder()
+    {
+        Path configPath = temporaryFolder.resolve( "config" );
+
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "createConfigFile", configPath.toString(), File.separator );
+    }
+
+    @Test
     public void testCreateConfigFile()
         throws IOException
     {
@@ -242,6 +252,14 @@ public class WelcomePageScriptBeanTest
         HomeDirSupport.set( temporaryFolder );
 
         runFunction( "/test/WelcomePageScriptBeanTest.js", "createConfigFileAlreadyExists", key );
+    }
+
+    @Test
+    public void testGetConfigsNoConfigFolder()
+    {
+        HomeDirSupport.set( temporaryFolder );
+
+        runFunction( "/test/WelcomePageScriptBeanTest.js", "testGetConfigs", new ArrayList<>() );
     }
 
     @Test
