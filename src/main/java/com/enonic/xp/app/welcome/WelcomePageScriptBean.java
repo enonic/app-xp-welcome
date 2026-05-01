@@ -248,9 +248,9 @@ public class WelcomePageScriptBean
     {
         List<ConfigFileJson> configs = new ArrayList<>();
         Path configFolder = HomeDir.get().toPath().resolve( "config" );
-        try
+        try ( var stream = Files.list( configFolder ) )
         {
-            Files.list( configFolder ).map( ConfigFileJson::new )
+            stream.map( ConfigFileJson::new )
                 .filter( config -> ALLOWED_CONFIG_EXTENSIONS.stream().anyMatch( config.getName()::endsWith ) )
                 .sorted( Comparator.comparing( ConfigFileJson::getName ) ).collect(
                 Collectors.toCollection( () -> configs ) );
