@@ -248,12 +248,16 @@ public class WelcomePageScriptBean
     {
         List<ConfigFileJson> configs = new ArrayList<>();
         Path configFolder = HomeDir.get().toPath().resolve( "config" );
-        try
+        try ( var stream = Files.list( configFolder ) )
         {
-            Files.list( configFolder ).map( ConfigFileJson::new )
+            stream.map( ConfigFileJson::new )
                 .filter( config -> ALLOWED_CONFIG_EXTENSIONS.stream().anyMatch( config.getName()::endsWith ) )
                 .sorted( Comparator.comparing( ConfigFileJson::getName ) ).collect(
                 Collectors.toCollection( () -> configs ) );
+        }
+        catch ( NoSuchFileException e )
+        {
+            LOG.debug( "Config folder does not exist at {}", configFolder );
         }
         catch ( IOException e )
         {
@@ -304,9 +308,11 @@ public class WelcomePageScriptBean
 
     public String createConfigFile( final String appKey, final String config )
     {
-        Path filePath = HomeDir.get().toPath().resolve( "config" ).resolve( appKey + ".cfg" );
+        Path configFolder = HomeDir.get().toPath().resolve( "config" );
+        Path filePath = configFolder.resolve( appKey + ".cfg" );
         try
         {
+            Files.createDirectories( configFolder );
             return Files.writeString( filePath, config, StandardOpenOption.CREATE_NEW ).toString();
         }
         catch ( FileAlreadyExistsException e )
