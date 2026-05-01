@@ -18,7 +18,6 @@ module.exports = Object.freeze({
         WEBAPPS: "http://localhost:8080/#webapps",
         PROJECTS: "http://localhost:8080/#projects",
         SITES: "http://localhost:8080/#sites",
-        APIS: "http://localhost:8080/#apis",
         WELCOME_PAGE: "http://127.0.0.1:8080/",
     },
 
