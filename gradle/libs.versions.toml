@@ -1,0 +1,17 @@
+[versions]
+http-client = "4.0.0-SNAPSHOT"
+jackson-jr-objects = "2.21.3"
+junit-bom = "6.0.3"
+mockito-bom = "5.23.0"
+mustache = "2.1.1"
+router = "4.0.0-SNAPSHOT"
+static = "3.0.0-SNAPSHOT"
+
+[libraries]
+jackson-jr-objects = { module = "com.fasterxml.jackson.jr:jackson-jr-objects", version.ref = "jackson-jr-objects" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "http-client" }
+lib-mustache = { module = "com.enonic.lib:lib-mustache", version.ref = "mustache" }
+lib-router = { module = "com.enonic.lib:lib-router", version.ref = "router" }
+lib-static = { module = "com.enonic.lib:lib-static", version.ref = "static" }
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito-bom" }
