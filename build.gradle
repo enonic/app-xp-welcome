@@ -42,7 +42,7 @@ dependencies {
     implementation "com.enonic.xp:admin-api:${xpVersion}"
     implementation "com.enonic.xp:portal-api:${xpVersion}"
 
-    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.3"
+    include libs.jackson.jr.objects
     include "com.enonic.xp:lib-app:${xpVersion}"
     include "com.enonic.xp:lib-admin:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
@@ -52,15 +52,15 @@ dependencies {
     include "com.enonic.xp:lib-task:${xpVersion}"
     include "com.enonic.xp:lib-websocket:${xpVersion}"
     include "com.enonic.xp:lib-event:${xpVersion}"
-    include 'com.enonic.lib:lib-http-client:4.0.0-SNAPSHOT'
-    include "com.enonic.lib:lib-mustache:2.1.1"
-    include "com.enonic.lib:lib-static:3.0.0-SNAPSHOT"
-    include "com.enonic.lib:lib-router:4.0.0-SNAPSHOT"
+    include libs.lib.http.client
+    include libs.lib.mustache
+    include libs.lib.static
+    include libs.lib.router
 
     testImplementation( testFixtures( "com.enonic.xp:core-api" ) )
     testImplementation "com.enonic.xp:testing:${xpVersion}"
-    testImplementation(platform("org.junit:junit-bom:6.0.3"))
-    testImplementation(platform("org.mockito:mockito-bom:5.23.0"))
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(platform(libs.mockito.bom))
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.mockito:mockito-junit-jupiter'
