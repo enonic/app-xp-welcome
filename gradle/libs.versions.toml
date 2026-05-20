@@ -1,11 +1,11 @@
 [versions]
-http-client = "4.0.0-SNAPSHOT"
+http-client = "4.0.0-B1"
 jackson-jr-objects = "2.21.3"
 junit-bom = "6.0.3"
 mockito-bom = "5.23.0"
-mustache = "2.1.1"
-router = "4.0.0-SNAPSHOT"
-static = "3.0.0-SNAPSHOT"
+mustache = "3.0.0-B1"
+router = "4.0.0-B1"
+static = "3.0.0-B1"
 
 [libraries]
 jackson-jr-objects = { module = "com.fasterxml.jackson.jr:jackson-jr-objects", version.ref = "jackson-jr-objects" }
