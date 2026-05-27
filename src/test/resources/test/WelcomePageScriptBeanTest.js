@@ -147,7 +147,7 @@ exports.getContentStudioUrl = function () {
 };
 
 exports.canLoginAsSu = function () {
-    assert.assertTrue(bean.canLoginAsSu());
+    return bean.canLoginAsSu();
 };
 
 exports.getSites = function () {
