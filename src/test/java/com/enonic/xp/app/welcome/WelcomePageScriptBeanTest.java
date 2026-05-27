@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
@@ -41,7 +42,6 @@ import com.enonic.xp.content.Contents;
 import com.enonic.xp.content.FindContentIdsByQueryResult;
 import com.enonic.xp.event.EventPublisher;
 import com.enonic.xp.content.GetContentByIdsParams;
-import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.home.HomeDirSupport;
 import com.enonic.xp.icon.Icon;
 import com.enonic.xp.descriptor.DescriptorKey;
@@ -53,16 +53,21 @@ import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.resource.Resource;
 import com.enonic.xp.resource.ResourceKey;
 import com.enonic.xp.resource.ResourceService;
-import com.enonic.xp.security.IdProvider;
-import com.enonic.xp.security.IdProviderConfig;
-import com.enonic.xp.security.IdProviderKey;
+import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.PrincipalKeys;
+import com.enonic.xp.security.PrincipalRelationship;
+import com.enonic.xp.security.PrincipalRelationships;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
+import com.enonic.xp.script.ScriptValue;
+import com.enonic.xp.server.RunMode;
+import com.enonic.xp.server.RunModeSupport;
 import com.enonic.xp.testing.ScriptTestSupport;
 import com.enonic.xp.util.Version;
 
 import static com.enonic.xp.app.welcome.WelcomePageScriptBean.FILE_NAME;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -362,21 +367,78 @@ public class WelcomePageScriptBeanTest
         runFunction( "/test/WelcomePageScriptBeanTest.js", "getStatisticsApiUrlWithZeroHost" );
     }
 
-    @Test
-    public void testcanLoginAsSu()
+    @AfterEach
+    public void resetFirstLoginState()
     {
-        PropertyTree config = new PropertyTree();
-        config.setBoolean( "adminUserCreationEnabled", true );
-        IdProviderConfig idProviderConfig =
-            IdProviderConfig.create().applicationKey( ApplicationKey.from( "com.enonic.xp.app.standardidprovider" ) ).config(
-                config ).build();
+        RunModeSupport.set( RunMode.PROD );
+        System.clearProperty( "xp.suPassword" );
+    }
 
-        IdProvider idProvider = mock( IdProvider.class );
+    @Test
+    public void canLoginAsSu_enabled_in_dev_without_su_password_and_only_su_admin()
+    {
+        RunModeSupport.set( RunMode.DEV );
+        adminRoleMembers( PrincipalKey.ofSuperUser() );
 
-        when( idProvider.getIdProviderConfig() ).thenReturn( idProviderConfig );
-        when( securityService.getIdProvider( Mockito.any( IdProviderKey.class ) ) ).thenReturn( idProvider );
+        assertTrue( canLoginAsSu() );
+    }
 
-        runFunction( "/test/WelcomePageScriptBeanTest.js", "canLoginAsSu" );
+    @Test
+    public void canLoginAsSu_disabled_in_prod()
+    {
+        RunModeSupport.set( RunMode.PROD );
+        adminRoleMembers( PrincipalKey.ofSuperUser() );
+
+        assertFalse( canLoginAsSu() );
+    }
+
+    @Test
+    public void canLoginAsSu_disabled_when_su_password_set()
+    {
+        RunModeSupport.set( RunMode.DEV );
+        System.setProperty( "xp.suPassword", "{sha512}abc" );
+        adminRoleMembers( PrincipalKey.ofSuperUser() );
+
+        assertFalse( canLoginAsSu() );
+    }
+
+    @Test
+    public void canLoginAsSu_disabled_when_non_su_admin_user_exists()
+    {
+        RunModeSupport.set( RunMode.DEV );
+        adminRoleMembers( PrincipalKey.ofSuperUser(), PrincipalKey.from( "user:system:alice" ) );
+
+        assertFalse( canLoginAsSu() );
+    }
+
+    @Test
+    public void canLoginAsSu_disabled_when_admin_granted_via_group()
+    {
+        RunModeSupport.set( RunMode.DEV );
+        final PrincipalKey admins = PrincipalKey.from( "group:system:admins" );
+        adminRoleMembers( PrincipalKey.ofSuperUser(), admins );
+        membersOf( admins, PrincipalKey.from( "user:system:bob" ) );
+
+        assertFalse( canLoginAsSu() );
+    }
+
+    private boolean canLoginAsSu()
+    {
+        final ScriptValue result = runFunction( "/test/WelcomePageScriptBeanTest.js", "canLoginAsSu" );
+        return result.getValue( Boolean.class );
+    }
+
+    private void adminRoleMembers( final PrincipalKey... members )
+    {
+        membersOf( RoleKeys.ADMIN, members );
+    }
+
+    private void membersOf( final PrincipalKey container, final PrincipalKey... members )
+    {
+        when( securityService.getRelationships( container ) ).thenReturn( PrincipalRelationships.from(
+            Arrays.stream( members )
+                .map( m -> PrincipalRelationship.from( container ).to( m ) )
+                .toArray( PrincipalRelationship[]::new ) ) );
     }
 
     @Test

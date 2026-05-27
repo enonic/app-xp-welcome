@@ -79,13 +79,13 @@ import com.enonic.xp.resource.ResourceService;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
-import com.enonic.xp.security.IdProvider;
-import com.enonic.xp.security.IdProviderKey;
 import com.enonic.xp.security.PrincipalKey;
+import com.enonic.xp.security.PrincipalRelationship;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
+import com.enonic.xp.server.RunMode;
 
 import static java.util.Objects.requireNonNullElseGet;
 
@@ -157,18 +157,33 @@ public class WelcomePageScriptBean
 
     public Boolean canLoginAsSu()
     {
-        final IdProvider idProvider =
-            createAdminContext().callWith( () -> securityServiceSupplier.get().getIdProvider( IdProviderKey.from( "system" ) ) );
+        // Cheap checks first so the security queries in adminUserExists() are skipped unless needed.
+        return RunMode.isDev() && !isSuPasswordConfigured() && !adminUserExists();
+    }
 
-        if ( idProvider == null )
-        {
-            return false;
-        }
+    private static boolean isSuPasswordConfigured()
+    {
+        return !System.getProperty( "xp.suPassword", "" ).isEmpty();
+    }
 
-        final PropertyTree config = idProvider.getIdProviderConfig().getConfig();
-        final Boolean adminUserCreationEnabled = config.getBoolean( "adminUserCreationEnabled" );
+    private boolean adminUserExists()
+    {
+        return createAdminContext().callWith( () -> {
+            final SecurityService securityService = securityServiceSupplier.get();
+            final PrincipalKey su = PrincipalKey.ofSuperUser();
 
-        return adminUserCreationEnabled != null && adminUserCreationEnabled;
+            // XP has no nested groups, so a single descent into group members is enough.
+            return securityService.getRelationships( RoleKeys.ADMIN ).stream().anyMatch( member -> {
+                final PrincipalKey memberKey = member.getTo();
+                if ( memberKey.isGroup() )
+                {
+                    return securityService.getRelationships( memberKey )
+                        .stream()
+                        .anyMatch( groupMember -> !groupMember.getTo().equals( su ) );
+                }
+                return !memberKey.equals( su );
+            } );
+        } );
     }
 
     public Object getApplications()
