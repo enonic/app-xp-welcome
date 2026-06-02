@@ -19,7 +19,7 @@ export interface Props {
 export default function ApiCard({className, apiDescriptor, apiBaseUrl}: Props): JSX.Element {
     const classNames = `ApiCard ${className ?? ''}`.trim();
 
-    const {descriptor, displayName, name, description, allowedPrincipals, mount} = apiDescriptor;
+    const {descriptor, title, name, description, allowedPrincipals, mount} = apiDescriptor;
 
     const [isExpanded, setExpanded] = useState(false);
 
@@ -35,7 +35,7 @@ export default function ApiCard({className, apiDescriptor, apiBaseUrl}: Props): 
         <div className={classNames}>
             <div className='ApiCard-Header'>
                 <div className='ApiCard-HeaderRow'>
-                    <div className='ApiCard-HeaderRow-LeftCol'><h2 className='ApiCard-Title'>{displayName || name}</h2></div>
+                    <div className='ApiCard-HeaderRow-LeftCol'><h2 className='ApiCard-Title'>{title || name}</h2></div>
                     <div className='ApiCard-HeaderRow-RightCol'>
                         {mount.includes('web') &&
                          <Link className='ApiCard-Link' url={url}>
