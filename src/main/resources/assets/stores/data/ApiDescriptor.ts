@@ -3,7 +3,7 @@ export interface ApiDescriptor {
     application: string;
     name: string;
     mount: string[];
-    displayName?: string;
+    title?: string;
     description?: string;
     documentationUrl?: string;
     allowedPrincipals?: string[];
