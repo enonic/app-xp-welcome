@@ -3,11 +3,9 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.7'
-    id 'com.enonic.xp.app' version '4.0.0-A2'
+    id 'com.enonic.xp.app'
     id "com.github.node-gradle.node" version "7.1.0"
 }
-
-def xpVersion = version
 
 apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
@@ -15,15 +13,7 @@ apply from: "$rootDir/gradle/node.gradle"
 app {
     name = 'com.enonic.xp.app.sdk'
     group = 'com.enonic.xp'
-    displayName = 'XP SDK Application'
     systemApp = true
-    systemVersion = "${xpVersion}"
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
 }
 
 configurations.all {
@@ -38,26 +28,26 @@ repositories {
 
 dependencies {
     implementation "com.enonic.xp:core-internal:${xpVersion}"
-    implementation "com.enonic.xp:jaxrs-api:${xpVersion}"
-    implementation "com.enonic.xp:admin-api:${xpVersion}"
-    implementation "com.enonic.xp:portal-api:${xpVersion}"
+    implementation xplibs.api.jaxrs
+    implementation xplibs.api.admin
+    implementation xplibs.api.portal
 
     include libs.jackson.jr.objects
-    include "com.enonic.xp:lib-app:${xpVersion}"
-    include "com.enonic.xp:lib-admin:${xpVersion}"
-    include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-portal:${xpVersion}"
-    include "com.enonic.xp:lib-i18n:${xpVersion}"
-    include "com.enonic.xp:lib-vhost:${xpVersion}"
-    include "com.enonic.xp:lib-task:${xpVersion}"
-    include "com.enonic.xp:lib-websocket:${xpVersion}"
-    include "com.enonic.xp:lib-event:${xpVersion}"
+    include xplibs.app
+    include xplibs.admin
+    include xplibs.auth
+    include xplibs.portal
+    include xplibs.i18n
+    include xplibs.vhost
+    include xplibs.task
+    include xplibs.websocket
+    include xplibs.event
     include libs.lib.http.client
     include libs.lib.mustache
     include libs.lib.static
     include libs.lib.router
 
-    testImplementation( testFixtures( "com.enonic.xp:core-api" ) )
+    testImplementation( testFixtures( xplibs.api.core ) )
     testImplementation "com.enonic.xp:testing:${xpVersion}"
     testImplementation(platform(libs.junit.bom))
     testImplementation(platform(libs.mockito.bom))
