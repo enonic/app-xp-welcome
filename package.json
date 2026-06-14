@@ -38,7 +38,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "typescript-eslint": "^8.59.3",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^6.0.2",
     "autoprefixer": "^10.5.0",
     "browserslist-config-enonic": "^1.0.8",
     "eslint": "^9.39.2",
@@ -47,7 +47,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "postcss": "^8.5.15",
-    "vite": "^7.3.2"
+    "vite": "^8.0.16"
   },
   "pnpm": {
     "peerDependencyRules": {
