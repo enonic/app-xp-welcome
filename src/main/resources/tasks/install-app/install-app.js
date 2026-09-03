@@ -1,6 +1,8 @@
 const taskLib = require('/lib/xp/task');
 const adminLib = require('/lib/xp/admin');
 const httpClient = require('/lib/http-client');
+const webSocketLib = require('/lib/xp/websocket');
+const SOCKET_GROUP = require('/lib/constants').SOCKET_GROUP;
 
 const marketBean = __.newBean('com.enonic.xp.app.welcome.market.GetMarketConfigBean');
 const bean = __.newBean('com.enonic.xp.app.welcome.WelcomePageScriptBean');
@@ -17,9 +19,15 @@ exports.run = function (params, taskId) {
     taskLib.progress({info: 'Install task started for: ' + key, current: 0, total: 1});
 
     const appInfoJson = fetchApplicationInfo(marketUrl, key, xpMajorVersion);
+    if (!appInfoJson || !appInfoJson.data) {
+        log.warning('Application [%s] is not available on Enonic Market for XP %s.*, skipping install', key, xpMajorVersion);
+        removePlaceholder(key, taskId);
+        taskLib.progress({info: 'Skipped install of ' + key + ': not found on Enonic Market', current: 1, total: 1});
+        return;
+    }
     const appInfoData = appInfoJson.data;
 
-    const latestVersionJson = findLatestVersion(key, appInfoData.version, xpMajorVersion);
+    const latestVersionJson = findLatestVersion(key, appInfoData.version || [], xpMajorVersion);
     if (!latestVersionJson || !latestVersionJson.downloadUrl) {
         throw 'No download url found for ' + key;
     }
@@ -29,7 +37,7 @@ exports.run = function (params, taskId) {
         // save the url to match the events later
         cachedTask.title = appInfoJson.displayName;
         cachedTask.url = latestVersionJson.downloadUrl;
-        cachedTask.icon = appInfoData.icon.attachmentUrl;
+        cachedTask.icon = appInfoData.icon ? appInfoData.icon.attachmentUrl : '';
         cachedTask.version = latestVersionJson.versionNumber;
         store.put(taskId, cachedTask);
     }
@@ -37,6 +45,14 @@ exports.run = function (params, taskId) {
     const appJson = installApplication(key, latestVersionJson.downloadUrl, latestVersionJson.sha512);
     taskLib.progress({info: JSON.stringify(appJson), current: 1, total: 1});
 };
+
+function removePlaceholder(key, taskId) {
+    webSocketLib.sendToGroup(SOCKET_GROUP, JSON.stringify({
+        taskId,
+        key,
+        action: 'remove'
+    }));
+}
 
 function fetchApplicationInfo(marketUrl, key, xpMajorVersion) {
     const response = httpClient.request({
@@ -63,7 +79,8 @@ function fetchApplicationInfo(marketUrl, key, xpMajorVersion) {
         throw `Fetch errors from market: ${JSON.stringify(responseJson.errors, null, 2)}`;
     }
 
-    return responseJson.data.market.queryDsl[0];
+    const results = responseJson.data && responseJson.data.market && responseJson.data.market.queryDsl;
+    return results && results.length > 0 ? results[0] : null;
 }
 
 function findLatestVersion(key, versions, xpMajorVersion) {
