@@ -38,7 +38,8 @@ describe('Application Page specification', function () {
             let welcomePage = new WelcomePage();
             let adminCard = new AdminCard();
             await welcomePage.waitForLoaded();
-            // 1. Click on Log In button in Admin Card:
+            let welcomePageHandle = await testUtils.getCurrentWindowHandle();
+            // 1. Click on Log In button in Admin Card (opens '/admin' in a new tab):
             await adminCard.clickOnLoginButton();
             // 2. Login page should be opened in the new browser tab
             await testUtils.doSwitchToLoginPage();
@@ -46,8 +47,8 @@ describe('Application Page specification', function () {
             await loginPage.waitForPageLoaded();
             // 3. Do login
             await loginPage.doLogin('su', 'password');
-            // 4. Switch to Welcome page
-            await testUtils.doCloseAllWindowTabsAndSwitchToWelcomePage();
+            // 4. Close the admin tab (it may still be loading after login) and switch back to the Welcome page:
+            await testUtils.doCloseOtherTabsAndSwitchTo(welcomePageHandle);
             await welcomePage.waitForLoaded();
             // 5. Verify that 'Open' button gets visible in Endpoints panel in Admin card
             await testUtils.refresh();

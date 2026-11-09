@@ -64,19 +64,20 @@ class Page {
         return screenshotName;
     }
 
-    async isElementDisplayed(selector) {
-        let element = await this.findElement(selector);
-        return element.isDisplayed();
+    waitForElementNotDisplayed(selector, ms = appConst.mediumTimeout) {
+        return this.getBrowser().waitUntil(
+            () => {
+                return this.getDisplayedElements(selector).then((result) => {
+                    return result.length === 0;
+                });
+            },
+            { timeout: ms, timeoutMsg: `Timeout exception. Element ${selector} still visible in: ${ms}` },
+        );
     }
 
-    async waitForElementNotDisplayed(selector, ms) {
+    async waitForElementDisplayed(selector, ms = appConst.mediumTimeout) {
         let element = await this.findElement(selector);
-        return element.waitForDisplayed({timeout: ms, reverse: true});
-    }
-
-    async waitForElementDisplayed(selector, ms) {
-        let element = await this.findElement(selector);
-        return element.waitForDisplayed({timeout: ms});
+        return await element.waitForDisplayed({ timeout: ms });
     }
 
     async pressEscKey() {
@@ -115,6 +116,26 @@ class Page {
             return elements.filter((el, i) => result[i]);
         });
     }
+    async handleError(errorMessage, screenshotName, error) {
+        const wrappedMessage = `${errorMessage}: ${error?.message ?? 'Unknown error'} `;
+
+        if (Error.prototype.hasOwnProperty('cause')) {
+            throw new Error(`${wrappedMessage}[screenshot]: ${screenshotName}`, { cause: error });
+        }
+        const wrapped = new Error(wrappedMessage);
+        wrapped.cause = error;
+        wrapped.screenshotTaken = error?.screenshotTaken;
+        wrapped.screenshotName = error?.screenshotName;
+
+        if (!wrapped.screenshotTaken) {
+            // keep the generated (unique) file name, so the error message points to the file that really exists:
+            wrapped.screenshotName = await this.saveScreenshotUniqueName(screenshotName);
+            wrapped.screenshotTaken = true;
+            wrapped.message += `[Screenshot]: ${wrapped.screenshotName}`;
+        }
+        throw wrapped;
+    }
+
 
 }
 
