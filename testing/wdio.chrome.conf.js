@@ -10,6 +10,10 @@ exports.config = {
     ],
 
     maxInstances: 1,
+    // Chrome runs with --headless, so no X display is needed. Without this, @wdio/local-runner wraps every
+    // worker in xvfb-run, and on ubuntu-26.04 (xorg-server 21.1.22+) xvfb-run takes over fd 3, which is the
+    // worker's IPC channel: every worker dies on its first process.send() with 'write EINVAL'.
+    autoXvfb: false,
 
     capabilities: [{
         browserName: 'chrome',
