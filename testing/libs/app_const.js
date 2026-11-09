@@ -13,6 +13,8 @@ module.exports = Object.freeze({
     DELETE_COOKIE_TIMEOUT: 20000,
     INSTALL_APP_TIMEOUT: 30000,
     TIMEOUT_SUITE: 180000,
+    // time for a login started in another tab to complete (id provider request + session cookie):
+    TIMEOUT_LOGIN: 20000,
 
     APP_URLS: {
         WEBAPPS: "http://localhost:8080/#webapps",

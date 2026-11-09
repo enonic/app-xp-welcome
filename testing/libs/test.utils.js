@@ -44,6 +44,9 @@ module.exports = {
     getCurrentWindowHandle() {
         return this.getBrowser().getWindowHandle();
     },
+    switchToWindow(handle) {
+        return this.getBrowser().switchToWindow(handle);
+    },
 
     async doCloseOtherTabsAndSwitchTo(keepHandle) {
         let handles = await this.getBrowser().getWindowHandles();

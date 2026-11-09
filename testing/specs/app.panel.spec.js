@@ -47,11 +47,16 @@ describe('Application Page specification', function () {
             await loginPage.waitForPageLoaded();
             // 3. Do login
             await loginPage.doLogin('su', 'password');
-            // 4. Close the admin tab (it may still be loading after login) and switch back to the Welcome page:
+            // 4. Switch back to the Welcome tab without touching the login tab: the login request may still be
+            // in flight there, and a WebDriver command on a navigating tab blocks until the admin UI is loaded.
+            await testUtils.switchToWindow(welcomePageHandle);
+            // 5. Wait for the login to complete: the Welcome page shows 'Open' in the Admin card after a reload
+            // once the session cookie is set:
+            await adminCard.waitForLoggedIn();
+            // 6. Now the admin tab can be closed safely:
             await testUtils.doCloseOtherTabsAndSwitchTo(welcomePageHandle);
             await welcomePage.waitForLoaded();
-            // 5. Verify that 'Open' button gets visible in Endpoints panel in Admin card
-            await testUtils.refresh();
+            // 7. Verify that 'Open' button is displayed in the Admin card:
             await testUtils.saveScreenshot('admin_card_open_btn');
             await adminCard.waitForOpenButtonDisplayed();
         });
