@@ -1,5 +1,4 @@
 const Page = require('./page');
-const appConst = require('../libs/app_const');
 
 class LoginPage extends Page {
 
@@ -27,16 +26,12 @@ class LoginPage extends Page {
 
     async waitForPageLoaded() {
         try {
-            return await this.waitForElementDisplayed(this.usernameInput, appConst.mediumTimeout);
+            return await this.waitForElementDisplayed(this.usernameInput);
         } catch (err) {
-            let screenshot = await this.saveScreenshotUniqueName('err_login_page');
-            throw Error("Log In page should be loaded, screenshot:" + screenshot + ' ' + err);
+            await this.handleError("Log In page should be loaded", 'err_login_page', err);
         }
     }
 
-    getTitle() {
-        return this.browser.getTitle();
-    }
 
     async doLogin(userName, password) {
         let name = userName ? userName : 'su';

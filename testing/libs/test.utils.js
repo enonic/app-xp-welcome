@@ -22,10 +22,6 @@ module.exports = {
         await this.getBrowser().pause(1000);
     },
 
-    async doSwitchToNextTab() {
-        let tabs = await this.getBrowser().getWindowHandles();
-        return await this.getBrowser().switchToWindow(tabs[tabs.length - 1]);
-    },
     async doSwitchToLoginPage() {
         try {
             await this.getBrowser().switchWindow("Enonic XP - Login");
@@ -45,16 +41,22 @@ module.exports = {
             return console.log('screenshot was not saved ' + screenshotsDir + 'utils  ' + err);
         })
     },
-    async doCloseAllWindowTabsAndSwitchToWelcomePage() {
-        let windows = await this.getBrowser().getWindowHandles();
-        for (const handle of windows) {
-            let result = await this.switchAndCheckTitle(handle, appConst.WELCOME_PAGE_TITLE);
-            if (!result) {
+    getCurrentWindowHandle() {
+        return this.getBrowser().getWindowHandle();
+    },
+    switchToWindow(handle) {
+        return this.getBrowser().switchToWindow(handle);
+    },
+
+    async doCloseOtherTabsAndSwitchTo(keepHandle) {
+        let handles = await this.getBrowser().getWindowHandles();
+        for (const handle of handles) {
+            if (handle !== keepHandle) {
+                await this.getBrowser().switchToWindow(handle);
                 await this.getBrowser().closeWindow();
             }
         }
-
-        return await this.doSwitchToWelcomePage();
+        return await this.getBrowser().switchToWindow(keepHandle);
     },
     async switchToTabContains(text) {
         let handles = await this.getBrowser().getWindowHandles();
@@ -67,22 +69,8 @@ module.exports = {
         }
         throw new Error('Browser tab with title ' + text + ' was not found');
     },
-    async doSwitchToWelcomePage() {
-        console.log('testUtils:switching to Welcome page...');
-        await this.switchToTabContains(appConst.WELCOME_PAGE_TITLE);
-
-    },
     async doSwitchToLoginPage() {
         console.log('testUtils:switching to Login page...');
         await this.switchToTabContains(appConst.LOGIN_PAGE_TITLE);
     },
-    async switchAndCheckTitle(handle, reqTitle) {
-        try {
-            await this.getBrowser().switchToWindow(handle);
-            let title = await this.getBrowser().getTitle();
-            return title.includes(reqTitle);
-        } catch (err) {
-            throw new Error("Error during checkin the Title  " + err);
-        }
-    }
 };

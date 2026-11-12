@@ -2,7 +2,6 @@
  * Created on 15.01.2024
  */
 const Page = require('../page');
-const appConst = require('../../libs/app_const');
 
 const XPATH = {
     cardTitle: "//h2[contains(@class,'Card-Title')]",
@@ -25,19 +24,17 @@ class BaseCard extends Page {
 
     async waitForDisplayed() {
         try {
-            await this.waitForElementDisplayed(this.container, appConst.mediumTimeout)
+            await this.waitForElementDisplayed(this.container);
         } catch (err) {
-            let screenshot = await this.saveScreenshotUniqueName('err_card');
-            throw new Error('Endpoints-card should be displayed, screenshot:' + screenshot + ' ' + err);
+            await this.handleError('Endpoints-card should be displayed', 'err_card', err);
         }
     }
 
     async waitForNotDisplayed() {
         try {
-            return this.waitForElementNotDisplayed(XPATH.container, appConst.mediumTimeout);
+            return this.waitForElementNotDisplayed(XPATH.container);
         } catch (err) {
-            let screenshot = await this.saveScreenshotUniqueName('err_card');
-            throw new Error('Endpoints-card should not be displayed, screenshot:' + screenshot + ' ' + err);
+            await this.handleError('Endpoints-card should not be displayed', 'err_card', err);
         }
     }
 

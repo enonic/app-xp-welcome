@@ -2,7 +2,6 @@
  * Created on 09.01.2024
  */
 const Page = require('./page');
-const appConst = require('../libs/app_const');
 
 const XPATH = {
     container: "//div[contains(@class,'App')]",
@@ -14,11 +13,10 @@ class AppPanel extends Page {
         try {
             // The try block is necessary to catch and handle errors and save a screenshot
             let locator = XPATH.container + "//h1[text()='Welcome to the Enonic SDK']";
-            await this.waitForElementDisplayed(locator, appConst.mediumTimeout);
+            await this.waitForElementDisplayed(locator);
             await this.pause(1000);
         } catch (err) {
-            let screenshot = await this.saveScreenshotUniqueName('err_welcome_page');
-            throw new Error("Welcome Page should be loaded! screenshot:" + screenshot + ' ' + err);
+            await this.handleError("Welcome Page should be loaded!", 'err_welcome_page', err);
         }
     }
 

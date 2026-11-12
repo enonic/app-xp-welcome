@@ -2,8 +2,6 @@
  * Created on 15.01.2024
  */
 const BaseCard = require('./base.card');
-const lib = require('../../libs/elements');
-const appConst = require('../../libs/app_const');
 
 
 const XPATH = {
@@ -24,7 +22,7 @@ class ContentCard extends BaseCard {
     }
 
     waitForBrowseProjectsButtonDisplayed() {
-        return this.waitForElementDisplayed(this.browseProjectsButton, appConst.mediumTimeout);
+        return this.waitForElementDisplayed(this.browseProjectsButton);
     }
 
     async clickOnBrowseProjectsButton() {
@@ -33,8 +31,7 @@ class ContentCard extends BaseCard {
             await this.clickOnElement(this.browseProjectsButton);
             await this.pause(400);
         } catch (err) {
-            let screenshot = await this.saveScreenshotUniqueName('err_open_button');
-            throw new Error('Welcome page, admin card - Error after clicking on Open button, screenshot: ' + screenshot + ' ' + err);
+            await this.handleError('Welcome page, admin card - Error after clicking on Open button', 'err_open_button', err);
         }
     }
 }
