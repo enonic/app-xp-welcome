@@ -58,7 +58,7 @@ dependencies {
 
 node {
     download = true
-    version = '22.16.0'
+    version = '26.13.0'
 }
 
 tasks.register('lint', NpmTask) {

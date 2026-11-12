@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "node node_modules/typescript7/bin/tsc && vite build",
     "dev": "vite build --watch",
     "lint": "eslint . --quiet --cache",
     "fix": "eslint . --fix --cache"
@@ -20,17 +20,18 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-use-websocket": "^4.13.0",
-    "typescript": "^5.9.3"
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript7": "npm:typescript@^7.0.2"
   },
   "devDependencies": {
     "@enonic-types/core": "^8.1.2",
     "@enonic-types/global": "^8.1.2",
-    "@enonic-types/lib-admin": "^8.0.4",
+    "@enonic-types/lib-admin": "^8.1.2",
     "@enonic-types/lib-auth": "^8.1.2",
     "@enonic-types/lib-i18n": "^8.0.4",
-    "@enonic-types/lib-portal": "^8.0.0-B4",
-    "@enonic-types/lib-vhost": "^8.0.4",
-    "@enonic/eslint-config": "^2.3.0",
+    "@enonic-types/lib-portal": "^8.1.2",
+    "@enonic-types/lib-vhost": "^8.1.2",
+    "@enonic/eslint-config": "^3.0.0",
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.merge": "^4.6.9",
@@ -38,16 +39,28 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "typescript-eslint": "^8.70.1",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^6.3.0",
     "autoprefixer": "^10.6.1",
     "browserslist-config-enonic": "^1.0.8",
-    "eslint": "^9.39.2",
+    "eslint": "^10.14.0",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "postcss": "^8.5.30",
-    "vite": "^7.3.2"
+    "vite": "^8.3.8"
+  },
+  "overrides": {
+    "@enonic/eslint-config": {
+      "typescript": "$typescript"
+    },
+    "eslint-plugin-import": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-jsx-a11y": {
+      "eslint": "$eslint"
+    },
+    "minimatch@>=7.0.0 <11.0.1": "^11.0.8"
   },
   "pnpm": {
     "peerDependencyRules": {
@@ -61,7 +74,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 22.16.0",
-    "npm": ">= 10.9.2"
+    "node": ">= 26.13.0",
+    "npm": ">= 11.20.0"
   }
 }
