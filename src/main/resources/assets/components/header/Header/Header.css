@@ -14,6 +14,14 @@
     font-weight: 400;
 }
 
+.Header-Logo {
+    flex: none;
+    align-self: flex-start;
+    width: 56px;
+    height: 56px;
+    margin: 0 0 -20px 16px;
+}
+
 .Header-Subtitle {
     margin: 4px 0 0 0.35em;
     font-size: 0.875em;
