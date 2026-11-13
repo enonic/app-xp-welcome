@@ -1,8 +1,14 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@enonic/ui/preset.css';
 @import './common/styles/fonts.css';
-@import './common/styles/classes.css';
-@import './common/styles/effects.css';
 @import './common/themes/all.css';
-@import './common/themes/light.css';
+
+@source '../../../../node_modules/@enonic/ui/';
+
+@theme {
+    --font-sans: 'Open Sans', Arial, Helvetica, sans-serif;
+}
 
 html,
 body {
@@ -10,5 +16,4 @@ body {
     width: 100%;
     height: 100%;
     margin: 0;
-    font-size: 14px;
 }

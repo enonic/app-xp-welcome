@@ -6,7 +6,7 @@ import config from '../../../stores/config';
 import {ScreenType} from '../../../stores/data/ScreenType';
 import navigation from '../../../stores/navigation';
 import Button from '../../core/Button/Button';
-import Icomoon from '../../core/Icomoon/Icomoon';
+import Icon from '../../core/Icon/Icon';
 import BackButton from '../BackButton/BackButton';
 import Navigator from '../Navigator/Navigator';
 

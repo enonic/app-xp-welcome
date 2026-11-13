@@ -1,26 +1,26 @@
+import {Link as UiLink} from '@enonic/ui';
 import React, {ReactNode} from 'react';
-
-import './Link.css';
 
 export interface Props {
     className?: string;
     url?: string;
     title?: string;
+    external?: boolean;
     children?: ReactNode;
 }
 
-export default function Link({className, url = '#', title, children}: Props): JSX.Element {
+export default function Link({className, url = '#', title, external = false, children}: Props): JSX.Element {
     const classNames = `Link ${className ?? ''}`.trim();
 
     return (
-        <a
+        <UiLink
             className={classNames}
             href={url}
             title={title}
-            rel='noreferrer'
-            target='_blank'
+            external={external}
+            newTab
         >
             {children}
-        </a>
+        </UiLink>
     );
 }

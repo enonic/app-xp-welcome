@@ -48,6 +48,7 @@ export default function LoginButton({className}: Props): JSX.Element {
     return (
         <Button
             className={classNames}
+            variant='filled'
             label={label}
             action={{handler}}
             disabled={!idProviderUrl || isInProgress}
