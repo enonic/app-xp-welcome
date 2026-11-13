@@ -1,15 +1,15 @@
 import React from 'react';
 
-import Icomoon from '../Icomoon/Icomoon';
+import Icon from '../Icon/Icon';
 
 export interface Props {
     className?: string;
 }
 
 export default function Spinner({className}: Props): JSX.Element {
-    const classNames = `Spinner effect-spin ${className ?? ''}`.trim();
+    const classNames = `Spinner animate-spin ${className ?? ''}`.trim();
 
     return (
-        <Icomoon className={classNames} icon='spinner' />
+        <Icon className={classNames} icon='spinner' />
     );
 }

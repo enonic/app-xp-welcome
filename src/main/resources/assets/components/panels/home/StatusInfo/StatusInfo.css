@@ -1,5 +1,5 @@
 .StatusInfo-Name {
-    color: var(--color-font-sub);
+    color: var(--color-subtle);
 }
 
 .StatusInfo-Name::after {
@@ -7,5 +7,5 @@
 }
 
 .StatusInfo-Value {
-    color: var(--color-font-main);
+    color: var(--color-main);
 }

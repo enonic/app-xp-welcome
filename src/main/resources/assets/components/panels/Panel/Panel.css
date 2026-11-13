@@ -4,7 +4,7 @@
     gap: 16px;
     max-width: var(--size-ui-width);
     margin: 0 auto;
-    font-size: 1rem;
+    font-size: 14px;
 }
 
 .Panel-Description {

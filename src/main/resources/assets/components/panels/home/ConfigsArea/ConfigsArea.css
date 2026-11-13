@@ -3,9 +3,9 @@
     gap: 0;
     width: 100%;
     padding: 24px;
-    border-radius: 2px;
-    background-color: var(--color-ui-fg);
-    box-shadow: var(--ui-box-shadow);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface-neutral);
+    border: 1px solid var(--color-bdr-soft);
     overflow: hidden;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .ListItem .CopyIcon {
-    color: black;
+    color: var(--color-main);
     visibility: hidden;
 }
 
@@ -71,7 +71,7 @@
 }
 
 .ConfigsArea-List .ListItem:hover {
-    background-color: var(--color-ui-fg-hover);
+    background-color: var(--color-surface-neutral-hover);
 }
 
 .ConfigsArea-List .ListItem:hover .CopyIcon {

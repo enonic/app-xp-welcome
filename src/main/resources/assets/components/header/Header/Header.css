@@ -1,41 +1,119 @@
 .Header {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     max-width: var(--size-ui-width);
     margin: 0 auto;
-    padding: 24px 0 32px;
-    font-size: 1rem;
+    padding: 24px 0 0;
+    font-size: 14px;
+}
+
+.Header-Masthead {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--color-bdr-strong);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface-neutral);
+    overflow: hidden;
+}
+
+.Header-Masthead:last-child {
+    margin-bottom: 16px;
+}
+
+.Header-Main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+}
+
+.Header-Text {
+    flex: 1;
+    min-width: 0;
 }
 
 .Header-Title {
-    flex: 1;
     margin: 0;
-    font-size: 2.25em;
+    font-size: 2em;
     font-weight: 400;
+    line-height: 1.2;
 }
 
 .Header-Logo {
     flex: none;
-    align-self: flex-start;
     width: 56px;
     height: 56px;
-    margin: 0 0 -20px 16px;
+    margin-right: 8px;
+}
+
+.Header-ThemeSwitcher {
+    flex: none;
+    align-self: flex-start;
+}
+
+.Header-ThemeSwitcher:not(:hover):not(:active) {
+    background-color: transparent;
 }
 
 .Header-Subtitle {
-    margin: 4px 0 0 0.35em;
+    margin: 4px 0 0;
     font-size: 0.875em;
     font-weight: 600;
+    color: var(--color-subtle);
 }
 
-.Header-Subtitle {
-    width: 100%;
-    color: var(--color-font-sub);
+.Header-Breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 0;
+}
+
+.Header-BreadcrumbLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--color-main);
+}
+
+.Header-BreadcrumbLink:hover {
+    text-decoration: underline;
+}
+
+.Header-BreadcrumbSeparator,
+.Header-BreadcrumbCurrent {
+    color: var(--color-subtle);
 }
 
 @media screen and (max-width: 560px) {
     .Header {
-        padding: 0 0 24px;
-        min-height: 60px;
+        padding: 0;
+    }
+
+    .Header-Masthead:last-child {
+        margin-bottom: 12px;
+    }
+
+    .Header-Breadcrumb {
+        margin-bottom: 8px;
+    }
+
+    .Header-Main {
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .Header-Logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .Header-Title {
+        font-size: min(1.45em, 4.2vw);
+    }
+
+    .Header-Subtitle {
+        font-size: 0.75em;
     }
 }

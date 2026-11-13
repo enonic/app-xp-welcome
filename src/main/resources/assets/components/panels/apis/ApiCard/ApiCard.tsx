@@ -4,7 +4,6 @@ import {useI18n} from '../../../../hooks/useI18n';
 import {ApiDescriptor} from '../../../../stores/data/ApiDescriptor';
 import Button, {ButtonType} from '../../../core/Button/Button';
 import {CopyIcon} from '../../../core/CopyIcon/CopyIcon';
-import Icomoon from '../../../core/Icomoon/Icomoon';
 import Link from '../../../core/Link/Link';
 import ApiCardDescription from '../ApiCardDescription/ApiCardDescription';
 
@@ -38,9 +37,7 @@ export default function ApiCard({className, apiDescriptor, apiBaseUrl}: Props): 
                     <div className='ApiCard-HeaderRow-LeftCol'><h2 className='ApiCard-Title'>{title || name}</h2></div>
                     <div className='ApiCard-HeaderRow-RightCol'>
                         {mount.includes('web') &&
-                         <Link className='ApiCard-Link' url={url}>
-                             <Icomoon className='ApiCard-LinkIcon' icon='newtab' />
-                         </Link>
+                         <Link className='ApiCard-Link' url={url} external />
                         }
                     </div>
                 </div>

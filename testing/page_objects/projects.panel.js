@@ -10,17 +10,18 @@ const XPATH = {
 class ProjectsPanel extends Page {
 
     get backButton() {
-        return XPATH.container + "//button[contains(@class,'BackButton')]";
+        return XPATH.container + "//a[contains(@class,'Header-BreadcrumbLink')]";
     }
 
     get header() {
-        return XPATH.container + "//h1[text()='Content projects']"
+        return XPATH.container + "//span[contains(@class,'Header-BreadcrumbCurrent') and text()='Content projects']"
     }
 
     async waitForLoaded() {
         try {
             // The try block is necessary to catch and handle errors and save a screenshot
             await this.waitForElementDisplayed(this.header);
+            await this.waitForElementDisplayed(XPATH.container + "//div[contains(@class,'ProjectsPanel')]");
         } catch (err) {
             await this.handleError("Projects Panel should be loaded!", 'err_projects_panel', err);
         }
@@ -36,7 +37,7 @@ class ProjectsPanel extends Page {
     }
 
     getHeader() {
-        let locator = XPATH.container + "//h1[@class='Header-Title']";
+        let locator = XPATH.container + "//span[contains(@class,'Header-BreadcrumbCurrent')]";
         return this.getText(locator);
     }
 }

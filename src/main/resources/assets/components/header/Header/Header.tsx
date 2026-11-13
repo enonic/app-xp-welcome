@@ -1,14 +1,13 @@
+import {ThemeSwitcher} from '@enonic/ui-kit';
 import {useStore} from '@nanostores/react';
 import React from 'react';
+import {ChevronRight, House} from 'lucide-react';
 
 import {useI18n} from '../../../hooks/useI18n';
 import config from '../../../stores/config';
 import {ScreenType} from '../../../stores/data/ScreenType';
 import navigation from '../../../stores/navigation';
-import Button from '../../core/Button/Button';
-import Icomoon from '../../core/Icomoon/Icomoon';
-import BackButton from '../BackButton/BackButton';
-import Navigator from '../Navigator/Navigator';
+import AdminCard from '../../panels/home/AdminCard/AdminCard';
 
 import './Header.css';
 
@@ -33,19 +32,38 @@ export default function Header(): JSX.Element {
 
     const isHome = screen === ScreenType.HOME;
 
+    const homeTitle = useI18n('header.home.title');
     const title = useI18n(createHeaderTitlePhrase(screen));
     const subtitle = useI18n('header.subtitle', xpVersion);
+    const homeLabel = useI18n('header.breadcrumb.home');
 
     return (
         <header className={'Header'}>
-            {isHome || <BackButton />}
-            <h1 className='Header-Title'>{title}</h1>
-            <svg className='Header-Logo' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Enonic XP'>
-                <path fill='currentColor' d='M61.3332 78.8174H52.3812L44.573 66.8814L36.7151 78.8174H28.0117L40.1467 61.1123L28.5091 44.0039H37.4611L44.7719 55.2934L52.1325 44.0039H60.8359L49.1982 61.0128L61.3332 78.8174Z' />
-                <path fill='currentColor' d='M94.626 56.1389C94.626 64.1958 88.3596 68.3734 80.5514 68.3734H74.7326V78.8174H67.0736V44.0039H81.2974C89.6029 44.0039 94.626 48.9275 94.626 56.0394V56.1389ZM86.8676 56.2881V56.1886C86.8676 52.757 84.4803 50.9169 80.6509 50.9169H74.7326V61.5599H80.8001C84.6295 61.5599 86.8676 59.2721 86.8676 56.2881Z' />
-                <path fill='currentColor' d='M120.007 69.7227C115.296 98.2834 90.1728 120.004 60.0039 120.004C29.835 120.004 4.71142 98.2834 0.000976562 69.7227H10.0254C14.6194 92.7211 35.1984 110.144 60.0039 110.145C84.8094 110.144 105.389 92.7211 109.983 69.7227H120.007ZM60.0039 0C90.1747 0.000129089 115.3 21.7227 120.008 50.2861H109.984C105.392 27.285 84.8114 9.8595 60.0039 9.85938C35.1964 9.85945 14.6162 27.285 10.0244 50.2861H0C4.70815 21.7227 29.8331 7.50718e-05 60.0039 0Z' />
-            </svg>
-            {isHome && <p className='Header-Subtitle'>{subtitle}</p>}
+            <div className='Header-Masthead'>
+                <div className='Header-Main'>
+                    <svg className='Header-Logo' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Enonic XP'>
+                        <path fill='currentColor' d='M61.3332 78.8174H52.3812L44.573 66.8814L36.7151 78.8174H28.0117L40.1467 61.1123L28.5091 44.0039H37.4611L44.7719 55.2934L52.1325 44.0039H60.8359L49.1982 61.0128L61.3332 78.8174Z' />
+                        <path fill='currentColor' d='M94.626 56.1389C94.626 64.1958 88.3596 68.3734 80.5514 68.3734H74.7326V78.8174H67.0736V44.0039H81.2974C89.6029 44.0039 94.626 48.9275 94.626 56.0394V56.1389ZM86.8676 56.2881V56.1886C86.8676 52.757 84.4803 50.9169 80.6509 50.9169H74.7326V61.5599H80.8001C84.6295 61.5599 86.8676 59.2721 86.8676 56.2881Z' />
+                        <path fill='currentColor' d='M120.007 69.7227C115.296 98.2834 90.1728 120.004 60.0039 120.004C29.835 120.004 4.71142 98.2834 0.000976562 69.7227H10.0254C14.6194 92.7211 35.1984 110.144 60.0039 110.145C84.8094 110.144 105.389 92.7211 109.983 69.7227H120.007ZM60.0039 0C90.1747 0.000129089 115.3 21.7227 120.008 50.2861H109.984C105.392 27.285 84.8114 9.8595 60.0039 9.85938C35.1964 9.85945 14.6162 27.285 10.0244 50.2861H0C4.70815 21.7227 29.8331 7.50718e-05 60.0039 0Z' />
+                    </svg>
+                    <div className='Header-Text'>
+                        <h1 className='Header-Title'>{homeTitle}</h1>
+                        <p className='Header-Subtitle'>{subtitle}</p>
+                    </div>
+                    <ThemeSwitcher className='Header-ThemeSwitcher' />
+                </div>
+                <AdminCard />
+            </div>
+            {isHome ||
+                <nav className='Header-Breadcrumb'>
+                    <a className='Header-BreadcrumbLink' href='#'>
+                        <House size={16} aria-hidden='true' />
+                        {homeLabel}
+                    </a>
+                    <ChevronRight className='Header-BreadcrumbSeparator' size={16} aria-hidden='true' />
+                    <span className='Header-BreadcrumbCurrent' aria-current='page'>{title}</span>
+                </nav>
+            }
         </header>
     );
 }

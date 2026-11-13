@@ -3,11 +3,11 @@
   grid-template-rows: auto 1fr;
   row-gap: 8px;
   padding: 24px;
-  font-size: 1rem;
+  font-size: 14px;
   box-sizing: border-box;
-  border-radius: 2px;
-  background-color: var(--color-ui-fg);
-  box-shadow: var(--ui-box-shadow);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-neutral);
+  border: 1px solid var(--color-bdr-soft);
   overflow: hidden;
 }
 
@@ -37,7 +37,7 @@
   height: 36px;
   margin: 0 12px 0 0;
   object-fit: contain;
-  color: var(--color-ui-icon);
+  color: var(--color-main);
 }
 
 .ApiCard-Title {
@@ -54,16 +54,13 @@
   grid-row: 2;
   grid-column: 2;
   margin: 0;
-  color: var(--color-font-sub);
+  color: var(--color-subtle);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .ApiCard--ExpandButton {
-  --Button-size: 40px;
-  --Button-color-hover: var(--color-ui-bg-hover);
-
   grid-column: 1 / -1;
 }
 
@@ -93,7 +90,7 @@
 
 .ApiCard-ExtraInfo-Label {
   text-align: right;
-  color: var(--color-font-sub);
+  color: var(--color-subtle);
 }
 
 .ApiCard-ExtraInfo-Value {
@@ -107,4 +104,8 @@
 
 .ApiCard-Row__Col {
   margin-right: 8px;
+}
+
+.ApiCard .Button_link {
+  margin-left: -14px;
 }

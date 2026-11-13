@@ -1,3 +1,4 @@
+import {ButtonVariant} from '@enonic/ui';
 import React, {ReactNode} from 'react';
 
 import Button, {Action} from '../Button/Button';
@@ -15,6 +16,7 @@ export interface Props {
     subtitle: string | ReactNode;
     description: string | ReactNode;
     action: CardButtonAction;
+    variant?: ButtonVariant;
 }
 
 export default function CardWithButton({
@@ -23,6 +25,7 @@ export default function CardWithButton({
     subtitle,
     description,
     action,
+    variant,
 }: Props): JSX.Element {
     const classNames = `CardWithButton ${className ?? ''}`.trim();
 
@@ -33,7 +36,7 @@ export default function CardWithButton({
             subtitle={subtitle}
             description={description}
         >
-            <Button className='CardWithButton-Action' label={action.label} action={action} />
+            <Button className='CardWithButton-Action' variant={variant} label={action.label} action={action} />
         </Card>
     );
 }

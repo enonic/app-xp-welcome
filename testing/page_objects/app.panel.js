@@ -14,6 +14,8 @@ class AppPanel extends Page {
             // The try block is necessary to catch and handle errors and save a screenshot
             let locator = XPATH.container + "//h1[text()='Welcome to the Enonic SDK']";
             await this.waitForElementDisplayed(locator);
+            await this.waitForElementDisplayed(XPATH.container + "//div[contains(@class,'HomePanel')]");
+            await this.waitForElementNotDisplayed(XPATH.container + "//nav[contains(@class,'Header-Breadcrumb')]");
             await this.pause(1000);
         } catch (err) {
             await this.handleError("Welcome Page should be loaded!", 'err_welcome_page', err);

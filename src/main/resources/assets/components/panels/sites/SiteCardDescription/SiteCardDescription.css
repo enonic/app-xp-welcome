@@ -1,5 +1,5 @@
 .SiteCardDescription {
     margin: 0;
-    font-size: 1rem;
-    color: var(--color-font-sub);
+    font-size: 14px;
+    color: var(--color-subtle);
 }

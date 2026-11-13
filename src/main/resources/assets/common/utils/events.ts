@@ -1,8 +1,8 @@
 type CustomMouseKeyboardEvent<T extends HTMLElement = HTMLElement> = React.MouseEvent<T> | React.KeyboardEvent<T>;
 export type MouseKeyboardEvent = CustomMouseKeyboardEvent<HTMLElement>;
 
-export type ReactKeyboardHandler<T> = (event: React.KeyboardEvent<T>) => void;
-export type ReactMouseHandler<T> = (event: React.MouseEvent<T>) => void;
+export type ReactKeyboardHandler<T extends EventTarget> = (event: React.KeyboardEvent<T>) => void;
+export type ReactMouseHandler<T extends EventTarget> = (event: React.MouseEvent<T>) => void;
 
 export type KeyboardHandler = (event: KeyboardEvent) => void;
 export type MouseHandler = (event: MouseEvent) => void;
@@ -57,14 +57,14 @@ export function stopFurtherEvents(event: MouseKeyboardEvent): void {
   event.preventDefault();
 }
 
-export function isApplyKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isApplyKey(event: KeyboardEvent | React.KeyboardEvent<EventTarget>): boolean {
   return event.code === 'Enter' || event.code === 'NumpadEnter';
 }
 
-export function isSelectKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isSelectKey(event: KeyboardEvent | React.KeyboardEvent<EventTarget>): boolean {
   return isApplyKey(event) || event.code === 'Space';
 }
 
-export function isEscapeKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isEscapeKey(event: KeyboardEvent | React.KeyboardEvent<EventTarget>): boolean {
   return event.code === 'Escape';
 }

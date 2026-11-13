@@ -1,13 +1,13 @@
 .Progress {
     height: 16px;
     width: 100%;
-    background-color: #EEE;
+    background-color: var(--color-muted);
     text-align: left;
 }
 
 .Progress span {
     height: 100%;
     display: inline-block;
-    background-color: yellowgreen;
+    background-color: var(--color-success);
     transition: width 0.2s ease-in-out;
 }

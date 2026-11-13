@@ -5,7 +5,7 @@
 
 .Navigator-Segment {
     font-size: 1em;
-    color: var(--color-font-main);
+    color: var(--color-main);
     overflow: hidden;
     text-overflow: ellipsis;
 }

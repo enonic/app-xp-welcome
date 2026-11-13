@@ -1,9 +1,14 @@
 .ApiPanel-Row {
   display: grid;
   grid-template-columns: 3fr 1fr;
+  align-items: center;
   gap: 10px;
   max-width: var(--size-ui-width);
-  margin: 0 auto;
+  margin: 0 auto 8px;
+}
+
+.ApiPanel-Row .Panel-Description {
+  margin: 0;
 }
 
 .ApiPanel-Row__Col {
