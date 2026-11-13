@@ -1,4 +1,8 @@
 declare global {
+    namespace JSX {
+        type Element = import('preact').JSX.Element;
+    }
+
     type Null = null | void;
 
     type FnVoid = () => void;

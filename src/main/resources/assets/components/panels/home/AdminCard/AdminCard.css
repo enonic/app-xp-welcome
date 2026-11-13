@@ -1,20 +1,9 @@
 .AdminCard {
-    background: linear-gradient(250deg, hsl(220, 10%, 5%), hsl(0, 0%, 35%));
-    color: var(--color-font-alt);
+    background-color: var(--color-surface-secondary);
+    border-color: var(--color-surface-secondary);
+    color: var(--color-alt);
 }
 
 .AdminCard .Card-Subtitle {
-    color: var(--color-font-disabled);
-}
-
-.AdminCard-ActionCreate {
-    --Button-size: 40px;
-    --Button-color: var(--color-font-alt);
-    --Button-color-hover: var(--color-font-alt);
-
-    margin: 0 auto;
-}
-
-.AdminCard-ActionCreate::before {
-    content: '…';
+    color: var(--color-grey-400);
 }

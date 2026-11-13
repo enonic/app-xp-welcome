@@ -1,17 +1,5 @@
 .CardWithLink-Link {
-    display: inline-flex;
-    justify-content: center;
     align-self: center;
     margin: 0 auto;
-    text-decoration: none;
     font-weight: 600;
-    text-transform: uppercase;
-}
-
-.CardWithLink-LinkLabel::after {
-    content: '\00a0';
-}
-
-.CardWithLink-LinkIcon {
-    font-size: 0.75em;
 }

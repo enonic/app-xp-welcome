@@ -12,9 +12,6 @@
 }
 
 .EndpointsArea-ExpandButton {
-    --Button-size: 40px;
-    --Button-color-hover: var(--color-ui-bg-hover);
-
     grid-column: 1 / -1;
 }
 

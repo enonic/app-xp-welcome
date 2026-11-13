@@ -4,7 +4,7 @@
     max-width: var(--size-ui-width);
     margin: 0 auto;
     padding: 24px 0 32px;
-    font-size: 1rem;
+    font-size: 14px;
 }
 
 .Header-Title {
@@ -30,7 +30,7 @@
 
 .Header-Subtitle {
     width: 100%;
-    color: var(--color-font-sub);
+    color: var(--color-subtle);
 }
 
 @media screen and (max-width: 560px) {
