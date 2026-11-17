@@ -1,7 +1,7 @@
 import React, {ForwardedRef, forwardRef, useState} from 'react';
 
 import {useI18n} from '../../../hooks/useI18n';
-import Icomoon from '../Icomoon/Icomoon';
+import Icon from '../Icon/Icon';
 
 import './CopyIcon.css';
 
@@ -29,7 +29,7 @@ export const CopyIcon = forwardRef(({text}: { text: string }, ref: ForwardedRef<
     return (<span ref={ref} role='presentation' title={useI18n('configs.copyHint')} className='CopyIcon' onClick={handleClick}>
         {isNotification ?
             <span className='CopyIcon-Text'>{copyText}</span> :
-            <Icomoon className='CopyIcon-Icon' icon='copy' />
+            <Icon className='CopyIcon-Icon' icon='copy' />
         }
     </span>);
 });

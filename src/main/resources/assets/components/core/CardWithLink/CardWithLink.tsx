@@ -2,7 +2,6 @@ import React, {ReactNode} from 'react';
 
 import {isInternalUrl} from '../../../common/utils/url';
 import Card from '../Card/Card';
-import Icomoon from '../Icomoon/Icomoon';
 import Link from '../Link/Link';
 
 import './CardWithLink.css';
@@ -43,9 +42,8 @@ export default function CardWithLink({
             icon={icon}
         >
             {link.url &&
-            <Link className='CardWithLink-Link' url={link.url}>
-                <span className='CardWithLink-LinkLabel'>{link.label}</span>
-                {external && <Icomoon className='CardWithLink-LinkIcon' icon='newtab' />}
+            <Link className='CardWithLink-Link' url={link.url} external={external}>
+                {link.label}
             </Link>
             }
         </Card>

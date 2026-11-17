@@ -1,19 +1,33 @@
-import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import autoprefixer from 'autoprefixer';
 import {resolve} from 'path';
 import {defineConfig} from 'vite';
 
-const isProd = process.env.NODE_ENV !== 'production';
+const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
     base: '',
     plugins: [
-        react(),
+        tailwindcss(),
     ],
+    resolve: {
+        alias: {
+            'react': 'preact/compat',
+            'react-dom': 'preact/compat',
+            'react-dom/client': 'preact/compat/client',
+            'react/jsx-runtime': 'preact/jsx-runtime',
+        },
+    },
     build: {
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'src/main/resources/assets/main.tsx'),
+            },
+            onwarn(warning, warn) {
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+                    return;
+                }
+                warn(warning);
             },
             output: {
                 dir: resolve(__dirname, 'build/resources/main/assets'),

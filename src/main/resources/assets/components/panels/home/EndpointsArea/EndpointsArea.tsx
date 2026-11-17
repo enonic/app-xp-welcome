@@ -12,7 +12,6 @@ import Button, {ButtonType} from '../../../core/Button/Button';
 import CardWithButton from '../../../core/CardWithButton/CardWithButton';
 import CardWithLink from '../../../core/CardWithLink/CardWithLink';
 import Panel from '../../Panel/Panel';
-import AdminCard from '../AdminCard/AdminCard';
 import StatusInfo from '../StatusInfo/StatusInfo';
 
 import './EndpointsArea.css';
@@ -33,13 +32,12 @@ export default function EndpointsArea({className}: Props): JSX.Element {
 
     return (
         <Panel className={classNames}>
-            <AdminCard />
-
             <CardWithButton
                 className='EndpointsArea-Card'
                 title={useI18n('home.card.apis.title')}
                 subtitle='/api'
                 description={useI18n('home.card.apis.description')}
+                variant='outline'
                 action={{label: useI18n('home.card.apis.action'), handler: () => goToScreen(ScreenType.APIS)}}
             />
 
@@ -59,6 +57,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 title={useI18n('home.card.content.title')}
                 subtitle={useI18n('home.card.content.subtitle')}
                 description={useI18n('home.card.content.description')}
+                variant='outline'
                 action={{label: useI18n('home.card.content.action'), handler: () => goToScreen(ScreenType.PROJECTS)}}
             />
 
@@ -67,6 +66,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 title={useI18n('home.card.webapps.title')}
                 subtitle='/webapp'
                 description={useI18n('home.card.webapps.description')}
+                variant='outline'
                 action={{label: useI18n('home.card.webapps.action'), handler: () => goToScreen(ScreenType.WEBAPPS)}}
             />
 
@@ -75,6 +75,7 @@ export default function EndpointsArea({className}: Props): JSX.Element {
                 title={useI18n('home.card.site.title')}
                 subtitle='/site'
                 description={useI18n('home.card.site.description')}
+                variant='outline'
                 action={{label: useI18n('home.card.site.action'), handler: () => goToScreen(ScreenType.SITES)}}
             />
 

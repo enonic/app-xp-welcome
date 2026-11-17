@@ -5,7 +5,7 @@ const BaseCard = require('./base.card');
 const appConst = require('../../libs/app_const');
 
 const XPATH = {
-    container: "//div[contains(@class,'Card AdminCard')]",
+    container: "//div[contains(concat(' ',@class,' '),' AdminCard ')]",
     loginButton: "//button[text()='Log In']",
     openButton: "//button[text()='Open']",
 };

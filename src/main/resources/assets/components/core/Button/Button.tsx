@@ -1,3 +1,4 @@
+import {Button as UiButton, ButtonVariant} from '@enonic/ui';
 import React, {ReactNode} from 'react';
 
 import {createMouseHandler} from '../../../common/utils/events';
@@ -17,6 +18,7 @@ export interface Props {
     className?: string;
     children?: ReactNode;
     type?: ButtonType;
+    variant?: ButtonVariant;
     label?: string;
     title?: string;
     disabled?: boolean;
@@ -29,6 +31,7 @@ export default function Button({
     className,
     children,
     type = ButtonType.DEFAULT,
+    variant = type === ButtonType.LINK ? 'text' : 'solid',
     label,
     title,
     disabled,
@@ -37,15 +40,15 @@ export default function Button({
     const classNames = `Button ${mod(type)} ${className ?? ''}`.trim();
 
     return (
-        <button
+        <UiButton
             className={classNames}
-            type='button'
+            variant={variant}
+            label={label}
             disabled={!!disabled}
             onClick={action && createMouseHandler(action.handler)}
             title={title}
         >
             {children}
-            {label}
-        </button>
+        </UiButton>
     );
 }

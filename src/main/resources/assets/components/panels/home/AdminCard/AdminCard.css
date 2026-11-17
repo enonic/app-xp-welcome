@@ -1,20 +1,64 @@
 .AdminCard {
-    background: linear-gradient(250deg, hsl(220, 10%, 5%), hsl(0, 0%, 35%));
-    color: var(--color-font-alt);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    border-top: 1px solid var(--color-bdr-soft);
+    background-color: var(--color-grey-100);
 }
 
-.AdminCard .Card-Subtitle {
-    color: var(--color-font-disabled);
+.dark .AdminCard {
+    background-color: var(--color-grey-850);
 }
 
-.AdminCard-ActionCreate {
-    --Button-size: 40px;
-    --Button-color: var(--color-font-alt);
-    --Button-color-hover: var(--color-font-alt);
-
-    margin: 0 auto;
+.AdminCard-Text {
+    flex: 1;
+    min-width: 0;
 }
 
-.AdminCard-ActionCreate::before {
-    content: '…';
+.AdminCard-Title {
+    margin: 0;
+    font-size: 1.15em;
+    font-weight: 600;
+}
+
+.AdminCard-Description {
+    margin: 2px 0 0;
+    font-size: 0.925em;
+    color: var(--color-subtle);
+}
+
+.dark .AdminCard-Description {
+    color: var(--color-grey-300);
+}
+
+.AdminCard-ActionLogin {
+    flex: none;
+    min-width: 140px;
+}
+
+.dark .AdminCard-ActionLogin {
+    background-color: var(--color-white);
+    color: var(--color-black);
+}
+
+.dark .AdminCard-ActionLogin:hover,
+.dark .AdminCard-ActionLogin:active {
+    background-color: var(--color-grey-200);
+}
+
+@media screen and (max-width: 560px) {
+    .AdminCard {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 14px 16px 16px;
+    }
+
+    .AdminCard-Text {
+        flex-basis: 100%;
+    }
+
+    .AdminCard-ActionLogin {
+        flex: 1;
+    }
 }

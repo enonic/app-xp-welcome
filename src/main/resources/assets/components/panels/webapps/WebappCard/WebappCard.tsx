@@ -3,7 +3,6 @@ import React from 'react';
 import {createHref} from '../../../../common/utils/url';
 import {WebApplication} from '../../../../stores/data/WebApplication';
 import Card from '../../../core/Card/Card';
-import Icomoon from '../../../core/Icomoon/Icomoon';
 import Link from '../../../core/Link/Link';
 
 import './WebappCard.css';
@@ -16,19 +15,18 @@ export interface Props {
 
 export default function WebappCard({className, application, xpUrl}: Props): JSX.Element {
     const url = createHref(application.deploymentUrl, xpUrl);
+    const title = application.title || application.applicationKey;
 
     const classNames = `WebappCard ${className ?? ''}`.trim();
 
     return (
         <Card className={classNames}
-            title={application.title || application.applicationKey}
+            title={title}
             subtitle={application.applicationKey}
             icon={application.icon}
             description={application.description}
         >
-            <Link className='WebappCard-Link' url={url}>
-                <Icomoon icon='newtab' />
-            </Link>
+            <Link className='WebappCard-Link' url={url} title={title} external />
         </Card>
     );
 }

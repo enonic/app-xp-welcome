@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 
-import Icomoon from '../Icomoon/Icomoon';
+import Icon from '../Icon/Icon';
 import Img from '../Img/Img';
 
 import './Card.css';
@@ -20,7 +20,7 @@ function createIcon(icon: string | undefined): JSX.Element | undefined {
     }
     const isIcomoon = /^[\w\d-]+$/g.test(icon);
     return isIcomoon ?
-        <Icomoon className='Card-Icon' icon={icon} /> :
+        <Icon className='Card-Icon' icon={icon} /> :
         <Img className='Card-Icon' src={icon} alt='icon' />;
 }
 
