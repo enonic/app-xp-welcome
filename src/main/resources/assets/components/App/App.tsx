@@ -3,7 +3,6 @@ import React from 'react';
 import useWebSocket from 'react-use-websocket';
 import {Options} from 'react-use-websocket/src/lib/types';
 
-import app from '../../stores/app';
 import config, {initialized} from '../../stores/config';
 import {Application} from '../../stores/data/Application';
 import Header from '../header/Header/Header';
@@ -27,14 +26,13 @@ interface WsAppData {
 }
 
 export default function App(): JSX.Element {
-    const {theme} = useStore(app, {keys: ['theme']});
     const isInitialized = useStore(initialized);
     const {wsServiceUrl, applications} = useStore(config, {keys: ['wsServiceUrl', 'applications']});
 
     useWebSocket(wsServiceUrl, getWebSocketOptions(applications));
 
     return (
-        <div className={`App ${mod('loading', !isInitialized)} theme-${theme}`}>
+        <div className={`App ${mod('loading', !isInitialized)}`}>
             <Header />
             <AppPanels />
         </div>

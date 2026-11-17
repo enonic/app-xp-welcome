@@ -5,6 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
     <meta name="theme-color" content="#eee">
+    <meta name="color-scheme" content="light dark">
+
+    <!-- Runs before the bundle, so the key and the "anything but light or dark is system" rule
+         must match THEME_STORAGE_KEY and parseTheme in @enonic/ui-utils. -->
+    <script>
+        try {
+            const storedTheme = localStorage.getItem('enonic:theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = storedTheme === 'dark' || (storedTheme !== 'light' && prefersDark);
+            document.documentElement.classList.toggle('dark', isDark);
+            document.querySelector('meta[name="color-scheme"]').content = isDark ? 'dark' : 'light';
+        } catch (e) {
+            console.error('Error reading theme preference', e);
+        }
+    </script>
 
     <title>{{phrases.title}}</title>
 

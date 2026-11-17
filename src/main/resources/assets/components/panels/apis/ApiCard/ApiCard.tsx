@@ -37,7 +37,7 @@ export default function ApiCard({className, apiDescriptor, apiBaseUrl}: Props): 
                     <div className='ApiCard-HeaderRow-LeftCol'><h2 className='ApiCard-Title'>{title || name}</h2></div>
                     <div className='ApiCard-HeaderRow-RightCol'>
                         {mount.includes('web') &&
-                         <Link className='ApiCard-Link' url={url} external />
+                         <Link className='ApiCard-Link' url={url} title={title || name} external />
                         }
                     </div>
                 </div>

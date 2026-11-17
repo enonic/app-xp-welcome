@@ -28,6 +28,11 @@ export default function Icon({className, icon, size = '1em', title}: Props): JSX
     const classNames = `Icon ${className ?? ''}`.trim();
 
     return (
-        <LucideIcon className={classNames} size={size} strokeWidth={1.5} aria-label={title} />
+        <LucideIcon
+            className={classNames}
+            size={size}
+            strokeWidth={1.5}
+            {...(title ? {'aria-label': title, role: 'img'} : {'aria-hidden': true})}
+        />
     );
 }

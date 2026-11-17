@@ -3,7 +3,7 @@ import autoprefixer from 'autoprefixer';
 import {resolve} from 'path';
 import {defineConfig} from 'vite';
 
-const isProd = process.env.NODE_ENV !== 'production';
+const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
     base: '',
@@ -22,6 +22,12 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'src/main/resources/assets/main.tsx'),
+            },
+            onwarn(warning, warn) {
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+                    return;
+                }
+                warn(warning);
             },
             output: {
                 dir: resolve(__dirname, 'build/resources/main/assets'),

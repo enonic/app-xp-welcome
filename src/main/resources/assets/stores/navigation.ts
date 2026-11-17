@@ -1,6 +1,5 @@
-import {computed, map} from 'nanostores';
+import {map} from 'nanostores';
 
-import {NavigationSegment} from './data/NavigationSegment';
 import {ScreenType} from './data/ScreenType';
 
 export interface NavigationStore {
@@ -30,27 +29,3 @@ export const goToScreen = (screen: ScreenType): void => {
 };
 
 export const setNavigationState = (state: NavigationStore): void => navigation.set(state);
-
-export const segments = computed(navigation, ({screen}) => {
-    const navSegments: NavigationSegment[] = [
-        {name: window.location.origin, state: {screen: ScreenType.HOME}},
-    ];
-
-    if (screen === ScreenType.WEBAPPS) {
-        navSegments.push({name: 'webapp'});
-    }
-
-    if (screen === ScreenType.PROJECTS) {
-        navSegments.push({name: 'site'});
-    }
-
-    if (screen === ScreenType.SITES) {
-        navSegments.push({name: 'sites'});
-    }
-
-    if (screen === ScreenType.APIS) {
-        navSegments.push({name: 'apis'});
-    }
-
-    return navSegments;
-});

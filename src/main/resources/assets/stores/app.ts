@@ -16,7 +16,11 @@ const app = map<AppStore>({
 
 export default app;
 
-app.subscribe(({theme}) => document.documentElement.classList.toggle('dark', theme === Theme.DARK));
+app.subscribe(({theme}) => {
+    const isDark = theme === Theme.DARK;
+    document.documentElement.classList.toggle('dark', isDark);
+    document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', isDark ? 'dark' : 'light');
+});
 
 subscribeResolvedTheme(theme => app.setKey('theme', theme as Theme));
 

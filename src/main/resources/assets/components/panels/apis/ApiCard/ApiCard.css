@@ -73,14 +73,6 @@
   font-weight: 600;
 }
 
-.ApiCard-LinkLabel::after {
-  content: '\00a0';
-}
-
-.ApiCard-LinkIcon {
-  font-size: 1.2em;
-}
-
 .ApiCard-ExtraInfo {
   display: grid;
   grid-template-columns: 1fr 3fr;

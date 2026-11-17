@@ -15,17 +15,18 @@ export interface Props {
 
 export default function WebappCard({className, application, xpUrl}: Props): JSX.Element {
     const url = createHref(application.deploymentUrl, xpUrl);
+    const title = application.title || application.applicationKey;
 
     const classNames = `WebappCard ${className ?? ''}`.trim();
 
     return (
         <Card className={classNames}
-            title={application.title || application.applicationKey}
+            title={title}
             subtitle={application.applicationKey}
             icon={application.icon}
             description={application.description}
         >
-            <Link className='WebappCard-Link' url={url} external />
+            <Link className='WebappCard-Link' url={url} title={title} external />
         </Card>
     );
 }

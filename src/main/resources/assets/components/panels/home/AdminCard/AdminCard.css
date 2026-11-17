@@ -37,9 +37,14 @@
     min-width: 140px;
 }
 
-.dark .AdminCard-ActionLogin:not(:hover):not(:active) {
+.dark .AdminCard-ActionLogin {
     background-color: var(--color-white);
     color: var(--color-black);
+}
+
+.dark .AdminCard-ActionLogin:hover,
+.dark .AdminCard-ActionLogin:active {
+    background-color: var(--color-grey-200);
 }
 
 @media screen and (max-width: 560px) {
