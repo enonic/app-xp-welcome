@@ -86,6 +86,7 @@ import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
 import com.enonic.xp.server.RunMode;
+import com.enonic.xp.util.GenericValue;
 
 import static java.util.Objects.requireNonNullElseGet;
 
@@ -463,8 +464,13 @@ public class WelcomePageScriptBean
         AdminToolDescriptorService service = this.adminToolDescriptorServiceSupplier.get();
         AdminToolDescriptors descriptors = service.getByApplication( applicationKey );
 
-        return descriptors.getList().stream().map(
+        return descriptors.getList().stream().filter( descriptor -> !isHiddenFromMenu( descriptor ) ).map(
             descriptor -> makeAdminToolUri( applicationKey, descriptor ) ).collect( Collectors.toList() );
+    }
+
+    private boolean isHiddenFromMenu( final AdminToolDescriptor descriptor )
+    {
+        return descriptor.getSchemaConfig().optional( "hideFromMenu" ).map( GenericValue::asBoolean ).orElse( false );
     }
 
     private String makeAdminToolUri( final ApplicationKey applicationKey, final AdminToolDescriptor descriptor )
