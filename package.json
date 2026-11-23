@@ -20,7 +20,7 @@
     "lucide-react": "^1.72.0",
     "nanoid": "^6.0.2",
     "nanostores": "^1.5.5",
-    "preact": "^10.29.8",
+    "preact": "^11.2.0",
     "react-use-websocket": "^4.13.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript7": "npm:typescript@^7.0.2"
